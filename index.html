@@ -1,0 +1,1765 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIGNION BackOffice</title>
+<link rel="icon" href="assets/logo-sym.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ============================================================
+   SIGNION Design Tokens — BI Guidelines BS 3-1 / BS 5-1 기준
+   Neon Blue  #0063FF  RGB 0·99·255   CMYK 100·70·0·0  Pantone 285 C
+   Vivid Cyan #00E0FF  RGB 0·224·255  CMYK 60·0·7·0    Pantone 311 C
+   Typeface   Pretendard (Bold / SemiBold / Medium / Regular / Light)
+   ============================================================ */
+:root{
+  --brand:#0063FF; --brand-600:#0052D6; --brand-50:#EBF3FF; --brand-100:#D6E6FF;
+  --cyan:#00E0FF; --scan:linear-gradient(90deg,#00E0FF 0%,#0063FF 100%);
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#F8FAFC; --line:#E3E8EF; --line-2:#EEF1F5;
+  --ink:#0E1726; --ink-2:#4A5568; --muted:#8792A4; --bi-gray:#7A7C7F;
+  --ok:#0B8A5B; --ok-bg:#E6F6EF; --warn:#B26A00; --warn-bg:#FFF4DE; --bad:#D92D3A; --bad-bg:#FDECEE; --info:#0063FF; --info-bg:#EBF3FF; --neutral-bg:#EFF2F6;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+  --shadow-lg:0 16px 40px rgba(16,24,40,.16);
+  --sb:256px; --top:60px; color-scheme:light;
+}
+[data-theme="dark"]{
+  --brand:#3D84FF; --brand-600:#2F74F0; --brand-50:#0F1F3D; --brand-100:#16305C;
+  --bg:#0A0F17; --surface:#111826; --surface-2:#0D1420; --line:#223044; --line-2:#1A2536;
+  --ink:#E6EBF2; --ink-2:#A6B1C2; --muted:#6E7A8D;
+  --ok:#3CCB8C; --ok-bg:#0E2A20; --warn:#F2B04A; --warn-bg:#2E2412; --bad:#FF6B74; --bad-bg:#33161A; --info:#5B9BFF; --info-bg:#0F1F3D; --neutral-bg:#1A2434;
+  --shadow:0 1px 2px rgba(0,0,0,.3); --shadow-lg:0 16px 40px rgba(0,0,0,.5); color-scheme:dark;
+}
+/* 로고 색상 활용 규정 BS 3-2 : Black_Background / Neon Blue_Background 단색 변형 */
+[data-theme="dark"] .logo path[fill="#0063ff"], .logo.mono-w path[fill="#0063ff"]{fill:#fff}
+[data-theme="dark"] .logo path[fill="#ffffff"]{fill:var(--surface)}
+.logo.mono-w path[fill="#ffffff"]{fill:#0063FF}
+[data-theme="dark"] .logo image, .logo.mono-w image{filter:brightness(0) invert(1)}
+.on-black .logo path[fill="#0063ff"]{fill:#fff} .on-black .logo path[fill="#ffffff"]{fill:#000} .on-black .logo image{filter:brightness(0) invert(1)}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;font-size:14px;line-height:1.5;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+button{font:inherit;color:inherit}
+.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12.5px}
+.n,.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .ink2{color:var(--ink-2)}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.logo{display:block;height:auto}
+
+/* ---------- Shell ---------- */
+.app{display:grid;grid-template-columns:var(--sb) minmax(0,1fr);min-height:100vh}
+.sb{position:sticky;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40}
+.sb-head{height:var(--top);display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid var(--line);flex:none}
+.sb-head .logo{width:118px}
+.sb-tag{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-top:2px}
+.nav{flex:1;overflow-y:auto;padding:10px 10px 16px;scrollbar-width:thin}
+.nav-sec{font-size:11px;color:var(--muted);font-weight:600;padding:14px 12px 6px;letter-spacing:.04em}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;background:none;border-radius:8px;cursor:pointer;color:var(--ink-2);font-weight:500;text-align:left;font-size:14px}
+.nav-btn:hover{background:var(--surface-2);color:var(--ink)}
+.nav-btn.on{color:var(--brand);background:var(--brand-50);font-weight:600}
+.nav-btn.has{color:var(--ink);font-weight:600}
+.nav-btn .chev{margin-left:auto;width:14px;height:14px;transition:transform .2s;color:var(--muted)}
+.nav-g.open>.nav-btn .chev{transform:rotate(90deg)}
+.nav-new{margin-left:auto;font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-50);border-radius:4px;padding:1px 5px}
+.nav-new+.chev{margin-left:6px}
+.nav-sub{display:none;padding:2px 0 6px}
+.nav-g.open .nav-sub{display:block}
+.nav-sub a{position:relative;display:block;padding:6px 12px 6px 40px;color:var(--ink-2);border-radius:6px;font-size:13.5px}
+.nav-sub a:hover{color:var(--ink);background:var(--surface-2)}
+.nav-sub a.on{color:var(--brand);font-weight:600}
+.nav-sub a.on::before{content:"";position:absolute;left:20px;top:50%;width:11px;height:2px;border-radius:2px;background:var(--scan);transform:translateY(-50%)}
+.sb-foot{border-top:1px solid var(--line);padding:12px 14px;flex:none}
+.sb-foot a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--ink-2);font-weight:500}
+.sb-foot a:hover,.sb-foot a.on{background:var(--brand-50);color:var(--brand)}
+.sb-ver{font-size:11.5px;color:var(--muted);padding:6px 10px 0}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:30;height:var(--top);display:flex;align-items:center;gap:10px;padding:0 24px;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.ibtn.burger{display:none}
+.crumb{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;min-width:0;white-space:nowrap;overflow:hidden}
+.crumb b{color:var(--ink);font-weight:600}
+.crumb .i{width:14px;height:14px}
+.gsearch{margin-left:auto;display:flex;align-items:center;gap:8px;width:min(340px,34vw);height:36px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--muted)}
+.gsearch:focus-within{border-color:var(--brand);background:var(--surface)}
+.gsearch input{border:0;background:none;outline:0;flex:1;font:inherit;font-size:13.5px;color:var(--ink);min-width:0}
+kbd{font-family:inherit;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;background:var(--surface)}
+.env{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);padding:4px 10px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}
+.env::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px var(--ok-bg)}
+.ibtn{width:36px;height:36px;display:grid;place-items:center;border-radius:8px;border:1px solid transparent;background:none;cursor:pointer;color:var(--ink-2);position:relative;flex:none}
+.ibtn:hover{background:var(--surface-2);border-color:var(--line);color:var(--ink)}
+.dotn{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--bad);border:2px solid var(--surface)}
+.me{display:flex;align-items:center;gap:10px;padding:3px 4px;border-radius:999px;flex:none}
+.av{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.me-t{line-height:1.25;font-size:13px;font-weight:600;white-space:nowrap} .me-t small{display:block;color:var(--muted);font-size:11.5px;font-weight:500}
+
+.content{padding:24px 28px 56px;width:100%;max-width:1680px}
+.ph{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.ph h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.ph p{margin:4px 0 0;color:var(--ink-2);font-size:13.5px}
+.ph .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- Components ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.card-h{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.card-h h3{margin:0;font-size:15px;font-weight:600}
+.card-h .sub{color:var(--muted);font-size:12.5px}
+.card-h .r{margin-left:auto;display:flex;gap:6px;align-items:center}
+.card-b{padding:16px 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:500;cursor:pointer;white-space:nowrap;font-size:13.5px;transition:background .15s,border-color .15s}
+.btn:hover{border-color:color-mix(in srgb,var(--ink) 22%,var(--line));background:var(--surface-2)}
+.btn .i{width:16px;height:16px}
+.btn-p{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn-p:hover{background:var(--brand-600);border-color:var(--brand-600)}
+.btn-soft{background:var(--brand-50);border-color:transparent;color:var(--brand)}
+.btn-soft:hover{background:var(--brand-100);border-color:transparent}
+.btn-d{color:var(--bad)} .btn-d:hover{background:var(--bad-bg);border-color:color-mix(in srgb,var(--bad) 35%,transparent)}
+.btn-df{background:var(--bad);border-color:var(--bad);color:#fff} .btn-df:hover{background:color-mix(in srgb,var(--bad) 88%,#000);border-color:transparent}
+.btn-sm{height:30px;padding:0 10px;font-size:12.5px;border-radius:6px}
+.btn-ghost{border-color:transparent;background:none} .btn-ghost:hover{background:var(--surface-2);border-color:transparent}
+.btn-block{width:100%;height:44px;font-size:15px;font-weight:600}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.input,.select{height:36px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:0 12px;font:inherit;font-size:13.5px;outline:none;min-width:0;transition:border-color .15s,box-shadow .15s}
+.select{padding-right:30px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238792A4' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.input:focus,.select:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+textarea.input{height:auto;padding:10px 12px;min-height:88px;resize:vertical;line-height:1.5}
+.input-lg{height:44px;font-size:14.5px}
+.badge{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px 0 7px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--neutral-bg);color:var(--ink-2)}
+.badge svg{width:11px;height:11px;stroke-width:3}
+.t-ok{background:var(--ok-bg);color:var(--ok)} .t-warn{background:var(--warn-bg);color:var(--warn)} .t-bad{background:var(--bad-bg);color:var(--bad)} .t-info{background:var(--info-bg);color:var(--info)}
+.chips{display:flex;gap:4px;flex-wrap:nowrap}
+.chip{display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;border-radius:4px;font-size:11.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+.chip svg{width:10px;height:10px;stroke-width:3}
+.chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 30%,transparent);background:var(--ok-bg)}
+.chip.fail{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 30%,transparent);background:var(--bad-bg)}
+.chip.run{color:var(--info);border-color:color-mix(in srgb,var(--info) 30%,transparent);background:var(--info-bg)}
+.chip.skip{opacity:.55}
+.tier{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:4px;font-size:11.5px;font-weight:700}
+.tier-0{background:#0E1726;color:#fff} .tier-1{background:var(--brand);color:#fff} .tier-2{background:var(--brand-100);color:var(--brand)} .tier-3{background:var(--neutral-bg);color:var(--ink-2)}
+[data-theme="dark"] .tier-0{background:#E6EBF2;color:#0A0F17}
+
+.tb{display:flex;align-items:center;gap:8px;padding:14px 16px;flex-wrap:wrap;border-bottom:1px solid var(--line-2)}
+.tb .grow{flex:1}
+.sfield{display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);width:min(320px,100%);color:var(--muted)}
+.sfield:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.sfield input{border:0;outline:0;background:none;flex:1;min-width:0;font:inherit;font-size:13.5px;color:var(--ink)}
+.btn.is-on{border-color:var(--brand);color:var(--brand);background:var(--brand-50)}
+.adv{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px 16px;padding:16px;background:var(--surface-2);border-bottom:1px solid var(--line-2);align-items:end}
+.fld label{display:block;font-size:12px;color:var(--ink-2);font-weight:600;margin-bottom:6px}
+.fld .input,.fld .select{width:100%}
+.fld .req{color:var(--bad);margin-left:2px}
+.fld .hint{font-size:12px;color:var(--muted);margin-top:6px}
+.drange{display:flex;gap:6px;align-items:center}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--ink-2);user-select:none;white-space:nowrap}
+.switch input{appearance:none;width:32px;height:18px;border-radius:999px;background:color-mix(in srgb,var(--muted) 55%,transparent);position:relative;cursor:pointer;transition:.2s;margin:0;flex:none}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.switch input:checked{background:var(--brand)} .switch input:checked::after{left:16px}
+.vsep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.cbox{width:16px;height:16px;accent-color:var(--brand);cursor:pointer;margin:0;vertical-align:middle}
+
+.tbl-wrap{overflow-x:auto}
+table.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
+.tbl th{background:var(--surface-2);color:var(--ink-2);font-weight:600;font-size:12.5px;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--line-2);white-space:nowrap;vertical-align:middle}
+.tbl tbody tr{cursor:pointer}
+.tbl tbody tr:hover td{background:var(--surface-2)}
+.tbl tr.sel td{background:var(--brand-50)!important}
+.tbl tr.is-del td{color:var(--muted)}
+.tbl tr.is-del td.main-c{text-decoration:line-through}
+.tbl .n{text-align:right}
+.tbl .ck{width:44px;padding-right:0}
+.tbl tfoot td{font-weight:700;background:var(--surface-2);border-bottom:0}
+.tbl .strong{font-weight:600;color:var(--ink)}
+.tbl .sub{display:block;font-size:12px;color:var(--muted);font-weight:400}
+.del-tag{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:4px;background:var(--bad-bg);color:var(--bad);font-size:11px;font-weight:700;margin-right:6px;text-decoration:none}
+.tf{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--ink-2);font-size:13px;flex-wrap:wrap}
+.pager{margin-left:auto;display:flex;gap:4px}
+.pager button{min-width:30px;height:30px;border-radius:6px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:12.5px}
+.pager button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.empty{padding:56px 16px;text-align:center;color:var(--muted)}
+.empty .i{width:32px;height:32px;margin-bottom:8px;stroke-width:1.4}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:16px}
+.kpi{padding:18px 20px}
+.kpi .l{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:6px;font-weight:500}
+.kpi .l .i{width:16px;height:16px;color:var(--muted)}
+.kpi .v{font-size:26px;font-weight:700;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi .v small{font-size:14px;font-weight:600;color:var(--ink-2);margin-left:3px}
+.kpi .d{font-size:12.5px;margin-top:6px;color:var(--muted)}
+.kpi.hero{position:relative;overflow:hidden}
+.kpi.hero::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--scan)}
+.up{color:var(--ok);font-weight:600} .down{color:var(--bad);font-weight:600}
+.g2{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.g2e{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.seg{display:inline-flex;padding:3px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+.seg button{border:0;background:none;height:26px;padding:0 10px;border-radius:6px;font-size:12.5px;cursor:pointer;color:var(--ink-2);font-weight:500}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .grid line{stroke:var(--line-2)}
+.chart .axis text{fill:var(--muted);font-size:11px;font-family:inherit}
+.chart .bar{fill:var(--brand)}
+.chart .bar.today{fill:color-mix(in srgb,var(--brand) 45%,var(--surface))}
+.chart .hit{fill:transparent;cursor:crosshair}
+.chart .hit:hover+.bar,.chart g.col:hover .bar{fill:var(--brand-600)}
+.tip{position:fixed;pointer-events:none;z-index:120;background:var(--ink);color:var(--surface);font-size:12px;padding:7px 10px;border-radius:7px;opacity:0;transition:opacity .08s;white-space:nowrap;box-shadow:var(--shadow-lg);line-height:1.45}
+.tip b{font-weight:700}
+.hbar{display:grid;grid-template-columns:118px minmax(0,1fr) 54px;align-items:center;gap:12px;font-size:13px;padding:8px 0}
+.hbar .trk{height:8px;border-radius:999px;background:var(--line-2);overflow:hidden}
+.hbar .trk i{display:block;height:100%;border-radius:999px;background:var(--brand)}
+.hbar .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.todo a{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line-2);color:var(--ink)}
+.todo a:last-child{border-bottom:0}
+.todo a:hover{background:var(--surface-2)}
+.todo .cnt{margin-left:auto;font-weight:700;font-variant-numeric:tabular-nums}
+.todo .ic{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;flex:none}
+.todo .ic .i{width:16px;height:16px}
+.sys{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sys div{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.sys b{display:block;font-size:13px;font-weight:600}
+.sys span{font-size:12px;color:var(--muted)}
+.sys .badge{margin-top:8px}
+
+/* ---------- Drawer / Modal / Toast ---------- */
+.scrim{position:fixed;inset:0;background:rgba(8,13,22,.42);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(760px,100vw);background:var(--surface);z-index:60;transform:translateX(102%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s .26s;display:flex;flex-direction:column}
+.drawer.on{transform:none;visibility:visible;box-shadow:var(--shadow-lg);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.dr-h{padding:18px 24px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.dr-h h2{margin:0;font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dr-h p{margin:4px 0 0;color:var(--ink-2);font-size:13px}
+.dr-h .ibtn{margin-left:auto;margin-top:-4px}
+.dr-b{flex:1;overflow-y:auto;padding:20px 24px 28px}
+.dr-f{padding:14px 24px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;background:var(--surface-2)}
+.dr-f .sp{flex:1}
+.mscrim{z-index:70}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-47%);width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 48px);display:flex;flex-direction:column;background:var(--surface);border-radius:14px;box-shadow:var(--shadow-lg);z-index:80;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+.modal.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.modal.wide{width:min(720px,calc(100vw - 32px))}
+.m-h{padding:20px 24px 4px;display:flex;align-items:flex-start;gap:12px}
+.m-h h3{margin:0;font-size:17px;font-weight:700}
+.m-h p{margin:4px 0 0;font-size:13px;color:var(--ink-2)}
+.m-h .ibtn{margin-left:auto;margin-top:-6px;margin-right:-8px}
+.m-b{padding:16px 24px;overflow-y:auto}
+.m-f{padding:14px 24px 20px;display:flex;justify-content:flex-end;gap:8px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.fgrid .full{grid-column:1/-1}
+.callout{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.55}
+.callout .i{width:18px;height:18px;margin-top:1px}
+.callout.warn{background:var(--warn-bg);color:var(--warn)} .callout.bad{background:var(--bad-bg);color:var(--bad)} .callout.info{background:var(--info-bg);color:var(--info)}
+.callout b{font-weight:700}
+.toasts{position:fixed;right:20px;bottom:20px;z-index:130;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.toast{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--surface);padding:11px 16px;border-radius:10px;font-size:13.5px;box-shadow:var(--shadow-lg);animation:tin .25s ease}
+.toast .i{width:16px;height:16px;color:var(--cyan)}
+.toast.bad .i{color:#FF8A92}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}}
+
+/* ---------- Detail parts ---------- */
+.kv{display:grid;grid-template-columns:132px minmax(0,1fr);gap:10px 16px;font-size:13.5px;margin:0}
+.kv dt{color:var(--ink-2)} .kv dd{margin:0;font-weight:500;min-width:0;overflow-wrap:anywhere}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+.sec-t{font-size:13.5px;font-weight:700;margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-t:first-child{margin-top:0}
+.sec-t .r{margin-left:auto;display:flex;gap:6px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:-6px 0 20px;overflow-x:auto;scrollbar-width:none}
+.tab{padding:10px 12px;border:0;background:none;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap;font-size:13.5px}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--brand);font-weight:600;background:var(--scan) bottom/100% 2px no-repeat}
+.pane{display:none} .pane.on{display:block}
+.secret{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
+.secret .mono{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 16px 32px}
+.tl li::before{content:"";position:absolute;left:9px;top:22px;bottom:2px;width:2px;background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl .dot{position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--ok-bg);color:var(--ok)}
+.tl .dot svg{width:11px;height:11px;stroke-width:3.2}
+.tl .dot.bad{background:var(--bad-bg);color:var(--bad)} .tl .dot.run{background:var(--info-bg);color:var(--info)} .tl .dot.grp{background:var(--brand);color:#fff}
+.tl .t{font-weight:600;font-size:13.5px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tl .c{color:var(--muted);font-size:12px}
+.tl .e{margin-top:6px}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.ph-img{aspect-ratio:3/4;border-radius:8px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--line-2) 8px 9px);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:11.5px;text-align:center;padding:6px}
+.ph-img .i{width:20px;height:20px;stroke-width:1.5}
+.ph-img.wide{aspect-ratio:1.42/1;grid-column:span 2}
+.pp{display:grid;grid-template-columns:100px minmax(0,1fr);gap:16px 20px;padding:18px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(135deg,var(--brand-50),var(--surface) 62%);position:relative;overflow:hidden}
+.pp::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--scan)}
+.pp-photo{width:100px;height:128px;border-radius:8px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.pp-photo .i{width:44px;height:44px;stroke-width:1.2}
+.pp h3{margin:0;font-size:18px;font-weight:700;letter-spacing:.01em}
+.pp .kv{grid-template-columns:96px 1fr;gap:6px 12px;font-size:13px;margin-top:10px}
+.mrz{grid-column:1/-1;font-family:"OCR B","JetBrains Mono",ui-monospace,Consolas,monospace;font-size:12px;letter-spacing:.12em;color:var(--ink-2);background:var(--surface);border-radius:8px;padding:9px 12px;border:1px solid var(--line-2);overflow-x:auto;white-space:pre;line-height:1.6}
+.docs{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.doc{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;gap:6px 12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line-2)}
+.doc:last-child{border-bottom:0}
+.doc .st{width:20px;height:20px;border-radius:50%;display:grid;place-items:center}
+.doc .st svg{width:11px;height:11px;stroke-width:3.2}
+.doc .st.ok{background:var(--ok-bg);color:var(--ok)} .doc .st.miss{background:var(--bad-bg);color:var(--bad)} .doc .st.opt{background:var(--neutral-bg);color:var(--muted)}
+.doc .nm{font-weight:600;font-size:13.5px}
+.doc .nm small{font-weight:500;color:var(--muted);margin-left:6px;font-size:12px}
+.doc .ct{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.files{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px}
+.file{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 6px 0 8px;border:1px solid var(--line);border-radius:6px;font-size:12px;background:var(--surface-2);color:var(--ink-2)}
+.file .i{width:13px;height:13px}
+.file button{border:0;background:none;padding:2px;cursor:pointer;color:var(--muted);display:grid;place-items:center;border-radius:4px}
+.file button:hover{color:var(--brand);background:var(--brand-50)}
+.prog{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.prog .bar{height:6px;border-radius:999px;background:var(--line-2);overflow:hidden;width:64px}
+.prog .bar i{display:block;height:100%;background:var(--brand);border-radius:999px}
+.prog.full .bar i{background:var(--ok)}
+.steps{display:flex;align-items:center;gap:0;margin:2px 0 4px;overflow-x:auto}
+.step{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);white-space:nowrap;font-weight:500}
+.step .b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700;background:var(--surface)}
+.step.done{color:var(--ink)} .step.done .b{background:var(--brand);border-color:var(--brand);color:#fff}
+.step.cur{color:var(--brand);font-weight:700} .step.cur .b{border-color:var(--brand);color:var(--brand);box-shadow:0 0 0 3px var(--brand-50)}
+.step .b svg{width:11px;height:11px;stroke-width:3.2}
+.step-ln{flex:1;min-width:16px;height:1.5px;background:var(--line);margin:0 8px}
+.step-ln.done{background:var(--brand)}
+.order{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.order li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line-2);font-size:13.5px;background:var(--surface)}
+.order li:last-child{border-bottom:0}
+.order .no{width:22px;height:22px;border-radius:6px;background:var(--brand-50);color:var(--brand);font-weight:700;font-size:12px;display:grid;place-items:center;flex:none}
+.order .mv{margin-left:auto;display:flex;gap:2px}
+.order .mv button{width:26px;height:26px;border:1px solid var(--line);background:var(--surface);border-radius:6px;cursor:pointer;display:grid;place-items:center;color:var(--ink-2)}
+.order .mv button:disabled{opacity:.35;cursor:default}
+.order .mv .i{width:13px;height:13px}
+.json{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.6;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;white-space:pre;margin:0;color:var(--ink)}
+.json .k{color:var(--brand)} .json .s{color:var(--ok)} .json .nn{color:var(--warn)}
+.ltabs{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 16px}
+.ltabs a{height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-size:13px;font-weight:500;white-space:nowrap}
+.ltabs a:hover{border-color:var(--brand);color:var(--brand)}
+.ltabs a.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.inv{border:1px solid var(--line);border-radius:12px;padding:24px;background:var(--surface)}
+.inv h4{margin:0 0 2px;font-size:20px;letter-spacing:.2em;text-align:center}
+.inv .meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);margin:18px 0 12px;gap:12px;flex-wrap:wrap}
+.inv table{width:100%;border-collapse:collapse;font-size:13px}
+.inv th,.inv td{border-bottom:1px solid var(--line-2);padding:9px 8px;text-align:left}
+.inv th{color:var(--ink-2);font-weight:600;background:var(--surface-2)}
+.inv .tot td{font-weight:700;font-size:14px;border-bottom:0;border-top:2px solid var(--ink)}
+
+/* ---------- Login ---------- */
+.login{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);background:var(--surface)}
+.lg-vis{position:relative;overflow:hidden;background:#0063FF;color:#fff;padding:44px 56px;display:flex;flex-direction:column;min-height:100vh}
+.lg-vis::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.055) 0 1px,transparent 1px 26px)}
+.lg-vis>*{position:relative}
+.lg-vis .logo{width:150px}
+.lg-copy{margin-top:auto}
+.lg-copy h1{font-size:clamp(28px,3vw,40px);line-height:1.3;margin:0;font-weight:700;letter-spacing:-.02em}
+.lg-copy p{margin:12px 0 0;font-size:16px;font-weight:300;opacity:.9;letter-spacing:.01em}
+.scanbox{position:relative;width:min(340px,80%);aspect-ratio:1.45/1;margin:48px 0 40px;border-radius:18px;border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.06);padding:22px;display:grid;grid-template-columns:30% 1fr;gap:16px}
+.scanbox .pht{background:rgba(255,255,255,.22);border-radius:8px}
+.scanbox .ln{display:flex;flex-direction:column;gap:9px;padding-top:4px}
+.scanbox .ln i{display:block;height:7px;border-radius:4px;background:rgba(255,255,255,.3)}
+.scanbox .mz{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;align-self:end}
+.scanbox .mz i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.22)}
+.scanbox .beam{position:absolute;left:-6%;right:-6%;height:3px;border-radius:3px;background:#00E0FF;box-shadow:0 0 18px 4px rgba(0,224,255,.55);animation:beam 3.2s ease-in-out infinite}
+@keyframes beam{0%,100%{top:14%}50%{top:84%}}
+@media (prefers-reduced-motion:reduce){.scanbox .beam{animation:none;top:50%}}
+.lg-feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;border-top:1px solid rgba(255,255,255,.22);padding-top:22px;font-size:13px}
+.lg-feat b{display:block;font-size:13.5px;margin-bottom:4px}
+.lg-feat span{opacity:.78;font-weight:300}
+.lg-copyr{margin-top:28px;font-size:12px;opacity:.6}
+.lg-form{display:grid;place-items:center;padding:40px 24px}
+.lg-card{width:min(380px,100%)}
+.lg-card .logo{width:132px;margin-bottom:36px}
+.lg-card h2{margin:0;font-size:24px;font-weight:700;letter-spacing:-.01em}
+.lg-card>p{margin:6px 0 28px;color:var(--ink-2)}
+.lg-card .fld{margin-bottom:16px}
+.lg-row{display:flex;align-items:center;justify-content:space-between;margin:-2px 0 22px;font-size:13px}
+.otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
+.otp input{height:54px;text-align:center;font-size:22px;font-weight:700;padding:0}
+.lg-note{display:flex;gap:8px;margin-top:22px;padding:12px 14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);font-size:12.5px;color:var(--ink-2)}
+.lg-note .i{width:16px;height:16px;margin-top:1px;color:var(--muted)}
+.timer{color:var(--brand);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ---------- BI page ---------- */
+.bi-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0;overflow:hidden}
+.bi-hero .lg{display:grid;place-items:center;padding:56px 32px;border-right:1px solid var(--line-2)}
+.bi-hero .lg .logo{width:min(360px,90%)}
+.bi-hero .cp{padding:32px}
+.bi-hero h2{margin:0 0 4px;font-size:22px}
+.kw{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.kw span{font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--brand-50);color:var(--brand)}
+.variants{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.variant{border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.variant .bx{height:120px;display:grid;place-items:center;padding:20px}
+.variant .bx .logo{width:150px}
+.variant .bx .logo.sym-l{width:64px}
+.tok p{margin:0;min-width:0}
+.variant .cap{padding:10px 14px;font-size:12.5px;color:var(--ink-2);border-top:1px solid var(--line-2);background:var(--surface)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.sw{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.sw .c{height:120px;padding:16px;color:#fff;display:flex;align-items:flex-end;font-weight:700;font-size:18px}
+.sw dl{display:grid;grid-template-columns:72px 1fr;gap:6px 10px;padding:14px 16px;margin:0;font-size:12.5px}
+.sw dt{color:var(--muted)} .sw dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.tints{display:grid;grid-template-columns:repeat(10,1fr);height:28px}
+.tok{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tok div{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:12.5px}
+.tok i{width:28px;height:28px;border-radius:7px;border:1px solid var(--line);flex:none}
+.tok b{display:block;font-weight:600;font-size:12.5px}
+.tok span{color:var(--muted);font-family:ui-monospace,Consolas,monospace;font-size:11.5px}
+.type-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line-2)}
+.type-row:last-child{border-bottom:0}
+.type-row .m b{display:block;font-size:13.5px} .type-row .m span{font-size:12px;color:var(--muted)}
+.type-row .s{font-size:24px;line-height:1.35;overflow-wrap:anywhere}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.rules div{display:flex;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:13px}
+.rules .i{width:16px;height:16px;color:var(--bad);margin-top:2px}
+.rules.do .i{color:var(--ok)}
+.code{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.65;background:#0E1726;color:#C9D6EA;border-radius:12px;padding:18px 20px;overflow:auto;white-space:pre;margin:0}
+.code .c1{color:#00E0FF} .code .c2{color:#7FA6E8} .code .c3{color:#6B7A93}
+.demo-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ---------- v0.2 UX ---------- */
+.tbl th.sortable{cursor:pointer;user-select:none}
+.tbl th.sortable:hover{color:var(--ink)}
+.tbl th .so{width:12px;height:12px;vertical-align:-1px;margin-left:3px;opacity:.35;stroke-width:2.2}
+.tbl th.sorted{color:var(--brand)} .tbl th.sorted .so{opacity:1}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line-2);font-size:12.5px;color:var(--ink-2)}
+.fchip{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 6px 0 10px;border-radius:999px;background:var(--brand-50);color:var(--brand);font-weight:600;border:0;cursor:pointer;font-size:12.5px}
+.fchip .i{width:13px;height:13px}
+.fchip:hover{background:var(--brand-100)}
+.linkbtn{border:0;background:none;color:var(--brand);cursor:pointer;font-size:12.5px;font-weight:600;padding:4px}
+.pager button:disabled{opacity:.4;cursor:default}
+.pager .gap{min-width:20px;text-align:center;color:var(--muted);line-height:30px}
+.dd-wrap{position:relative;display:inline-flex}
+.dd{position:absolute;right:0;top:calc(100% + 6px);min-width:230px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;z-index:45;display:none}
+.dd-wrap.open>.dd{display:block}
+.dd-i{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;background:none;border-radius:8px;cursor:pointer;text-align:left;font-size:13.5px;color:var(--ink);font-weight:500}
+.dd-i:hover:not(:disabled){background:var(--surface-2)}
+.dd-i:disabled{color:var(--muted);cursor:not-allowed}
+.dd-i .i{width:16px;height:16px;color:var(--ink-2)}
+.dd-sep{height:1px;background:var(--line-2);margin:6px 4px}
+.dd-h{padding:8px 10px 6px;font-size:12px;color:var(--muted);font-weight:600}
+.dd.noti{width:min(360px,calc(100vw - 24px));padding:0}
+.noti .dd-h{display:flex;padding:14px 16px 10px;border-bottom:1px solid var(--line-2);font-size:13.5px;color:var(--ink)}
+.noti a{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line-2);color:var(--ink);font-size:13px;line-height:1.45}
+.noti a:last-child{border-bottom:0}
+.noti a:hover{background:var(--surface-2)}
+.noti a small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.noti .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none}
+.noti .ic .i{width:15px;height:15px}
+button.me{border:0;background:none;cursor:pointer;font:inherit;color:inherit;padding:3px 8px 3px 3px}
+button.me:hover{background:var(--surface-2)}
+button.me>.i{width:14px;height:14px;color:var(--muted)}
+.doc.drag{background:var(--brand-50);outline:2px dashed var(--brand);outline-offset:-3px}
+.cmdk{position:fixed;left:50%;top:12vh;transform:translateX(-50%);width:min(640px,calc(100vw - 32px));background:var(--surface);border-radius:14px;box-shadow:var(--shadow-lg);z-index:110;display:none;overflow:hidden;border:1px solid var(--line)}
+.cmdk.on{display:block}
+.cmdk-in{display:flex;align-items:center;gap:10px;padding:0 16px;height:56px;border-bottom:1px solid var(--line)}
+.cmdk-in input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.cmdk-in>.i{color:var(--muted)}
+.cmdk-r{max-height:min(460px,60vh);overflow-y:auto;padding:6px}
+.cmdk-g{padding:10px 10px 4px;font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.cmdk-o{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13.5px}
+.cmdk-o>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmdk-o .i{width:16px;height:16px;color:var(--ink-2)}
+.cmdk-o small{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.cmdk-o.on{background:var(--brand-50);color:var(--brand)} .cmdk-o.on .i{color:var(--brand)}
+.cmdk-o mark{background:none;color:var(--brand);font-weight:700}
+.cmdk-f{display:flex;gap:16px;padding:10px 16px;border-top:1px solid var(--line-2);font-size:12px;color:var(--muted)}
+.cscrim{z-index:105}
+button.gsearch{cursor:text;text-align:left;font:inherit;font-size:13.5px}
+button.gsearch span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-head .lg-sym{display:none} .sb-head .lg-sym .logo{width:32px}
+.sb-foot .sb-fold{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:8px;border:0;background:none;color:var(--ink-2);font-weight:500;cursor:pointer;font-size:14px}
+.sb-foot .sb-fold:hover{background:var(--surface-2);color:var(--ink)}
+@media (min-width:1025px){
+  .app.mini{grid-template-columns:72px minmax(0,1fr)}
+  .app.mini .sb-head{padding:0;justify-content:center}
+  .app.mini .sb-head .lg-full,.app.mini .sb-tag,.app.mini .nav-sec,.app.mini .nav-btn span,.app.mini .nav-new,.app.mini .nav-btn .chev,.app.mini .nav-sub,.app.mini .sb-foot span,.app.mini .sb-ver{display:none}
+  .app.mini .sb-head .lg-sym{display:block}
+  .app.mini .nav-btn,.app.mini .sb-foot a,.app.mini .sb-foot .sb-fold{justify-content:center;padding:10px 0}
+  .app.mini .nav-btn.has{background:var(--brand-50);color:var(--brand)}
+  .app.mini .sb-fold .i{transform:scaleX(-1)}
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1200px){.g2,.g2e{grid-template-columns:1fr}.bi-hero{grid-template-columns:1fr}.bi-hero .lg{border-right:0;border-bottom:1px solid var(--line-2)}}
+@media (max-width:1024px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .sb{position:fixed;left:0;top:0;bottom:0;width:var(--sb);transform:translateX(-102%);transition:transform .25s}
+  .sb.open{transform:none;box-shadow:var(--shadow-lg)}
+  .ibtn.burger{display:grid}
+  .env,.me-t{display:none}
+}
+@media (max-width:900px){.login{grid-template-columns:1fr}.lg-vis{display:none}}
+@media (max-width:720px){
+  .content{padding:18px 16px 48px}.top{padding:0 12px}
+  .gsearch{width:auto;flex:1}.gsearch kbd{display:none}
+  .crumb{display:none}
+  .kv,.kv2,.fgrid{grid-template-columns:1fr}.kv dt{margin-top:6px}
+  .type-row{grid-template-columns:1fr}
+  .pp{grid-template-columns:1fr}
+  .dr-h,.dr-b,.dr-f{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="scrim mscrim" id="mscrim"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+<div class="toasts" id="toasts"></div>
+<div class="tip" id="tip"></div>
+
+<script>
+/* =====================================================================
+   SIGNION BackOffice — Prototype v0.1 (2026-11)
+   - 메뉴 구성: backOffice관리자_메뉴구성도.xlsx
+   - KT 통합관리자: SIGNION KT 통합관리자시스템 기능 구성_1026.xlsx
+   - 코드값: GLOBALEKYC DB (_kycTransType, _documentType, _registStatusType, _connectType, _msgCode, _apiCmd)
+   - 디자인: SIGNION Brand Identity Guidelines
+   * 모든 고객/거래 데이터는 프로토타입용 가상 데이터입니다.
+   ===================================================================== */
+const LOGO_H_SRC = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="568.1022" height="100.5892" viewBox="0 0 568.1022 100.5892"><defs><clipPath id="lh_clip_1"><path transform="matrix(1,0,0,-1,-136.2482,356.2109)" d="M136.2482 255.6217H704.3504V356.2109H136.2482Z" clip-rule="evenodd"/></clipPath><clipPath id="lh_clip_2"><path transform="matrix(1,0,0,-1,-136.2482,356.2109)" d="M136.248 290.559V273.782C136.248 254.61 151.787 239.069 170.957 239.069H218.677C237.849 239.069 253.388 254.61 253.388 273.782V290.559Z"/></clipPath><clipPath id="lh_clip_3"><path transform="matrix(1,0,0,-1,-136.2482,356.2109)" d="M0 595.28H841.89V0H0Z"/></clipPath></defs><g clip-path="url(#lh_clip_1)"><g><g clip-path="url(#lh_clip_2)"><image x="0" y="65" width="118" height="36" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHYAAAAkCAYAAABc4c7tAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAArklEQVR4nO3EkXYCAACF4f9Fdzo7g0EQDIJBEARBEAwGg0EwCIIgGARBEARBUG9S9znu+eH74P54qBC3pD5ck/pwSerDOakPp6Q+HJP6cEjqwz6pD/9Jfdgl9WGb1IdNUh/WSX34S+rDKqkPv0l9+Enqw3dSH76S+rBM6sMiqQ/zpD7MkvowTerDJKkPn0l9GCf14SOpD6OkPgyT+vCe1Ie3pD68JvVhkNSHl6Q6TwIeQrR4RRwTAAAAAElFTkSuQmCC"/></g><g clip-path="url(#lh_clip_3)"><path transform="matrix(1,0,0,-1,96.576999,84.7612)" d="M0 0-10.102 9.023C-10.745 9.597-11.74 9.445-12.178 8.702-14.385 4.935-21.57-4.721-37.121-4.721-52.67-4.721-59.853 4.935-62.064 8.702-62.499 9.445-63.494 9.597-64.139 9.023L-74.241 0C-74.241 0-64.682-15.828-37.121-15.828-9.556-15.828 0 0 0 0" fill="#ffffff"/><path transform="matrix(1,0,0,-1,82.429,0)" d="M0 0H-47.72C-66.891 0-82.429-15.539-82.429-34.711V-58.739H-47.125-47.132C-54.596-54.366-58.34-47.844-57.671-39.86-56.554-26.577-44.388-19.263-23.404-19.263 6.877-19.263 12.021-35.118 12.021-35.118L-.281-41.806C-.962-42.175-1.836-41.915-2.147-41.203-5.043-34.552-14.471-30.408-23.071-30.408-34.132-30.408-40.476-33.803-40.476-39.721-40.476-47.273-27.675-49.611-23.471-50.375L-11.624-52.833C-6.013-53.85-.026-56.258 4.006-58.739H34.711V-34.711C34.711-15.539 19.172 0 0 0" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,201.83582,56.342714)" d="M0 0C-5.523 2.84-13.56 3.479-21.32 3.892L-22.156 3.934C-40 4.876-41.419 8.483-41.564 12.056-41.705 15.627-39.468 18.032-37.567 19.075-33.689 21.225-29.473 22.319-24.245 22.319-23.137 22.319-22.004 22.265-20.87 22.163-9.618 21.149-5.912 16.777-3.961 12.468L6.87 18.874C4.931 23.556-1.182 32.955-19.33 34.601-20.847 34.734-22.37 34.801-23.866 34.801-34.068 34.801-43.211 31.598-48.949 26.014-53.294 21.783-55.51 16.423-55.366 10.518-55.191 3.165-51.761-1.849-44.884-4.812-39.166-7.275-30.631-7.949-23.775-8.488-23.775-8.488-21.006-8.698-19.924-8.776-14.903-9.142-12.026-9.518-9.68-10.313-5.499-11.738-5.235-13.934-5.324-16.652-5.439-19.675-7.108-21.607-7.943-22.299-9.6-23.667-13.237-26.789-22.094-26.789-24.686-26.789-27.55-26.458-30.852-25.778-39.531-23.997-43.073-18.467-44.508-13.877L-54.846-20.367C-53.653-24.22-49.076-34.642-33.841-37.996-30.017-38.831-26.225-39.255-22.58-39.255-13.465-39.255-5.256-36.631 .526-31.861 5.523-27.731 8.36-22.268 8.506-16.479 8.706-8.325 6.006-3.089 0 0" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,274.7235,95.645999)" d="M0 0C-11.681 0-21.487 3.663-28.349 10.6-34.861 17.17-38.286 26.327-38.26 37.078-38.286 47.758-34.835 56.904-28.274 63.528-21.49 70.381-11.608 74.153-.451 74.153 13.796 74.153 25.742 67.951 31.36 58.337L18.978 50.094C15.488 57.537 9.197 61.853-.34 61.853-6.714 61.853-12.171 59.741-16.12 55.754-20.444 51.38-23.703 44.858-23.677 37.075-23.703 29.182-20.448 22.798-16.127 18.43-12.161 14.418-6.583 12.3 0 12.3 11.771 12.3 19.457 18.242 20.058 27.809L20.084 28.213H1.092V39.132H35.094V33.498C35.094 15.453 22.763 0 0 0" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,-136.2482,356.2109)" d="M366.234 261.42H352.27503V333.86103H366.234Z" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,-136.2482,356.2109)" d="M545.22 261.42H531.258V333.86103H545.22Z" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,371.1869,94.7905)" d="M0 0-40.563 49.15V0H-54.513V72.424H-42.115L-1.664 23.134V72.424H12.473V0Z" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,555.62918,94.7905)" d="M0 0-40.562 49.15V0H-54.514V72.424H-42.114L-1.666 23.134V72.424H12.473V0Z" fill="#0063ff"/><path class="lt" transform="matrix(1,0,0,-1,454.6707,33.793397)" d="M0 0C-6.581 0-12.177-2.086-16.166-6.034-20.557-10.382-22.864-16.861-22.835-24.774-22.864-32.689-20.557-39.171-16.166-43.518-12.177-47.467-6.581-49.553 0-49.553 6.605-49.553 12.199-47.469 16.182-43.53 20.565-39.191 22.868-32.706 22.84-24.777 22.868-16.849 20.565-10.364 16.182-6.024 12.199-2.083 6.605 0 0 0M0-61.853C-10.909-61.853-20.549-58.079-27.133-51.227-33.477-44.622-36.82-35.476-36.794-24.774-36.82-14.063-33.479-4.916-27.141 1.683-20.56 8.529-10.921 12.301 0 12.301 10.903 12.301 20.54 8.52 27.134 1.654 33.479-4.95 36.823-14.092 36.796-24.777 36.823-35.464 33.479-44.602 27.132-51.208 20.54-58.073 10.903-61.853 0-61.853" fill="#0063ff"/></g></g></g></svg>`;
+const LOGO_SYM_SRC = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="179.13697" height="153.82602" viewBox="0 0 179.13697 153.82602"><defs><clipPath id="ls_clip_1"><path transform="matrix(1,0,0,-1,-333.24293,376.0566)" d="M333.24293 222.23059H512.3799V376.0566H333.24293Z" clip-rule="evenodd"/></clipPath><clipPath id="ls_clip_2"><path transform="matrix(1,0,0,-1,-333.24293,376.0566)" d="M333.243 275.657V250.001C333.243 220.684 357.008 196.918 386.322 196.918H459.298C488.617 196.918 512.38 220.684 512.38 250.001V275.657Z"/></clipPath><clipPath id="ls_clip_3"><path transform="matrix(1,0,0,-1,-333.24293,376.0566)" d="M0 595.28H841.89V0H0Z"/></clipPath></defs><g clip-path="url(#ls_clip_1)"><g><g clip-path="url(#ls_clip_2)"><image x="0" y="100" width="180" height="54" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAA2CAYAAAButbPhAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA/0lEQVR4nO3E0UYDAACF4f9FSyUiIxJJF5kRiUQkIpERScSMRGREIhFJF/Um6zzH8V98H/zN51INfpPUgp8kteA7SS34SlILPpPUgo8kteA9SS14S1ILXpPUgpcktWCWpBY8J6kFT0lqwWOSWvCQpBZMk9SCSZJacJ+kFtwlqQW3SWrBTZJacJ2kFoyT1IKrJLXgMkktuEhSC86T1IKzJLXgNEktOElSC46T1IKjJLXgMEktOEhSC/aT1IJRklowTFIL9pLUgt0ktWAnSS3YTlILtpLUgs0ktWAjSS0YJKkF60lqwVqSWrCapBasJKkFy0lqwVKSWrCYpBYsJKnEPzw93RsSnJ41AAAAAElFTkSuQmCC"/></g><g clip-path="url(#ls_clip_3)"><path transform="matrix(1,0,0,-1,147.68967,129.62201)" d="M0 0-15.446 13.798C-16.43 14.676-17.953 14.444-18.622 13.307-21.999 7.547-32.983-7.219-56.765-7.219-80.545-7.219-91.529 7.547-94.909 13.307-95.575 14.444-97.096 14.676-98.082 13.798L-113.529 0C-113.529 0-98.915-24.204-56.765-24.204-14.613-24.204 0 0 0 0" fill="#ffffff"/><path transform="matrix(1,0,0,-1,126.05499,0)" d="M0 0H-72.976C-102.29 0-126.055-23.763-126.055-53.082V-89.826H-72.067-72.077C-83.489-83.138-89.217-73.166-88.193-60.958-86.484-40.644-67.879-29.46-35.791-29.46 10.517-29.46 18.385-53.706 18.385-53.706L-.43-63.931C-1.47-64.498-2.81-64.097-3.285-63.011-7.714-52.84-22.129-46.501-35.282-46.501-52.197-46.501-61.898-51.692-61.898-60.743-61.898-72.291-42.323-75.868-35.893-77.039L-17.778-80.794C-9.194-82.35-.04-86.033 6.127-89.826H53.082V-53.082C53.082-23.763 29.319 0 0 0" fill="#0063ff"/></g></g></g></svg>`;
+let logoN = 0;
+function logo(kind = 'h', cls = '') {
+  const src = kind === 'h' ? LOGO_H_SRC : LOGO_SYM_SRC;
+  const n = ++logoN;
+  return src.replace(/ width="[\d.]+" height="[\d.]+"/, ` class="logo ${cls}" role="img" aria-label="SIGNION"`)
+            .replace(/(l[hs])_clip_/g, `$1${n}_clip_`);
+}
+
+/* ---------- Icons ---------- */
+const IC = {
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  building:'<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h2a2 2 0 0 1 2 2v10"/><path d="M8 7h4M8 11h4M8 15h4M2 21h20"/>',
+  sim:'<path d="M6 3h8l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><rect x="8" y="11" width="8" height="6" rx="1"/><path d="M12 11v6M8 14h8"/>',
+  shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+  coins:'<ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M9 15v2c0 1.7 2.7 3 6 3s6-1.3 6-3v-5c0-1.6-2.4-2.9-5.5-3"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L20 3M16 7l3 3M14 9l2 2"/>',
+  lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',
+  message:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',
+  log:'<path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6M9 13h7M9 17h5"/>',
+  db:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>',
+  headset:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="14" width="4.5" height="6" rx="1.5"/><rect x="17" y="14" width="4.5" height="6" rx="1.5"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  palette:'<path d="M12 21a9 9 0 1 1 9-9c0 2.5-2 3.5-4 3.5h-2a2 2 0 0 0-1.4 3.4A1.3 1.3 0 0 1 12 21z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7" r="1.1"/><circle cx="15.5" cy="8" r="1.1"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:'<path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.5 6.5 0 0 0 10 10z"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>', up:'<path d="M6 15l6-6 6 6"/>', down:'<path d="M6 9l6 6 6-6"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  download:'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
+  upload:'<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  filter:'<path d="M3 5h18l-7 8v6l-4 2v-8z"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  alert:'<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+  logout:'<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h10"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+  file:'<path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/>',
+  pdf:'<path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/><path d="M9 17v-4h1.5a1.3 1.3 0 0 1 0 2.6H9M14 13v4M14 13h2M14 15h1.5"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 20a6.5 6.5 0 0 0-3-5.5"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+  server:'<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>',
+  scan:'<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3M3 12h18"/>',
+  face:'<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M9 9.5v.5M15 9.5v.5M9 15.5c1.8 1.4 4.2 1.4 6 0"/>',
+  passport:'<rect x="5" y="2.5" width="14" height="19" rx="2"/><circle cx="12" cy="10" r="3.5"/><path d="M9 17h6"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  shieldl:'<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>',
+  print:'<path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  table:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  memo:'<path d="M5 3h14v18l-7-4-7 4z"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+  sortv:'<path d="M8 9l4-4 4 4M8 15l4 4 4-4"/>',
+  fold:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/>',
+};
+const ic = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${IC[n] || ''}</svg>`;
+
+/* ---------- Utils ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const fmt = n => Number(n || 0).toLocaleString('ko-KR');
+const pad = n => String(n).padStart(2, '0');
+const fD = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const fDT = d => `${fD(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+let seed = 20261105;
+const rnd = () => (seed = (seed * 16807) % 2147483647, (seed - 1) / 2147483646);
+const pick = a => a[Math.floor(rnd() * a.length)];
+const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1));
+const NOW = new Date('2026-11-05T10:12:00');
+const TODAY = fD(NOW);
+const ME = { name:'김시그', id:'signion.admin', role:'헤드마스터', org:'KT 해외통신사업팀', ip:'211.170.12.44' };
+
+const TONE = {
+  '등록완료':'ok','등록심사중':'info','등록요청접수':'info','자료보완요청':'warn','등록거부':'bad','대기중':'',
+  '운영':'ok','테스트':'warn','완료':'ok','실패':'bad','진행중':'info','유효':'ok','만료임박':'warn','만료':'bad',
+  '사용':'ok','미사용':'','정상':'ok','중지':'bad','발송완료':'ok','발송실패':'bad','예약':'info','게시':'ok','숨김':'',
+  '검수완료':'ok','검수대기':'warn','서류미비':'bad','KT제출':'info','개통완료':'','발급완료':'ok','회수':'',
+  '입금완료':'ok','부분입금':'warn','미입금':'bad','청구전':'','SUCCESS':'ok','FAIL':'bad','WARN':'warn','INFO':'info',
+  '로그인 성공':'ok','로그인 실패':'bad','2FA 인증':'info','로그아웃':'','답변완료':'ok','미답변':'warn','차단':'bad','활성':'ok','만료됨':'',
+};
+const TONE_IC = { ok:'check', warn:'alert', bad:'x', info:'clock' };
+function badge(v, tone) {
+  const t = tone ?? TONE[v] ?? '';
+  return `<span class="badge ${t ? 't-' + t : ''}">${t ? ic(TONE_IC[t]) : ''}${esc(v)}</span>`;
+}
+
+const NAT = { KOR:'대한민국',IDN:'인도네시아',VNM:'베트남',NPL:'네팔',MNG:'몽골',UZB:'우즈베키스탄',KHM:'캄보디아',MMR:'미얀마',LAO:'라오스',LKA:'스리랑카',BGD:'방글라데시',CHN:'중국',THA:'태국',PHL:'필리핀',TJK:'타지키스탄',JPN:'일본' };
+const natL = c => `<span class="mono" style="color:var(--muted);margin-right:6px">${c}</span>${esc(NAT[c] || c)}`;
+const MOD = { OCR:'AI-OCR', NFC:'전자여권 NFC', FACE:'안면인식', GOV:'정부여권인증', VISA:'체류자격인증', PKD:'PKD·CSCA', DID:'모바일여권 DID', AML:'AML' };
+const MODS_SHORT = { OCR:'OCR', NFC:'NFC', FACE:'FACE', GOV:'여권', VISA:'체류', PKD:'PKD', DID:'DID', AML:'AML' };
+const modChips = (mods) => `<span class="chips">${mods.map(m => `<span class="chip">${MODS_SHORT[m]}</span>`).join('')}</span>`;
+const resChips = (res) => `<span class="chips">${res.map(r => `<span class="chip ${r.r}" title="${MOD[r.k]}">${r.r==='ok'?ic('check'):r.r==='fail'?ic('x'):''}${MODS_SHORT[r.k]}</span>`).join('')}</span>`;
+const maskPass = s => s.slice(0, 2) + '****' + s.slice(-2);
+
+/* =====================================================================
+   DATA
+   ===================================================================== */
+const PARTNERS = [
+  { id:'p1', pid:'Lordsystem', name:'㈜로드시스템', nat:'KOR', loc:'국내', mode:'테스트', status:'등록완료', mods:['OCR','NFC','FACE','GOV','VISA','PKD'], cnt:312, rg:'2026-07-25', ceo:'홍길동', biz:'214-87-*****', tel:'02-****-7790', mail:'dev@lordsystem.co.kr', url:'https://kyc.lordsystem.co.kr', ip:'211.170.12.0/24', kt:false },
+  { id:'p2', pid:'KTGLOBAL', name:'KT 해외통신사업', nat:'KOR', loc:'국내', mode:'운영', status:'등록완료', mods:['OCR','FACE','GOV','VISA'], cnt:8420, rg:'2026-09-01', ceo:'이영호', biz:'102-81-*****', tel:'02-****-1100', mail:'global@kt.example', url:'https://signion.net', ip:'14.63.0.0/16', kt:true },
+  { id:'p3', pid:'HDINFINITY', name:'㈜현대인피니티', nat:'IDN', loc:'해외', mode:'운영', status:'등록완료', mods:['OCR','FACE'], cnt:2650, rg:'2026-09-08', ceo:'박현수', biz:'220-86-*****', tel:'+62-21-****-310', mail:'ops@hdinfinity.example', url:'https://id.hdinfinity.example', ip:'103.28.14.0/24', kt:true },
+  { id:'p4', pid:'BOUNDARY', name:'㈜바운더리', nat:'VNM', loc:'해외', mode:'운영', status:'등록완료', mods:['OCR','FACE'], cnt:1830, rg:'2026-09-12', ceo:'정민재', biz:'105-87-*****', tel:'+84-24-****-882', mail:'vn@boundary.example', url:'https://vn.boundary.example', ip:'113.190.2.0/24', kt:true },
+  { id:'p5', pid:'GDKOREA', name:'㈜글로벌다이렉트코리아', nat:'NPL', loc:'해외', mode:'운영', status:'등록완료', mods:['OCR','FACE'], cnt:1120, rg:'2026-09-20', ceo:'최서윤', biz:'119-86-*****', tel:'+977-1-****-45', mail:'np@gdk.example', url:'https://np.gdk.example', ip:'202.51.74.0/24', kt:true },
+  { id:'p6', pid:'KTMNS', name:'㈜케이티엠엔에스', nat:'KOR', loc:'국내', mode:'운영', status:'등록완료', mods:['OCR','NFC','FACE'], cnt:640, rg:'2026-10-02', ceo:'윤재훈', biz:'101-81-*****', tel:'02-****-3300', mail:'kyc@ktmns.example', url:'https://kyc.ktmns.example', ip:'61.33.0.0/16', kt:true },
+  { id:'p7', pid:'VISIONMB', name:'비전모바일', nat:'MNG', loc:'해외', mode:'테스트', status:'등록심사중', mods:['OCR','FACE'], cnt:0, rg:'2026-10-21', ceo:'강도윤', biz:'312-24-*****', tel:'+976-11-****-07', mail:'mn@visionmb.example', url:'https://mn.visionmb.example', ip:'202.131.0.0/24', kt:true },
+  { id:'p8', pid:'WINDM', name:'㈜윈드엠', nat:'UZB', loc:'해외', mode:'테스트', status:'자료보완요청', mods:['OCR','FACE'], cnt:0, rg:'2026-10-24', ceo:'한지우', biz:'206-86-*****', tel:'+998-71-****-19', mail:'uz@windm.example', url:'https://uz.windm.example', ip:'—', kt:true },
+  { id:'p9', pid:'EASTERNTEL', name:'주식회사 이스턴텔레콤', nat:'KHM', loc:'해외', mode:'테스트', status:'등록요청접수', mods:['OCR'], cnt:0, rg:'2026-11-03', ceo:'오세라', biz:'211-88-*****', tel:'+855-23-****-61', mail:'kh@eastern.example', url:'—', ip:'—', kt:true },
+  { id:'p10', pid:'CORENET', name:'코아넷주식회사', nat:'MMR', loc:'해외', mode:'테스트', status:'등록거부', mods:['OCR'], cnt:0, rg:'2026-10-10', ceo:'서민호', biz:'134-81-*****', tel:'+95-1-****-220', mail:'mm@corenet.example', url:'—', ip:'—', kt:true,
+    stop:null },
+];
+
+const NAMES = {
+  VNM:['NGUYEN VAN AN','TRAN THI HOA','LE MINH TUAN','PHAM THU TRANG','VO THANH LONG'],
+  IDN:['SITI RAHMAWATI','BUDI SANTOSO','DEWI LESTARI','AGUS PRATAMA','RINA WULANDARI'],
+  NPL:['RAM BAHADUR THAPA','SITA GURUNG','BIKASH SHRESTHA','ANITA TAMANG'],
+  MNG:['BATBAYAR DORJ','ANUJIN GANBOLD','TEMUULEN BOLD'],
+  UZB:['BEKZOD TOSHMATOV','DILNOZA KARIMOVA','JASUR RAHIMOV'],
+  KHM:['SOK DARA','CHAN SREYMOM'], MMR:['AUNG KYAW MIN','THIDA WIN'], LKA:['NUWAN PERERA'], BGD:['MD RAHMAN HOSSAIN'], KOR:['KIM MINSU'],
+};
+const passNo = () => pick(['C','B','N','P','E']) + String(ri(1000000, 9999999));
+
+/* 인증내역 (kycTransMaster + kycTransDetail) */
+const FAIL_CODE = { OCR:['OCR_001','여권이 제대로 촬영되지 않았습니다.'], NFC:['NFC_001','이 기기에서는 NFC 여권 인식을 지원하지 않습니다.'], FACE:['LIV_003','제한 시간 내에 얼굴을 확인하지 못했습니다.'], GOV:['7002','현재 인증 서비스를 이용할 수 없습니다.'], VISA:['7005','현재 인증 서비스를 이용할 수 없습니다.'] };
+const TRANS = (() => {
+  const out = []; const act = PARTNERS.filter(p => p.status === '등록완료');
+  let t = NOW.getTime() - 40000;
+  for (let i = 0; i < 64; i++) {
+    t -= ri(30, 900) * 1000;
+    const p = i % 5 === 0 ? act[1] : pick(act);
+    const nat = p.nat === 'KOR' ? pick(['VNM','IDN','NPL','UZB','MNG','KHM','MMR']) : p.nat;
+    const r = rnd(); const st = i < 2 ? '진행중' : r < 0.88 ? '완료' : '실패';
+    const mods = p.mods.filter(m => ['OCR','NFC','FACE','GOV','VISA'].includes(m));
+    const failIdx = st === '실패' ? Math.min(mods.length - 1, rnd() < .6 ? mods.indexOf('FACE') > -1 ? mods.indexOf('FACE') : 0 : 0) : -1;
+    const res = mods.map((k, j) => ({ k, r: st === '진행중' ? (j < mods.length - 1 ? 'ok' : 'run') : failIdx === -1 ? 'ok' : j < failIdx ? 'ok' : j === failIdx ? 'fail' : 'skip' }));
+    const d = new Date(t);
+    out.push({ id:'t'+i, no:'KY' + fD(d).slice(2).replace(/-/g,'') + String(ri(1000000, 9999999)), dt:fDT(d), pid:p.pid, partner:p.name, nat,
+      pass:maskPass(passNo()), name:pick(NAMES[nat] || NAMES.VNM), res, mods, status:st,
+      err: failIdx > -1 ? FAIL_CODE[mods[failIdx]][0] : '', errMsg: failIdx > -1 ? FAIL_CODE[mods[failIdx]][1] : '',
+      fee: st === '완료' ? 1100 : 0, sec: (ri(52, 140) / 10).toFixed(1), mode:p.mode });
+  }
+  return out;
+})();
+
+/* KT 가입 고객 · 등록서류 */
+const DOC_WORK = ['여권 컬러 스캔본','가입신청서','개인정보활용동의서','표준근로계약서','안면인식 정보'];
+const DOC_STUDY = ['여권 컬러 스캔본','가입신청서','개인정보활용동의서','표준입학허가서','안면인식 정보'];
+const DOC_MINOR = ['법정대리인 신분증','법정대리인 동의서','법정대리인 관계서'];
+const reqDocs = c => [...(c.visa.startsWith('E') ? DOC_WORK : DOC_STUDY), ...(c.minor ? DOC_MINOR : [])];
+const SUBS = ['HDI-JKT-01','HDI-JKT-02','HDI-SBY-01','BND-HAN-01','BND-HCM-01','GDK-KTM-01'];
+const SUB_NAT = { HDI:'IDN', BND:'VNM', GDK:'NPL' };
+const STAGES = ['서류미비','검수대기','검수완료','KT제출','개통완료'];
+const CUSTOMERS = (() => {
+  const out = [];
+  for (let i = 0; i < 28; i++) {
+    const sub = pick(SUBS); const nat = SUB_NAT[sub.slice(0, 3)];
+    const work = rnd() < .22; const visa = work ? pick(['E-9','E-9','E-7']) : pick(['D-2','D-4','D-4']);
+    const minor = !work && rnd() < .25;
+    const rg = new Date(NOW.getTime() - ri(0, 40) * 86400000 - ri(0, 36000) * 1000);
+    const c = { id:'c'+i, no:'KY' + fD(rg).slice(2).replace(/-/g,'') + String(ri(1000000,9999999)), name:pick(NAMES[nat]), nat, visa, minor,
+      sex:pick(['M','F']), birth:`${minor ? ri(2009, 2010) : ri(1996, 2006)}-${pad(ri(1,12))}-${pad(ri(1,28))}`, pass:passNo(), pexp:`${ri(2029,2035)}-${pad(ri(1,12))}-${pad(ri(1,28))}`,
+      sub, agency: sub.startsWith('HDI') ? '㈜현대인피니티' : sub.startsWith('BND') ? '㈜바운더리' : '㈜글로벌다이렉트코리아', rg:fDT(rg), files:{}, inspected:false,
+      ocr: rnd() < .96 ? 'ok' : 'fail', face: rnd() < .93 ? 'ok' : 'fail' };
+    const docs = reqDocs(c); const roll = rnd();
+    docs.forEach((d, j) => { const n = roll < .25 && j > 1 && rnd() < .5 ? 0 : (d === '가입신청서' ? 3 : 1); c.files[d] = Array.from({ length:n }, (_, k) => fileName(c, d, k)); });
+    if (rnd() < .3) c.files['기타'] = [fileName(c, '기타', 0)];
+    const missing = docs.some(d => !c.files[d].length);
+    c.stage = missing ? '서류미비' : roll > .55 ? pick(['검수완료','KT제출','개통완료','검수완료']) : '검수대기';
+    c.inspected = ['검수완료','KT제출','개통완료'].includes(c.stage);
+    out.push(c);
+  }
+  return out.sort((a, b) => b.rg.localeCompare(a.rg));
+})();
+function fileName(c, d, k) {
+  const ext = d === '안면인식 정보' ? 'json' : d === '여권 컬러 스캔본' ? 'jpg' : 'pdf';
+  return `${d.replace(/\s/g,'')}${k ? '_' + (k + 1) : ''}.${ext}`;
+}
+const docProgress = c => { const r = reqDocs(c); return [r.filter(d => (c.files[d] || []).length).length, r.length]; };
+const retain = c => { if (c.stage === '개통완료') return '즉시 삭제 예정'; const d = new Date(c.rg.slice(0, 10)); d.setMonth(d.getMonth() + 2); const left = Math.ceil((d - NOW) / 86400000); return { d:fD(d), left }; };
+
+/* KT 관리자 계정 (4단계 위계) */
+const TIERS = ['헤드마스터','마스터','총괄','서브'];
+const ACCOUNTS = [
+  { id:'a0', tier:0, uid:'KT-HQ', org:'KT 해외통신사업팀', nat:'KOR', man:'이영호', mail:'y.lee@kt.example', children:3, cust:0, status:'등록완료', last:'2026-11-05 09:41', ip:'14.63.21.10' },
+  { id:'a1', tier:1, uid:'HDI-MASTER', org:'㈜현대인피니티 본사', nat:'KOR', man:'박현수', mail:'master@hdinfinity.example', children:2, cust:0, status:'등록완료', last:'2026-11-05 08:55', ip:'121.134.7.82' },
+  { id:'a2', tier:2, uid:'HDI-JKT', org:'자카르타 총괄사무소', nat:'IDN', man:'Rizky Hidayat', mail:'jkt@hdinfinity.example', children:2, cust:0, status:'등록완료', last:'2026-11-05 10:02', ip:'103.28.14.20' },
+  { id:'a3', tier:3, uid:'HDI-JKT-01', org:'자카르타 남부 영업소', nat:'IDN', man:'Putri Ayu', mail:'jkt01@hdinfinity.example', children:0, cust:0, status:'등록완료', last:'2026-11-05 10:09', ip:'103.28.14.51' },
+  { id:'a4', tier:3, uid:'HDI-JKT-02', org:'자카르타 북부 영업소', nat:'IDN', man:'Fajar Nugroho', mail:'jkt02@hdinfinity.example', children:0, cust:0, status:'등록완료', last:'2026-11-04 17:22', ip:'103.28.14.77' },
+  { id:'a5', tier:2, uid:'HDI-SBY', org:'수라바야 총괄사무소', nat:'IDN', man:'Andi Wijaya', mail:'sby@hdinfinity.example', children:1, cust:0, status:'등록완료', last:'2026-11-04 15:40', ip:'36.66.120.9' },
+  { id:'a6', tier:3, uid:'HDI-SBY-01', org:'수라바야 영업소', nat:'IDN', man:'Dewi Kartika', mail:'sby01@hdinfinity.example', children:0, cust:0, status:'등록완료', last:'2026-11-05 09:12', ip:'36.66.120.33' },
+  { id:'a7', tier:1, uid:'BND-MASTER', org:'㈜바운더리 본사', nat:'KOR', man:'정민재', mail:'master@boundary.example', children:2, cust:0, status:'등록완료', last:'2026-11-04 19:03', ip:'175.223.40.2' },
+  { id:'a8', tier:2, uid:'BND-HAN', org:'하노이 총괄사무소', nat:'VNM', man:'Nguyen Duc Minh', mail:'han@boundary.example', children:1, cust:0, status:'등록완료', last:'2026-11-05 08:30', ip:'113.190.2.14' },
+  { id:'a9', tier:3, uid:'BND-HAN-01', org:'하노이 영업소', nat:'VNM', man:'Tran Mai Anh', mail:'han01@boundary.example', children:0, cust:0, status:'등록완료', last:'2026-11-05 10:05', ip:'113.190.2.40' },
+  { id:'a10', tier:2, uid:'BND-HCM', org:'호치민 총괄사무소', nat:'VNM', man:'Le Hoang Nam', mail:'hcm@boundary.example', children:1, cust:0, status:'등록심사중', last:'—', ip:'—' },
+  { id:'a11', tier:3, uid:'BND-HCM-01', org:'호치민 영업소', nat:'VNM', man:'Pham Bao Ngoc', mail:'hcm01@boundary.example', children:0, cust:0, status:'대기중', last:'—', ip:'—' },
+  { id:'a12', tier:1, uid:'GDK-MASTER', org:'㈜글로벌다이렉트코리아 본사', nat:'KOR', man:'최서윤', mail:'master@gdk.example', children:1, cust:0, status:'등록완료', last:'2026-11-03 11:20', ip:'59.10.33.81' },
+  { id:'a14', tier:2, uid:'GDK-KTM', org:'카트만두 총괄사무소', nat:'NPL', man:'Bikash Shrestha', mail:'ktm@gdk.example', children:1, cust:0, status:'등록완료', last:'2026-11-04 12:08', ip:'202.51.74.10' },
+  { id:'a13', tier:3, uid:'GDK-KTM-01', org:'카트만두 영업소', nat:'NPL', man:'Sita Gurung', mail:'ktm01@gdk.example', children:0, cust:0, status:'자료보완요청', last:'2026-11-02 14:47', ip:'202.51.74.18' },
+];
+ACCOUNTS.forEach(a => a.cust = CUSTOMERS.filter(c => c.sub === a.uid).length);
+
+/* =====================================================================
+   MENU — backOffice관리자_메뉴구성도.xlsx 기준 (오탈자 보정: 과리→관리, 뎃글→댓글, 쳇봇→챗봇, 고객센타→고객센터)
+   ===================================================================== */
+const MENU = [
+  { id:'dashboard', label:'대시보드', icon:'grid' },
+  { sec:'인증 서비스' },
+  { id:'partner', label:'인증거래처관리', icon:'building', children:[['overview','종합관리'],['fee','요금관리'],['conn','접속정보관리'],['biz','사업자정보관리'],['ceo','업체대표자관리']] },
+  { id:'kt', label:'KT통신가입관리', icon:'sim', isNew:true, children:[['overview','종합관리'],['docs','등록서류관리'],['doctype','서류종류타입관리'],['ratetype','요금타입관리']] },
+  { id:'trans', label:'인증내역관리', icon:'shield' },
+  { id:'fee', label:'인증수수료관리', icon:'coins' },
+  { sec:'보안 · 연동' },
+  { id:'pkd', label:'PKD관리', icon:'globe' },
+  { id:'token', label:'발행토큰관리', icon:'key' },
+  { id:'crypto', label:'암호화KEY관리', icon:'lock' },
+  { id:'msg', label:'메시지코드관리', icon:'message' },
+  { id:'log', label:'LOG관리', icon:'log', children:[['server','서버접속 LOG'],['api','API 요청 LOG'],['db','DB 요청/응답 LOG'],['aiocr','AIOCR LOG'],['ainfc','AINFC LOG'],['aiface','AIFACE LOG'],['pk','PK인증 LOG'],['korpass','대한민국여권인증 LOG'],['korvisa','대한민국체류자격 LOG']] },
+  { sec:'운영' },
+  { id:'code', label:'기초코드관리', icon:'db', children:[['nation','국가코드관리'],['bank','은행코드관리'],['cardco','카드사코드관리'],['zip','우편번호관리'],['vacct','가상계좌번호채번관리'],['vcard','가상카드번호채번관리']] },
+  { id:'issue', label:'발급관리', icon:'card', children:[['card','카드번호발급관리'],['acct','계좌번호발급관리']] },
+  { id:'cs', label:'고객센터', icon:'headset', children:[['top','상단관리'],['comment','댓글관리'],['bot','챗봇관리'],['sms','SMS전송관리'],['push','PUSH전송관리'],['notice','공지사항관리'],['guide','이용안내관리']] },
+  { id:'work', label:'작업관리', icon:'settings', children:[['staff','직원관리'],['prog','프로그램관리'],['memo','자료메모관리'],['datalog','데이터수정LOG']] },
+];
+function crumbOf(r) {
+  if (r === 'bi') return ['디자인 가이드', 'SIGNION BI'];
+  const [g, s] = r.split('/');
+  const m = MENU.find(x => x.id === g); if (!m) return ['대시보드'];
+  if (!s) return [m.label];
+  const c = m.children.find(x => x[0] === s); return [m.label, c ? c[1] : ''];
+}
+
+/* =====================================================================
+   GENERIC LIST CONFIGS
+   STD buttons: 검색 · 다중검색 · 등록 · 수정 · 삭제 · 엑셀로 · 삭제자료표시
+   ===================================================================== */
+const rows = (keys, arr) => arr.map((a, i) => Object.assign({ id:'r' + i + '_' + Math.floor(rnd() * 1e6) }, Object.fromEntries(keys.map((k, j) => [k, a[j]]))));
+const C = (k, l, t, x = {}) => ({ k, l, t, ...x });
+const CFG = {};
+
+CFG['partner/overview'] = {
+  title:'인증거래처 종합관리', desc:'SIGNION 인증 서비스를 이용하는 제휴사(거래처)의 등록·심사·접속 정보를 통합 관리합니다.',
+  cols:[ C('pid','파트너ID','mono',{main:1}), C('name','거래처명','strong'), C('nat','국가','nat'), C('loc','소재지'), C('mode','서비스모드','badge'),
+         C('mods','인증 모듈','mods',{ro:1}), C('cnt','이번달 인증','num',{ro:1}), C('status','등록상태','badge'), C('rg','등록일','date',{ro:1}) ],
+  rows: PARTNERS, opts:{ status:['대기중','등록요청접수','등록심사중','자료보완요청','등록거부','등록완료'], mode:['운영','테스트'], loc:['국내','해외'], nat:Object.keys(NAT) },
+  filters:['status','mode','loc','nat'], dateKey:'rg',
+  extra:[['refresh','등록상태변경'],['upload','계약서류업로드'],['link','제휴사접속정보등록'],['lock','비밀번호초기화'],['memo','메모등록'],['edit','아이디수정'],['key','마스터Token생성'],['lock','암호화KEY생성']],
+  kpis: rs => [['전체 거래처', rs.length, '개'], ['운영 중', rs.filter(r => r.mode === '운영' && r.status === '등록완료').length, '개'], ['심사 대기', rs.filter(r => ['등록요청접수','등록심사중','자료보완요청'].includes(r.status)).length, '건'], ['이번달 인증', fmt(rs.reduce((a, r) => a + r.cnt, 0)), '건']],
+  detail: partnerDetail,
+};
+CFG['partner/fee'] = { title:'요금관리', desc:'거래처별 인증 단가·월 최소이용금액·관리자 사용료를 설정합니다.',
+  cols:[C('pid','파트너ID','mono',{main:1}),C('name','거래처명','strong'),C('rtype','요금타입'),C('unit','건당 단가','won'),C('min','월 최소이용금액','won'),C('admin','관리자 사용료(월)','won'),C('from','적용 시작일','date'),C('memo','비고')],
+  rows: rows(['pid','name','rtype','unit','min','admin','from','memo'],[
+    ['KTGLOBAL','KT 해외통신사업','건당+월정액',1100,500000,500000,'2026-10-01','KT 감면 요청 시 최소 30만원'],['HDINFINITY','㈜현대인피니티','건당+월정액',1100,500000,500000,'2026-10-01',''],
+    ['BOUNDARY','㈜바운더리','건당+월정액',1100,500000,500000,'2026-10-01',''],['GDKOREA','㈜글로벌다이렉트코리아','건당+월정액',1100,300000,500000,'2026-10-01','최소이용 감면 적용'],
+    ['KTMNS','㈜케이티엠엔에스','건당',1100,500000,0,'2026-10-15',''],['Lordsystem','㈜로드시스템','테스트(무과금)',0,0,0,'2026-07-25','내부 테스트'] ]),
+  opts:{ rtype:['건당','건당+월정액','월정액','테스트(무과금)'] }, filters:['rtype'] };
+CFG['partner/conn'] = { title:'접속정보관리', desc:'거래처별 접속 타입(APP ID · WEB URL · 서버 IP)과 응답 URL을 관리합니다. (_connectType)',
+  cols:[C('pid','파트너ID','mono',{main:1}),C('ctype','접속타입'),C('info','접속정보','mono'),C('resp','응답 URL','mono'),C('ip','허용 IP','mono'),C('rg','등록일','date')],
+  rows: rows(['pid','ctype','info','resp','ip','rg'],[
+    ['KTGLOBAL','WEB 접속 URL','https://signion.net','https://signion.net/kyc/callback','14.63.0.0/16','2026-09-01'],['KTGLOBAL','서버 접속 IP','api-gw.kt.example','https://api-gw.kt.example/ekyc/ret','14.63.21.10','2026-09-01'],
+    ['HDINFINITY','WEB 접속 URL','https://id.hdinfinity.example','https://id.hdinfinity.example/ret','103.28.14.0/24','2026-09-08'],['HDINFINITY','AOS APP 접속 ID','com.hdinfinity.kyc','—','—','2026-09-08'],
+    ['BOUNDARY','WEB 접속 URL','https://vn.boundary.example','https://vn.boundary.example/ret','113.190.2.0/24','2026-09-12'],['KTMNS','IOS APP 접속 ID','com.ktmns.signion','—','—','2026-10-02'],
+    ['Lordsystem','서버 접속 IP','kyc.lordsystem.co.kr','https://kyc.lordsystem.co.kr/ret','211.170.12.0/24','2026-07-25'] ]),
+  opts:{ ctype:['AOS APP 접속 ID','IOS APP 접속 ID','WEB 접속 URL','서버 접속 IP'] }, filters:['ctype'] };
+CFG['partner/biz'] = { title:'사업자정보관리', desc:'거래처 사업자 등록 정보와 세금계산서 발행 정보를 관리합니다.',
+  cols:[C('pid','파트너ID','mono',{main:1}),C('name','상호','strong'),C('biz','사업자등록번호','mono'),C('kind','업태 / 종목'),C('addr','소재지'),C('tax','세금계산서 이메일')],
+  rows: PARTNERS.slice(0, 7).map(p => ({ id:'b' + p.id, pid:p.pid, name:p.name, biz:p.biz, kind:pick(['서비스 / 통신판매','도소매 / 통신기기','정보통신 / 소프트웨어']), addr:p.loc === '국내' ? '서울특별시 ' + pick(['중구','강남구','영등포구','종로구']) : NAT[p.nat] + ' 현지법인', tax:'tax@' + p.mail.split('@')[1] })) };
+CFG['partner/ceo'] = { title:'업체대표자관리', desc:'거래처 대표자 정보를 관리합니다. 개인정보는 마스킹되어 표시됩니다.',
+  cols:[C('pid','파트너ID','mono',{main:1}),C('ceo','대표자명','strong'),C('tel','연락처','mono'),C('mail','이메일'),C('rg','등록일','date')],
+  rows: PARTNERS.slice(0, 8).map(p => ({ id:'ceo' + p.id, pid:p.pid, ceo:p.ceo, tel:p.tel, mail:p.mail, rg:p.rg })) };
+
+CFG['kt/overview'] = {
+  title:'KT통신가입 종합관리', desc:'KT → 대리점 본사(마스터) → 현지 총괄 → 현지 영업소(서브) 4단계 관리자 계정을 관리합니다.',
+  cols:[ C('tier','권한','tier',{opts:TIERS}), C('uid','계정ID','mono',{main:1}), C('org','소속','strong'), C('nat','국가','nat'), C('man','담당자'), C('mail','이메일 (2FA)'),
+         C('children','하위계정','num',{ro:1}), C('cust','등록 고객','num',{ro:1}), C('status','등록상태','badge'), C('last','최근 접속','date',{ro:1}) ],
+  rows: ACCOUNTS, opts:{ status:['대기중','등록요청접수','등록심사중','자료보완요청','등록거부','등록완료'], nat:Object.keys(NAT) }, filters:['status','nat'],
+  extra:[['refresh','등록상태변경'],['upload','계약서류업로드'],['lock','비밀번호초기화'],['memo','메모등록'],['edit','아이디수정']],
+  kpis: rs => [['관리자 계정', rs.length, '개'], ['마스터(대리점 본사)', rs.filter(r => r.tier === 1).length, '개'], ['총괄 · 서브 계정', rs.filter(r => r.tier >= 2).length, '개', '대리점당 기본 12계정 (총괄 3 + 서브 9)'], ['승인 대기', rs.filter(r => r.status !== '등록완료').length, '건']],
+  detail: accountDetail,
+};
+CFG['kt/docs'] = {
+  title:'등록서류관리', desc:'여권인증 고객별 필수 서류를 등록·검수하고 KT 제출용 통합 PDF를 발급합니다.',
+  cols:[ C('no','고객번호','mono',{main:1,ro:1}), C('name','고객명 (여권)','cust'), C('visa','비자','visa'), C('auth','여권인증','auth',{ro:1}), C('docs','필수서류','docs',{ro:1}),
+         C('stage','진행상태','badge'), C('sub','등록계정','mono'), C('rg','등록일시','date',{ro:1}), C('ret','보관만료','ret',{ro:1}) ],
+  rows: CUSTOMERS, opts:{ visa:['E-9','E-7','D-2','D-4'], stage:STAGES, nat:['IDN','VNM','NPL'], sub:SUBS }, filters:['stage','visa','nat','sub'], dateKey:'rg',
+  extra:[['download','서류 다운로드'],['pdf','서류 PDF변환 통합 다운로드']],
+  kpis: rs => [['등록 고객', rs.length, '명'], ['검수 대기', rs.filter(r => r.stage === '검수대기').length, '명'], ['서류 미비', rs.filter(r => r.stage === '서류미비').length, '명'], ['개통 완료 · 삭제 예정', rs.filter(r => r.stage === '개통완료').length, '명']],
+  detail: customerDetail, noCreate:false,
+};
+CFG['kt/doctype'] = { title:'서류종류타입관리', desc:'고객 구분(근로자 E-9·E-7 / 유학생 D-2·D-4 / 미성년자)별 필수 제출 서류와 통합 PDF 병합 순서를 정의합니다. (_documentType)',
+  cols:[C('code','코드','mono',{main:1}),C('name','서류명','strong'),C('target','제출 대상'),C('req','구분','badge'),C('max','최대 파일수','num'),C('order','병합 순서','num'),C('use','사용','badge')],
+  rows: rows(['code','name','target','req','max','order','use'],[
+    [1,'여권이미지','전체','필수',10,1,'사용'],[2,'여권사진이미지','전체','자동생성',1,0,'사용'],[3,'셀피사진이미지','전체','자동생성',5,0,'사용'],[4,'가입신청서','전체','필수',10,2,'사용'],
+    [5,'개인정보활용동의서','전체','필수',10,3,'사용'],[6,'표준근로계약서','E-9 · E-7','필수',10,4,'사용'],[7,'표준입학허가서','D-2 · D-4','필수',10,4,'사용'],
+    [8,'법정대리인 신분증','미성년자','필수',10,5,'사용'],[9,'법정대리인 동의서','미성년자','필수',10,6,'사용'],[10,'법정대리인 관계서','미성년자','필수',10,7,'사용'],[11,'가족관계증명서','미성년자','선택',10,8,'사용'] ]),
+  opts:{ req:['필수','선택','자동생성'], use:['사용','미사용'] }, filters:['req','use'] };
+TONE['필수'] = 'info'; TONE['선택'] = ''; TONE['자동생성'] = '';
+CFG['kt/ratetype'] = { title:'요금타입관리', desc:'KT 해외 통신서비스 과금 체계 (VAT 별도) — 과금체계 시트 기준.',
+  cols:[C('code','코드','mono',{main:1}),C('name','요금 항목','strong'),C('price','단가','won'),C('unit','단위'),C('desc','산정 기준')],
+  rows: rows(['code','name','price','unit','desc'],[
+    ['RT-100','여권인증 사용료 (OCR + 안면인식)',1100,'건','월 최소사용 50만원(~454건), KT 감면 시 30만원(~272건)'],['RT-200','관리자 시스템 · 고객정보 위탁운영',500000,'월 정액','총괄 3 + 서브 9, 총 12계정 · 문서 1만회 · 보관 100GB · 전송 100GB'],
+    ['RT-210','총괄 관리자 추가',100000,'계정/월',''],['RT-220','서브 관리자 추가',50000,'계정/월',''],['RT-300','이용량 확장팩',150000,'팩/월','문서 1만회·보관 100GB·전송 100GB, 최대 필요 항목 기준 적용'],
+    ['RT-900','통합 여권인증 · 관리자 시스템 구축',0,'1회','정가 40,000,000원 — KT 전략적 협업 무상 제공'] ]) };
+
+CFG['pkd'] = { title:'PKD관리', desc:'ICAO PKD 전자여권 서명 인증서(CSCA)를 관리합니다. 전자여권 HASH · CSCA 검증에 사용됩니다.',
+  cols:[C('nat','발급국가','nat',{main:1}),C('issuer','발급기관'),C('serial','인증서 일련번호','mono'),C('from','유효 시작','date'),C('to','유효 만료','date'),C('status','상태','badge')],
+  rows: rows(['nat','issuer','serial','from','to','status'],[
+    ['KOR','Ministry of Foreign Affairs','4A:1F:07:C2:9B',"2021-03-02","2031-03-02",'유효'],['VNM','Immigration Department','11:8C:E4:20:3D','2019-11-20','2027-01-10','유효'],
+    ['IDN','Directorate General of Immigration','7B:00:5E:91:A8','2018-02-14','2026-12-02','만료임박'],['NPL','Department of Passports','2C:9A:13:D7:44','2020-06-01','2030-06-01','유효'],
+    ['MNG','General Authority for State Registration','9F:3E:61:0B:C5','2016-09-09','2026-09-09','만료'],['UZB','Ministry of Internal Affairs','5D:72:A0:18:E3','2021-01-15','2031-01-15','유효'],
+    ['THA','Department of Consular Affairs','0E:4B:C9:77:21','2017-12-01','2026-11-28','만료임박'] ]),
+  opts:{ status:['유효','만료임박','만료'], nat:Object.keys(NAT) }, filters:['status','nat'], extra:[['download','ICAO자료 다운로드']] };
+CFG['token'] = { title:'발행토큰관리', desc:'거래처별 masterToken / connectToken 발행 이력을 관리합니다. 모든 통신은 E2E 암호화 및 토큰 정책으로 운영됩니다.',
+  cols:[C('pid','파트너ID','mono',{main:1}),C('uid','사용자ID','mono'),C('ttype','토큰종류'),C('master','masterToken','mono'),C('mt','master 생성','date'),C('ct','connect 생성','date'),C('ip','접속IP','mono'),C('status','상태','badge')],
+  rows: PARTNERS.filter(p => p.status === '등록완료').map((p, i) => ({ id:'tk' + i, pid:p.pid, uid:p.pid.toLowerCase(), ttype:'masterToken', master:'mt_' + Math.random().toString(16).slice(2, 10) + '…' + Math.random().toString(16).slice(2, 6), mt:'2026-10-' + pad(ri(1, 28)) + ' 0' + ri(1, 9) + ':' + pad(ri(0, 59)), ct:'2026-11-05 ' + pad(ri(8, 10)) + ':' + pad(ri(0, 59)), ip:p.ip.split('/')[0], status:i === 4 ? '만료됨' : '활성' })),
+  opts:{ status:['활성','만료됨','중지'] }, filters:['status'], noCreate:true, noEditBtn:true, extra:[['key','마스터Token발급']] };
+CFG['crypto'] = { title:'암호화KEY관리', desc:'AES-CBC 256bit · masterKey / IvKey. 본사 통신용 KEY와 거래처별 데이터·통신용 KEY를 분리하여 관리합니다.',
+  cols:[C('pid','파트너ID','mono',{main:1}),C('scope','용도'),C('ctype','암호화 방식','mono'),C('mkey','masterKey','mono'),C('iv','IvKey','mono'),C('rg','발급일','date'),C('status','상태','badge')],
+  rows: [{ id:'ck0', pid:'SIGNION-HQ', scope:'본사 통신', ctype:'AES-CBC-256', mkey:'••••••••••••••••3fa9', iv:'••••••••b71c', rg:'2026-11-01', status:'사용' },
+    ...PARTNERS.filter(p => p.status === '등록완료').map((p, i) => ({ id:'ck' + (i + 1), pid:p.pid, scope:'거래처 데이터·통신', ctype:'AES-CBC-256', mkey:'••••••••••••••••' + Math.random().toString(16).slice(2, 6), iv:'••••••••' + Math.random().toString(16).slice(2, 6), rg:'2026-11-0' + ri(1, 4), status:'사용' }))],
+  opts:{ status:['사용','미사용','중지'] }, filters:['status'], noCreate:true, noEditBtn:true, extra:[['lock','암호화KEY발급']] };
+CFG['msg'] = { title:'메시지코드관리', desc:'프론트·API·AI 모듈에서 반환하는 메시지 코드를 다국어(KOR·USA·CHN·JPN·VNM·THA·MNG·TWN)로 관리합니다. (_msgCode 888건)',
+  cols:[C('prog','서비스 프로그램'),C('code','메시지코드','mono',{main:1}),C('lang','언어','mono'),C('title','제목','strong'),C('ret','사용자 메시지')],
+  rows: rows(['prog','code','lang','title','ret'],[
+    ['프론트WEB','PTN_001','KOR','잘못된 접근','인증 서비스를 이용할 수 없습니다. 서비스 제공처에 문의해 주세요.'],['프론트WEB','CAM_001','KOR','카메라 권한 오류','카메라 접근이 차단되었습니다. 브라우저 또는 앱 설정에서 카메라 권한을 허용해 주세요.'],
+    ['프론트WEB','OCR_001','KOR','여권 인식 실패','여권이 제대로 촬영되지 않았습니다. 여권 전체가 화면에 보이도록 다시 촬영해 주세요.'],['프론트WEB','LIV_003','KOR','얼굴 인식 실패','제한 시간 내에 얼굴을 확인하지 못했습니다. 얼굴 전체가 잘 보이도록 다시 시도해 주세요.'],
+    ['프론트WEB','NFC_001','KOR','NFC 미지원','이 기기에서는 NFC 여권 인식을 지원하지 않습니다.'],['프론트WEB','SES_001','KOR','세션 만료','인증 진행 중 10분 동안 유효한 동작이 없어 세션이 만료되었습니다.'],
+    ['프론트WEB','NET_001','KOR','네트워크 오류','서버에 연결할 수 없습니다. 네트워크 상태를 확인한 후 다시 시도해 주세요.'],['API-WEB','2009','KOR','인증 처리 오류','인증 처리 중 오류가 발생했습니다. 다시 시도해 주세요.'],
+    ['API-WEB','4001','KOR','파일 용량 초과','파일 용량이 너무 큽니다. 50MB 이하의 파일을 업로드해 주세요.'],['API-WEB','7002','KOR','인증 서비스 이용 불가','현재 인증 서비스를 이용할 수 없습니다. 서비스 제공처에 문의해 주세요.'],
+    ['프론트WEB','OCR_001','VNM','Nhận dạng hộ chiếu thất bại','Hộ chiếu chưa được chụp đúng cách. Vui lòng chụp lại.'],['프론트WEB','OCR_001','USA','Passport scan failed','The passport was not captured properly. Please retake it with the whole page visible.'] ]),
+  opts:{ prog:['프론트WEB','API-WEB','AI-OCR','안면인식','안티스푸핑','전자여권인식','globalekycapi','PKD 인증','SystemError'], lang:['KOR','USA','CHN','JPN','VNM','THA','MNG','TWN'] }, filters:['prog','lang'] };
+
+/* LOG 관리 */
+const API_CMD = [['4010','서버연동 token 등록'],['4020','제휴사 정보 요청'],['5010','인증 로그 등록'],['9000','Kyc 인증 완료'],['10010','BASE 정보 요청'],['10020','errorCode 메시지 리턴']];
+const LOGDEF = {
+  server:['서버접속 LOG','관리자 페이지 접속 이력 (로그인 계정 · 접속 IP · 사용 로그) — 관리자 사용 로그 정책'],
+  api:['API 요청 LOG','globalekycapi 요청/응답 이력. 백오피스도 DB에 직접 접속하지 않고 API를 경유합니다.'],
+  db:['DB 요청/응답 LOG','저장 프로시저 호출 이력'],
+  aiocr:['AIOCR LOG','AI-OCR 여권 인식 · BIZ-MRZ 투팩터 검증 로그'], ainfc:['AINFC LOG','전자여권 NFC 칩 판독 · HASH 인증 로그'],
+  aiface:['AIFACE LOG','안면인식 · 라이브니스 · 여권사진 대조 로그'], pk:['PK인증 LOG','PKD · CSCA 전자서명 검증 로그'],
+  korpass:['대한민국여권인증 LOG','대한민국 정부 여권 인증 요청/응답 로그'], korvisa:['대한민국체류자격 LOG','대한민국 정부 체류자격 인증 요청/응답 로그'],
+};
+function makeLogRows(kind) {
+  const out = []; let t = NOW.getTime();
+  for (let i = 0; i < 18; i++) {
+    t -= ri(20, 600) * 1000; const d = fDT(new Date(t)); const tr = pick(TRANS); const ok = rnd() < .88;
+    if (kind === 'server') { const ev = pick(['로그인 성공','2FA 인증','로그인 성공','로그아웃','로그인 실패']); const a = pick(ACCOUNTS);
+      out.push({ id:'l' + i, dt:d, lv:ev, who:a.uid, ref:'—', req:ev === '로그인 실패' ? '비밀번호 불일치 (2/5)' : pick(['대시보드','인증내역관리','등록서류관리','인증거래처관리']), code:ev === '로그인 실패' ? '401' : '200', ms:ri(40, 300), ip:a.ip === '—' ? '175.223.10.' + ri(2, 250) : a.ip }); continue; }
+    const req = kind === 'api' ? (([c, n]) => `${c} · ${n}`)(pick(API_CMD))
+      : kind === 'db' ? pick(['Sp_GLOBALEKYCAPIquery','Sp_글로벌EKYC거래처관리','Sp_글로벌EKYC토큰관리','Sp_글로벌EKYC인증요청LOG','usp_GetKycTransAdminList','Sp_글로벌EKYC암호화KEY관리'])
+      : { aiocr:'POST /ai/ocr/passport', ainfc:'POST /ai/nfc/read', aiface:pick(['POST /ai/face/liveness','POST /ai/face/match']), pk:'POST /pkd/csca/verify', korpass:'POST /gov/kr/passport', korvisa:'POST /gov/kr/visa-status' }[kind];
+    out.push({ id:'l' + i, dt:d, lv:ok ? 'SUCCESS' : rnd() < .5 ? 'WARN' : 'FAIL', who:tr.pid, ref:tr.no, req, code:ok ? '0' : pick(['OCR_001','LIV_003','2009','7002','SYS_001']), ms:kind.startsWith('ai') ? ri(380, 2400) : ri(12, 420), ip:pick(['10.20.1.11','10.20.1.12','172.16.8.40']) });
+  }
+  return out;
+}
+Object.entries(LOGDEF).forEach(([k, [t, d]]) => {
+  CFG['log/' + k] = { title:t, desc:d, isLog:true, noCreate:true, noEdit:true,
+    cols:[C('dt','일시','date',{main:1}),C('lv',k === 'server' ? '이벤트' : '결과','badge'),C('who',k === 'server' ? '계정' : '거래처','mono'),C('ref','승인번호','mono'),C('req',k === 'server' ? '접근 메뉴' : k === 'db' ? '프로시저' : '요청'),C('code','코드','mono'),C('ms','소요(ms)','num'),C('ip','IP','mono')],
+    rows: makeLogRows(k), opts:{ lv:k === 'server' ? ['로그인 성공','로그인 실패','2FA 인증','로그아웃'] : ['SUCCESS','WARN','FAIL'] }, filters:['lv'], detail: logDetail };
+});
+
+/* 기초코드 · 발급 · 고객센터 · 작업관리 */
+CFG['code/nation'] = { title:'국가코드관리', desc:'ISO 3166 국가코드 — KT 해외 현지 여권 후불사업 진행 15개국 포함.',
+  cols:[C('iso3','ISO3','mono',{main:1}),C('iso2','ISO2','mono'),C('ko','국가명','strong'),C('en','영문명'),C('tel','국가번호','mono'),C('use','사용','badge')],
+  rows: rows(['iso3','iso2','ko','en','tel','use'],[['KOR','KR','대한민국','Korea, Republic of','+82','사용'],['MMR','MM','미얀마','Myanmar','+95','사용'],['LAO','LA','라오스','Lao PDR','+856','사용'],['IDN','ID','인도네시아','Indonesia','+62','사용'],['NPL','NP','네팔','Nepal','+977','사용'],['LKA','LK','스리랑카','Sri Lanka','+94','사용'],['VNM','VN','베트남','Viet Nam','+84','사용'],['MNG','MN','몽골','Mongolia','+976','사용'],['UZB','UZ','우즈베키스탄','Uzbekistan','+998','사용'],['BGD','BD','방글라데시','Bangladesh','+880','사용'],['KHM','KH','캄보디아','Cambodia','+855','사용'],['CHN','CN','중국','China','+86','사용'],['THA','TH','태국','Thailand','+66','사용'],['PHL','PH','필리핀','Philippines','+63','사용'],['TJK','TJ','타지키스탄','Tajikistan','+992','사용'],['JPN','JP','일본','Japan','+81','사용']]),
+  opts:{ use:['사용','미사용'] }, filters:['use'] };
+CFG['code/bank'] = { title:'은행코드관리', desc:'금융결제원 은행코드',
+  cols:[C('code','코드','mono',{main:1}),C('name','은행명','strong'),C('swift','SWIFT','mono'),C('use','사용','badge')],
+  rows: rows(['code','name','swift','use'],[['004','KB국민은행','CZNBKRSE','사용'],['011','NH농협은행','NACFKRSE','사용'],['020','우리은행','HVBKKRSE','사용'],['081','하나은행','KOEXKRSE','사용'],['088','신한은행','SHBKKRSE','사용'],['090','카카오뱅크','CITIKRSXKAK','사용'],['003','IBK기업은행','IBKOKRSE','사용']]), opts:{ use:['사용','미사용'] } };
+CFG['code/cardco'] = { title:'카드사코드관리', desc:'신용카드사 코드',
+  cols:[C('code','코드','mono',{main:1}),C('name','카드사','strong'),C('van','VAN 코드','mono'),C('use','사용','badge')],
+  rows: rows(['code','name','van','use'],[['01','BC카드','BC','사용'],['02','KB국민카드','KB','사용'],['03','삼성카드','SS','사용'],['04','신한카드','SH','사용'],['05','현대카드','HD','사용'],['06','롯데카드','LT','사용']]), opts:{ use:['사용','미사용'] } };
+CFG['code/zip'] = { title:'우편번호관리', desc:'도로명주소 우편번호 (ZipCode)',
+  cols:[C('zip','우편번호','mono',{main:1}),C('sido','시도'),C('sgg','시군구'),C('road','도로명주소'),C('use','사용','badge')],
+  rows: rows(['zip','sido','sgg','road','use'],[['04559','서울특별시','중구','퇴계로 ○○','사용'],['05542','서울특별시','송파구','올림픽로 ○○','사용'],['03992','서울특별시','마포구','월드컵북로 ○○','사용'],['07327','서울특별시','영등포구','여의대로 ○○','사용']]), opts:{ use:['사용','미사용'] } };
+CFG['code/vacct'] = { title:'가상계좌번호채번관리', desc:'은행별 가상계좌번호 채번 범위',
+  cols:[C('bank','은행','strong',{main:1}),C('range','채번 범위','mono'),C('used','사용','num'),C('remain','잔여','num'),C('status','상태','badge')],
+  rows: rows(['bank','range','used','remain','status'],[['KB국민은행','5620-81-000001 ~ 5620-81-099999',12840,87159,'사용'],['신한은행','5621-02-000001 ~ 5621-02-049999',3310,46689,'사용'],['우리은행','2730-55-000001 ~ 2730-55-009999',9920,79,'만료임박']]), opts:{ status:['사용','만료임박','중지'] } };
+CFG['code/vcard'] = { title:'가상카드번호채번관리', desc:'BIN별 가상카드번호 채번 범위',
+  cols:[C('bin','BIN','mono',{main:1}),C('range','채번 범위','mono'),C('used','사용','num'),C('remain','잔여','num'),C('status','상태','badge')],
+  rows: rows(['bin','range','used','remain','status'],[['9410 21','9410-21**-****-0001 ~ 9999',4210,5789,'사용'],['9410 22','9410-22**-****-0001 ~ 9999',0,9999,'미사용']]), opts:{ status:['사용','미사용','중지'] } };
+CFG['issue/card'] = { title:'카드번호발급관리', desc:'발급된 카드번호 이력',
+  cols:[C('no','카드번호','mono',{main:1}),C('holder','소지자'),C('pid','거래처','mono'),C('dt','발급일','date'),C('status','상태','badge')],
+  rows: rows(['no','holder','pid','dt','status'],[['9410-21**-****-4417','NGUYEN VAN AN','BOUNDARY','2026-10-30','발급완료'],['9410-21**-****-4418','SITI RAHMAWATI','HDINFINITY','2026-10-31','발급완료'],['9410-21**-****-4419','RAM BAHADUR THAPA','GDKOREA','2026-11-02','회수']]), opts:{ status:['발급완료','회수','중지'] } };
+CFG['issue/acct'] = { title:'계좌번호발급관리', desc:'발급된 가상계좌 이력',
+  cols:[C('bank','은행','strong',{main:1}),C('no','계좌번호','mono'),C('holder','예금주'),C('pid','거래처','mono'),C('dt','발급일','date'),C('status','상태','badge')],
+  rows: rows(['bank','no','holder','pid','dt','status'],[['KB국민은행','5620-81-0128**','KT 해외통신사업','KTGLOBAL','2026-10-01','발급완료'],['신한은행','5621-02-0033**','㈜현대인피니티','HDINFINITY','2026-10-01','발급완료'],['KB국민은행','5620-81-0128**','㈜바운더리','BOUNDARY','2026-10-01','발급완료']]), opts:{ status:['발급완료','회수','중지'] } };
+CFG['cs/top'] = { title:'상단관리', desc:'관리자/서비스 화면 상단 배너·공지 띠 노출 관리',
+  cols:[C('title','제목','strong',{main:1}),C('pos','노출 위치'),C('period','노출 기간'),C('use','상태','badge')],
+  rows: rows(['title','pos','period','use'],[['11월 정기 점검 안내 (11/15 02:00~04:00)','관리자 상단','2026-11-05 ~ 2026-11-15','게시'],['KT 통합관리자 오픈','서비스 상단','2026-11-01 ~ 2026-11-30','게시'],['추석 연휴 고객센터 운영','서비스 상단','2026-09-25 ~ 2026-10-05','숨김']]), opts:{ use:['게시','숨김'] } };
+CFG['cs/comment'] = { title:'댓글관리', desc:'공지/이용안내 댓글 관리',
+  cols:[C('target','게시글','strong',{main:1}),C('who','작성자'),C('txt','내용'),C('dt','작성일','date'),C('status','상태','badge')],
+  rows: rows(['target','who','txt','dt','status'],[['KT 통합관리자 오픈','HDI-JKT-01','PDF 병합 순서 변경 가능한가요?','2026-11-04','답변완료'],['서류 업로드 가이드','BND-HAN-01','파일당 최대 용량이 궁금합니다.','2026-11-05','미답변']]), opts:{ status:['답변완료','미답변','숨김'] } };
+CFG['cs/bot'] = { title:'챗봇관리', desc:'인증 화면 챗봇 FAQ 시나리오',
+  cols:[C('intent','인텐트','mono',{main:1}),C('q','대표 질문','strong'),C('a','답변'),C('lang','언어','mono'),C('use','사용','badge')],
+  rows: rows(['intent','q','a','lang','use'],[['cam.denied','카메라가 켜지지 않아요','브라우저 설정에서 카메라 권한을 허용해 주세요.','KOR','사용'],['nfc.unsupported','NFC가 안 돼요','NFC 미지원 기기는 OCR+안면인식으로 진행됩니다.','KOR','사용'],['ocr.retry','여권 인식이 계속 실패해요','빛 반사가 없는 곳에서 여권 전체가 보이도록 촬영해 주세요.','KOR','사용']]), opts:{ use:['사용','미사용'], lang:['KOR','USA','VNM','IDN'] } };
+CFG['cs/sms'] = { title:'SMS전송관리', desc:'관리자 2FA 인증번호 · 안내 문자 발송 이력',
+  cols:[C('to','수신번호','mono',{main:1}),C('tpl','템플릿'),C('txt','내용'),C('dt','발송일시','date'),C('status','결과','badge')],
+  rows: rows(['to','tpl','txt','dt','status'],[['+62-812-****-3301','서류 보완 요청','[SIGNION] 가입신청서 3번째 장이 누락되었습니다.','2026-11-05 09:31','발송완료'],['+84-91-****-552','인증 URL 안내','[SIGNION] 여권인증을 진행해 주세요. https://signion.net/…','2026-11-05 09:12','발송완료'],['+977-98-****-110','인증 URL 안내','[SIGNION] 여권인증을 진행해 주세요.','2026-11-04 18:40','발송실패']]), opts:{ status:['발송완료','발송실패','예약'] } };
+CFG['cs/push'] = { title:'PUSH전송관리', desc:'APP PUSH 발송 관리',
+  cols:[C('target','대상','strong',{main:1}),C('title','제목'),C('dt','발송일시','date'),C('open','오픈율','num'),C('status','상태','badge')],
+  rows: rows(['target','title','dt','open','status'],[['전체 영업소 관리자','11월 정기 점검 안내','2026-11-05 09:00','62%','발송완료'],['HDINFINITY 서브','서류 검수 지연 안내','2026-11-06 09:00','—','예약']]), opts:{ status:['발송완료','예약','발송실패'] } };
+CFG['cs/notice'] = { title:'공지사항관리', desc:'관리자 공지사항',
+  cols:[C('title','제목','strong',{main:1}),C('target','대상'),C('who','작성자'),C('dt','등록일','date'),C('views','조회','num'),C('use','상태','badge')],
+  rows: rows(['title','target','who','dt','views','use'],[['[필독] 개인정보 보관 기간 정책 안내','전체','김시그','2026-11-03',182,'게시'],['KT 통합관리자 시스템 오픈 안내','KT · 대리점','김시그','2026-11-01',344,'게시'],['관리자 2단계 인증 의무화','전체','운영팀','2026-10-28',291,'게시']]), opts:{ use:['게시','숨김'] } };
+CFG['cs/guide'] = { title:'이용안내관리', desc:'관리자/고객 이용 가이드',
+  cols:[C('title','제목','strong',{main:1}),C('cat','분류'),C('lang','언어','mono'),C('dt','수정일','date'),C('use','상태','badge')],
+  rows: rows(['title','cat','lang','dt','use'],[['필수 서류 업로드 가이드','KT 관리자','KOR','2026-11-02','게시'],['여권 촬영 가이드','고객','KOR','2026-10-20','게시'],['Passport capture guide','고객','USA','2026-10-20','게시'],['Hướng dẫn chụp hộ chiếu','고객','VNM','2026-10-20','게시']]), opts:{ use:['게시','숨김'] } };
+CFG['work/staff'] = { title:'직원관리', desc:'SIGNION 본사 백오피스 직원 계정 · 권한',
+  cols:[C('uid','계정','mono',{main:1}),C('name','이름','strong'),C('dept','부서'),C('role','권한'),C('mail','이메일 (2FA)'),C('last','최근 접속','date'),C('status','상태','badge')],
+  rows: rows(['uid','name','dept','role','mail','last','status'],[['signion.admin','김시그','운영팀','SysAdmin','admin@signion.example','2026-11-05 10:12','정상'],['lab.kim','김연구','연구소','개발자','lab.kim@signion.example','2026-11-05 09:02','정상'],['cs.park','박상담','CS','상담원','cs.park@signion.example','2026-11-04 18:20','정상'],['biz.jang','장사업','사업기획','조회전용','biz@signion.example','2026-11-03 14:11','정상'],['old.lee','이퇴사','운영팀','상담원','old@signion.example','2026-08-30 17:00','중지']]),
+  opts:{ status:['정상','중지'], role:['SysAdmin','개발자','상담원','조회전용'] }, filters:['role','status'] };
+CFG['work/prog'] = { title:'프로그램관리', desc:'메뉴(대메뉴·소메뉴)와 기능버튼 권한 정의 — ProgList_ 테이블 (mainMenu · subMenu · funcBtn)',
+  cols:[C('main','대메뉴','strong',{main:1}),C('sub','소메뉴'),C('fn','기능버튼'),C('use','사용','badge')], rows:[], opts:{ use:['사용','미사용'] } };
+CFG['work/memo'] = { title:'자료메모관리', desc:'각 화면에서 등록한 메모 통합 조회',
+  cols:[C('target','대상','mono',{main:1}),C('menu','메뉴'),C('memo','메모'),C('who','작성자'),C('dt','작성일','date')],
+  rows: rows(['target','menu','memo','who','dt'],[['WINDM','인증거래처관리','사업자등록증 사본 재요청 (해상도 불량)','김시그','2026-11-04 15:20'],['HDI-JKT-02','KT통신가입관리','11/10 담당자 변경 예정','김시그','2026-11-03 10:02'],['VISIONMB','인증거래처관리','몽골 PKD 인증서 만료 — NFC 비활성화로 계약','박상담','2026-10-28 16:44']]) };
+CFG['work/datalog'] = { title:'데이터수정LOG', desc:'관리자에 의한 데이터 변경 이력 (변경 전/후)', noCreate:true, noEdit:true,
+  cols:[C('dt','일시','date',{main:1}),C('tbl','테이블','mono'),C('key','키','mono'),C('field','필드','mono'),C('before','변경 전'),C('after','변경 후'),C('who','작업자','mono')],
+  rows: rows(['dt','tbl','key','field','before','after','who'],[['2026-11-05 09:48','Member','WINDM','registStatus','2 등록심사중','3 자료보완요청','signion.admin'],['2026-11-05 09:30','cryptoInfo','KTMNS','masterKey','••••91ac','••••3e07','signion.admin'],['2026-11-04 17:02','MemberConnectInfo','KTGLOBAL','connectIP','14.63.21.9','14.63.21.10','lab.kim'],['2026-11-04 11:15','ProgUser','cs.park','funcBtn','삭제 권한 있음','삭제 권한 없음','signion.admin']]) };
+CFG['work/prog'].rows = (() => { const r = []; MENU.filter(m => m.label && m.id !== 'dashboard').forEach(m => (m.children || [[m.id, m.label]]).forEach(([, s]) => r.push({ id:'pg' + r.length, main:m.label, sub:s, fn:'검색 · 다중검색 · 등록 · 수정 · 삭제 · 엑셀로 · 삭제자료표시', use:'사용' }))); return r; })();
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const S = { authed:false, step:1, theme:'light', open:{}, dashRange:14, chartTable:false };
+const LS = {};
+const ls = k => LS[k] ??= { q:'', adv:false, del:false, sel:new Set(), f:{}, from:'', to:'', pg:1, size:20, sort:null };
+try { S.authed = sessionStorage.getItem('sg_auth') === '1'; const th = localStorage.getItem('sg_theme'); if (th) S.theme = th; S.mini = localStorage.getItem('sg_mini') === '1'; } catch (e) {}
+document.documentElement.dataset.theme = S.theme;
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+const root = $('#root');
+const route = () => (location.hash.replace(/^#\/?/, '') || (S.authed ? 'dashboard' : 'login')).split('?')[0];
+let otpTimer = null;
+
+function render() {
+  const r = route();
+  closeDrawer(true); closeModal(true);
+  if (!S.authed && r !== 'login') { location.hash = '#/login'; return; }
+  if (r === 'login') { if (S.authed) { location.hash = '#/dashboard'; return; } root.innerHTML = Login(); bindLogin(); return; }
+  clearInterval(otpTimer);
+  const g = r.split('/')[0]; S.open[g] = true;
+  root.innerHTML = Shell(r, Page(r));
+  if (r !== lastR) window.scrollTo(0, 0);
+  lastR = r;
+  if (S.pending && S.pending[0] === r) { const [k, id] = S.pending; S.pending = null; openDrawer(k, id); }
+}
+let lastR = '';
+/* 상태 변경 후 목록과 열린 상세(스크롤 · 탭 유지)를 함께 갱신 */
+function rerenderKeep() {
+  const k = DR?.key, id = DR?.id, sc = $('.dr-b')?.scrollTop || 0, tab = $('.tab.on')?.dataset.t;
+  render();
+  if (k) { openDrawer(k, id); $('.dr-b').scrollTop = sc; if (tab) switchTab(tab); }
+}
+function Page(r) {
+  if (r === 'dashboard') return Dashboard();
+  if (r === 'trans') return Trans();
+  if (r === 'fee') return Fee();
+  if (r === 'bi') return BI();
+  if (r === 'log') { location.replace('#/log/server'); return ''; }
+  if (CFG[r]) return ListPage(r);
+  const m = MENU.find(x => x.id === r.split('/')[0]);
+  if (m && m.children) { location.replace(`#/${m.id}/${m.children[0][0]}`); return ''; }
+  return Dashboard();
+}
+
+function Shell(r, body) {
+  const nav = MENU.map(m => {
+    if (m.sec) return `<div class="nav-sec">${m.sec}</div>`;
+    if (!m.children) return `<a class="nav-btn ${r === m.id ? 'on' : ''}" href="#/${m.id}" title="${m.label}">${ic(m.icon)}<span>${m.label}</span></a>`;
+    const active = r.startsWith(m.id + '/');
+    return `<div class="nav-g ${S.open[m.id] ? 'open' : ''}">
+      <button class="nav-btn ${active ? 'has' : ''}" data-act="nav-toggle" data-id="${m.id}" aria-expanded="${!!S.open[m.id]}" title="${m.label}">${ic(m.icon)}<span>${m.label}</span>${m.isNew ? '<span class="nav-new">NEW</span>' : ''}${ic('chev', 'chev')}</button>
+      <div class="nav-sub">${m.children.map(([id, l]) => `<a href="#/${m.id}/${id}" class="${r === m.id + '/' + id ? 'on' : ''}">${l}</a>`).join('')}</div></div>`;
+  }).join('');
+  const cr = crumbOf(r);
+  const waitN = CUSTOMERS.filter(c => c.stage === '검수대기').length;
+  return `<div class="app ${S.mini ? 'mini' : ''}">
+  <aside class="sb" id="sb">
+    <div class="sb-head"><a href="#/dashboard" aria-label="SIGNION 대시보드"><span class="lg-full">${logo('h')}</span><span class="lg-sym">${logo('sym')}</span></a><span class="sb-tag">BACKOFFICE</span></div>
+    <nav class="nav">${nav}</nav>
+    <div class="sb-foot"><a href="#/bi" class="${r === 'bi' ? 'on' : ''}" title="디자인 가이드 · BI">${ic('palette')}<span>디자인 가이드 · BI</span></a>
+      <button class="sb-fold" data-act="mini" title="메뉴 접기/펼치기">${ic('fold')}<span>메뉴 접기</span></button><div class="sb-ver">Prototype v0.2 · 2026.11</div></div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <button class="ibtn burger" data-act="burger" aria-label="메뉴">${ic('menu')}</button>
+      <div class="crumb">${cr.map((c, i) => i === cr.length - 1 ? `<b>${c}</b>` : `<span>${c}</span>${ic('chev')}`).join('')}</div>
+      <button class="gsearch" data-act="cmdk" aria-label="통합 검색 열기">${ic('search')}<span>메뉴 이동 · 승인번호 · 고객 · 거래처 검색</span><kbd>Ctrl K</kbd></button>
+      <span class="env">운영 · AWS 싱가포르</span>
+      <button class="ibtn" data-act="theme" aria-label="테마 전환" title="라이트/다크">${ic(S.theme === 'dark' ? 'sun' : 'moon')}</button>
+      <div class="dd-wrap"><button class="ibtn" data-act="dd" aria-label="알림" aria-haspopup="true">${ic('bell')}<span class="dotn"></span></button>
+        <div class="dd noti"><div class="dd-h">알림<span class="muted" style="margin-left:auto;font-weight:500">새 알림 4</span></div>
+          <a href="#/kt/docs"><span class="ic t-warn">${ic('clock')}</span><span>KT 서류 검수 대기 ${waitN}명<small>HDI-JKT-01 외 · 10분 전</small></span></a>
+          <a href="#/partner/overview"><span class="ic t-info">${ic('building')}</span><span>주식회사 이스턴텔레콤 등록 요청 접수<small>2026-11-03 14:20</small></span></a>
+          <a href="#/pkd"><span class="ic t-warn">${ic('globe')}</span><span>CSCA 인증서 만료 임박 2건 (IDN · THA)<small>가장 빠른 만료 2026-11-28</small></span></a>
+          <a href="#/log/server"><span class="ic t-bad">${ic('alert')}</span><span>로그인 실패 반복 감지 — BND-HCM-01<small>5회 · 175.223.10.x</small></span></a></div></div>
+      <div class="dd-wrap"><button class="me" data-act="dd" aria-haspopup="true"><span class="av">${ME.name[0]}</span><span class="me-t">${ME.name}<small>${ME.role} · ${ME.org}</small></span>${ic('down')}</button>
+        <div class="dd"><div class="dd-h">${ME.id} · 접속 IP ${ME.ip}</div>
+          <a class="dd-i" href="#/log/server">${ic('history')}로그인 이력</a>
+          <button class="dd-i" data-act="toast" data-msg="2단계 인증 이메일: s****n@signion.example">${ic('mail')}2단계 인증 설정</button>
+          <button class="dd-i" data-act="theme">${ic('moon')}라이트 / 다크 전환</button>
+          <div class="dd-sep"></div>
+          <button class="dd-i" data-act="logout">${ic('logout')}로그아웃</button></div></div>
+    </header>
+    <main class="content">${body}</main>
+  </div></div>`;
+}
+
+const PH = (title, desc, acts = '') => `<div class="ph"><div><h1>${title}</h1>${desc ? `<p>${desc}</p>` : ''}</div>${acts ? `<div class="acts">${acts}</div>` : ''}</div>`;
+const KPIS = list => `<div class="kpis">${list.map(([l, v, u, d, icon], i) => `<div class="card kpi ${i === 0 ? 'hero' : ''}"><div class="l">${icon ? ic(icon) : ''}${l}</div><div class="v">${v}<small>${u || ''}</small></div>${d ? `<div class="d">${d}</div>` : ''}</div>`).join('')}</div>`;
+
+/* ---------- Dashboard ---------- */
+function dailySeries(n) {
+  const s = []; let sd = 97;
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(NOW.getTime() - i * 86400000); sd = (sd * 48271) % 2147483647;
+    const wk = [0, 6].includes(d.getDay()) ? .62 : 1; const base = 1180 + (n - i) * 9;
+    s.push({ d, v: i === 0 ? 1284 : Math.round(base * wk * (.86 + (sd % 1000) / 3600)), today: i === 0 });
+  }
+  return s;
+}
+function barChart(data) {
+  const W = 760, H = 250, L = 44, R = 8, T = 12, B = 28, pw = W - L - R, ph = H - T - B;
+  const vmax = Math.max(...data.map(x => x.v));
+  const tstep = [100, 200, 250, 500, 1000, 2000, 2500, 5000].find(s => vmax / s <= 4) || 10000;
+  const max = Math.ceil(vmax / tstep) * tstep;
+  const step = pw / data.length, bw = Math.min(28, step * .58);
+  const y = v => T + ph - (v / max) * ph;
+  const ticks = Array.from({ length: max / tstep + 1 }, (_, i) => i * tstep);
+  const every = data.length > 20 ? 5 : data.length > 10 ? 2 : 1;
+  const bars = data.map((p, i) => {
+    const x = L + i * step + (step - bw) / 2, h = Math.max(2, (p.v / max) * ph), yy = T + ph - h, r = Math.min(4, bw / 2);
+    const path = `M${x},${T + ph}V${yy + r}Q${x},${yy} ${x + r},${yy}H${x + bw - r}Q${x + bw},${yy} ${x + bw},${yy + r}V${T + ph}Z`;
+    const lab = `${p.d.getMonth() + 1}/${p.d.getDate()}`;
+    return `<g class="col"><rect class="hit" x="${L + i * step}" y="${T}" width="${step}" height="${ph}" data-tip="<b>${fD(p.d)}</b>${p.today ? ' (오늘, 집계 중)' : ''}<br>인증 요청 ${fmt(p.v)}건"/><path class="bar ${p.today ? 'today' : ''}" d="${path}"/>
+      ${i % every === 0 || p.today ? `<text x="${L + i * step + step / 2}" y="${H - 8}" text-anchor="middle">${p.today ? '오늘' : lab}</text>` : ''}</g>`;
+  }).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="일별 인증 요청 막대 차트">
+    <g class="grid">${ticks.map(t => `<line x1="${L}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
+    <g class="axis">${ticks.map(t => `<text x="${L - 8}" y="${y(t) + 4}" text-anchor="end">${t >= 1000 ? (t / 1000).toFixed(t % 1000 ? 1 : 0) + 'k' : t}</text>`).join('')}${bars}</g></svg></div>`;
+}
+function Dashboard() {
+  const data = dailySeries(S.dashRange);
+  const total = data.reduce((a, b) => a + b.v, 0);
+  const fails = TRANS.filter(t => t.status === '실패').length;
+  const todo = [
+    ['KT 서류 검수 대기', CUSTOMERS.filter(c => c.stage === '검수대기').length, '#/kt/docs', 'shield', 'warn'],
+    ['서류 미비 고객', CUSTOMERS.filter(c => c.stage === '서류미비').length, '#/kt/docs', 'file', 'bad'],
+    ['거래처 등록 심사', PARTNERS.filter(p => ['등록요청접수','등록심사중','자료보완요청'].includes(p.status)).length, '#/partner/overview', 'building', 'info'],
+    ['개인정보 보관만료 임박 (D-7)', CUSTOMERS.filter(c => { const r = retain(c); return r.left !== undefined && r.left <= 7; }).length + 3, '#/kt/docs', 'clock', 'warn'],
+    ['CSCA 인증서 만료임박', 2, '#/pkd', 'globe', 'warn'],
+  ];
+  const mods = [['AI-OCR', 98.1], ['안면인식', 95.6], ['라이브니스', 96.8], ['전자여권 NFC', 94.2], ['정부여권인증', 99.4], ['체류자격인증', 98.9]];
+  const sys = [['WEB 서버','Linux · 싱가포르','정상','ok','42ms'],['API 서버 (소켓)','Active–Standby','정상','ok','18ms'],['DB 서버','PostgreSQL','정상','ok','6ms'],['S3 스토리지','암호화 저장 · 312GB','정상','ok','—'],['AI 서버','KT 목동 IDC · GPU','부하 높음','warn','GPU 82%'],['VPN','싱가포르 ↔ 목동','정상','ok','34ms']];
+  return PH(`안녕하세요, ${ME.name} 님`, `${TODAY} (목) · 마지막 로그인 2026-11-04 18:22 · ${ME.ip}`,
+    `<a class="btn" href="#/trans">${ic('shield')}인증내역</a><a class="btn btn-p" href="#/kt/docs">${ic('file')}등록서류 검수</a>`)
+  + KPIS([
+    ['오늘 인증 요청', fmt(1284), '건', `<span class="up">▲ 8.2%</span> 어제 같은 시간 대비`, 'scan'],
+    ['인증 성공률', '96.4', '%', `실패 ${fails}건 · 진행중 2건`, 'check'],
+    ['평균 처리시간', '7.8', '초', 'OCR → 안면인식 → 완료 기준', 'clock'],
+    ['11월 예상 청구액', fmt(38420000), '원', '인증료 + 관리자 사용료 (VAT 별도)', 'coins'],
+  ])
+  + `<div class="g2">
+    <section class="card"><div class="card-h"><h3>일별 인증 요청</h3><span class="sub">최근 ${S.dashRange}일 · 합계 ${fmt(total)}건</span>
+      <div class="r"><div class="seg">${[7, 14, 30].map(n => `<button class="${S.dashRange === n ? 'on' : ''}" data-act="dash-range" data-n="${n}">${n}일</button>`).join('')}</div>
+      <button class="btn btn-sm btn-ghost" data-act="chart-table" title="표로 보기">${ic(S.chartTable ? 'chart' : 'table')}${S.chartTable ? '차트' : '표'}</button></div></div>
+      <div class="card-b">${S.chartTable ? `<div class="tbl-wrap" style="max-height:250px;overflow:auto"><table class="tbl"><thead><tr><th>일자</th><th class="n">인증 요청</th></tr></thead><tbody>${data.slice().reverse().map(p => `<tr><td>${fD(p.d)}${p.today ? ' (오늘)' : ''}</td><td class="n">${fmt(p.v)}</td></tr>`).join('')}</tbody></table></div>` : barChart(data)}</div></section>
+    <section class="card"><div class="card-h"><h3>처리 대기 업무</h3></div><div class="todo">${todo.map(([l, n, h, icn, t]) => `<a href="${h}"><span class="ic t-${t}">${ic(icn)}</span>${l}<span class="cnt">${n}</span>${ic('chev', 'muted')}</a>`).join('')}</div></section>
+  </div>
+  <div class="g2">
+    <section class="card"><div class="card-h"><h3>최근 인증 내역</h3><div class="r"><a class="btn btn-sm btn-ghost" href="#/trans">전체 보기 ${ic('chev')}</a></div></div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>승인번호</th><th>시각</th><th>거래처</th><th>인증 모듈</th><th>상태</th></tr></thead><tbody>
+      ${TRANS.slice(0, 7).map(t => `<tr data-act="go-trans" data-id="${t.id}"><td class="mono">${t.no}</td><td class="num">${t.dt.slice(11, 16)}</td><td>${esc(t.partner)}<span class="sub">${NAT[t.nat]}</span></td><td>${resChips(t.res)}</td><td>${badge(t.status)}</td></tr>`).join('')}
+      </tbody></table></div></section>
+    <section class="card"><div class="card-h"><h3>모듈별 성공률</h3><span class="sub">최근 7일</span></div><div class="card-b">
+      ${mods.map(([l, v]) => `<div class="hbar"><span>${l}</span><span class="trk"><i style="width:${v}%"></i></span><span class="v">${v}%</span></div>`).join('')}</div></section>
+  </div>
+  <section class="card"><div class="card-h"><h3>시스템 상태</h3><span class="sub">AWS 싱가포르 리전 이중화 (Active–Standby) · KT 목동 데이터센터 VPN 연동</span><div class="r"><button class="btn btn-sm" data-act="toast" data-msg="상태를 새로 고쳤습니다.">${ic('refresh')}새로고침</button></div></div>
+    <div class="card-b"><div class="sys">${sys.map(([n, d, s, t, m]) => `<div><b>${n}</b><span>${d}</span><br>${badge(s, t)} <span style="margin-left:6px" class="num">${m}</span></div>`).join('')}</div></div></section>`;
+}
+
+/* ---------- Generic list ---------- */
+function filtered(key) {
+  const cfg = CFG[key], st = ls(key), q = st.q.trim().toLowerCase();
+  return cfg.rows.filter(r => {
+    if (r.stop && !st.del) return false;
+    if (q && !(cfg.cols.map(c => r[c.k] ?? '').join(' ') + ' ' + (r.pass || '') + ' ' + (r.name || '') + ' ' + (r.pid || '')).toLowerCase().includes(q)) return false;
+    for (const [k, v] of Object.entries(st.f)) if (v !== '' && String(r[k]) !== String(v)) return false;
+    if (cfg.dateKey && st.from && r[cfg.dateKey].slice(0, 10) < st.from) return false;
+    if (cfg.dateKey && st.to && r[cfg.dateKey].slice(0, 10) > st.to) return false;
+    return true;
+  });
+}
+function cell(c, r) {
+  const v = r[c.k];
+  switch (c.t) {
+    case 'badge': return badge(v);
+    case 'mono': return `<span class="mono">${esc(v)}</span>`;
+    case 'strong': return `<span class="strong">${esc(v)}</span>`;
+    case 'num': return typeof v === 'number' ? fmt(v) : esc(v);
+    case 'won': return v ? fmt(v) + '원' : '<span class="muted">—</span>';
+    case 'nat': return natL(v);
+    case 'mods': return modChips(v);
+    case 'date': return `<span class="num">${esc(v)}</span>`;
+    case 'tier': return `<span style="display:inline-block;width:${r.tier * 14}px"></span><span class="tier tier-${r.tier}">${TIERS[r.tier]}</span>`;
+    case 'cust': return `<span class="strong">${esc(r.name)}</span><span class="sub">${NAT[r.nat]} · ${maskPass(r.pass)}${r.minor ? ' · 미성년' : ''}</span>`;
+    case 'visa': return `<span class="chip">${esc(v)}</span> <span class="muted" style="font-size:12px">${v.startsWith('E') ? '근로자' : '유학생'}</span>`;
+    case 'auth': return resChips([{ k:'OCR', r:r.ocr }, { k:'FACE', r:r.face }]);
+    case 'docs': { const [a, b] = docProgress(r); return `<span class="prog ${a === b ? 'full' : ''}"><span class="bar"><i style="width:${a / b * 100}%"></i></span>${a}/${b}</span>`; }
+    case 'ret': { const x = retain(r); return typeof x === 'string' ? `<span style="color:var(--bad);font-weight:600;font-size:12.5px">${x}</span>` : `<span class="num ${x.left <= 7 ? 'down' : ''}">${x.d}</span><span class="sub">D-${x.left}</span>`; }
+    default: return esc(v);
+  }
+}
+/* 정렬 · 페이지 */
+const NOSORT = ['mods', 'res', 'auth'];
+function sortVal(c, r) {
+  if (c.t === 'docs') { const [a, b] = docProgress(r); return a / b; }
+  if (c.t === 'ret') { const x = retain(r); return typeof x === 'string' ? '' : x.d; }
+  if (c.t === 'cust') return r.name;
+  return r[c.k];
+}
+function listView(key) {
+  const cfg = CFG[key], st = ls(key); let all = filtered(key);
+  const c = st.sort && cfg.cols.find(x => x.k === st.sort.k);
+  if (c) all = [...all].sort((a, b) => { const x = sortVal(c, a), y = sortVal(c, b); return (typeof x === 'number' && typeof y === 'number' ? x - y : String(x ?? '').localeCompare(String(y ?? ''), 'ko', { numeric:true })) * st.sort.dir; });
+  const pages = Math.max(1, Math.ceil(all.length / st.size)); if (st.pg > pages) st.pg = pages;
+  return { all, pages, data: all.slice((st.pg - 1) * st.size, st.pg * st.size) };
+}
+function pager(p, n) {
+  const b = (i, l = i, dis = false, lab = '') => `<button data-act="page" data-p="${i}" ${dis ? 'disabled' : ''} ${i === p && l === i ? 'class="on" aria-current="page"' : ''} ${lab ? `aria-label="${lab}"` : ''}>${l}</button>`;
+  let s = b(p - 1, '‹', p <= 1, '이전'), prev = 0;
+  [...new Set([1, n, p - 1, p, p + 1])].filter(i => i >= 1 && i <= n).sort((a, c) => a - c).forEach(i => { if (i - prev > 1) s += '<span class="gap">…</span>'; s += b(i); prev = i; });
+  return s + b(p + 1, '›', p >= n, '다음');
+}
+/* 목록에서 1건을 선택해야 실행되는 기능 (메뉴구성도 기능버튼 중 행 단위 작업) */
+const ROW_SCOPED = ['제휴사접속정보등록','계약서류업로드','등록상태변경','비밀번호초기화','메모등록','아이디수정','마스터Token생성','암호화KEY생성'];
+function headerActions(cfg, st) {
+  const ex = cfg.extra || [], one = st.sel.size === 1;
+  const dis = l => ROW_SCOPED.includes(l) && !one;
+  const btn = ([i, l]) => `<button class="btn" data-act="extra" data-l="${l}" ${dis(l) ? 'disabled title="목록에서 1건을 선택하세요"' : ''}>${ic(i)}${l}</button>`;
+  if (ex.length <= 3) return ex.map(btn).join('');
+  const rest = ex.slice(2);
+  return ex.slice(0, 2).map(btn).join('') + `<div class="dd-wrap"><button class="btn" data-act="dd" aria-haspopup="menu">${ic('more')}더보기</button><div class="dd" role="menu">
+    ${rest.some(([, l]) => dis(l)) ? '<div class="dd-h">목록에서 1건을 선택하면 사용할 수 있습니다</div>' : ''}
+    ${rest.map(([i, l]) => `<button class="dd-i" role="menuitem" data-act="extra" data-l="${l}" ${dis(l) ? 'disabled' : ''}>${ic(i)}${l}</button>`).join('')}</div></div>`;
+}
+function ListPage(key) {
+  const cfg = CFG[key], st = ls(key), { all, pages, data } = listView(key);
+  const allSel = data.length && data.every(r => st.sel.has(r.id));
+  const logTabs = cfg.isLog ? `<div class="ltabs">${Object.entries(LOGDEF).map(([k, [t]]) => `<a href="#/log/${k}" class="${key === 'log/' + k ? 'on' : ''}">${t}</a>`).join('')}</div>` : '';
+  const extra = headerActions(cfg, st);
+  const fl = [];
+  if (st.q) fl.push(['q', `검색어: ${st.q}`]);
+  for (const [k, v] of Object.entries(st.f)) if (v !== '') { const col = cfg.cols.find(c => c.k === k) || { l: { nat:'국가', pid:'거래처' }[k] || k }; fl.push([k, `${col.l}: ${k === 'nat' ? (NAT[v] || v) : v}`]); }
+  if (st.from || st.to) fl.push(['_date', `기간: ${st.from || '처음'} ~ ${st.to || '오늘'}`]);
+  const chips = fl.length ? `<div class="fchips"><span>적용된 조건</span>${fl.map(([k, l]) => `<button class="fchip" data-act="chip-x" data-k="${esc(k)}" aria-label="${esc(l)} 조건 해제">${esc(l)}${ic('x')}</button>`).join('')}<button class="linkbtn" data-act="chips-clear">모두 지우기</button></div>` : '';
+  const adv = st.adv ? `<div class="adv">
+      ${(cfg.filters || []).map(k => { const col = cfg.cols.find(c => c.k === k) || { l: { nat:'국가', pid:'거래처' }[k] || k }; const opts = cfg.opts?.[k] || [];
+        return `<div class="fld"><label>${col.l}</label><select class="select" data-f="${k}"><option value="">전체</option>${opts.map(o => `<option value="${o}" ${String(st.f[k]) === String(o) ? 'selected' : ''}>${k === 'nat' ? (NAT[o] || o) : o}</option>`).join('')}</select></div>`; }).join('')}
+      ${cfg.dateKey ? `<div class="fld" style="grid-column:span 2"><label>기간</label><div class="drange"><input type="date" class="input" data-from value="${st.from}"><span class="muted">~</span><input type="date" class="input" data-to value="${st.to}"></div></div>` : ''}
+      <div class="fld" style="display:flex;gap:6px"><button class="btn" data-act="adv-reset">초기화</button><button class="btn btn-p" data-act="adv-apply">적용</button></div></div>` : '';
+  const head = `<tr><th class="ck"><input type="checkbox" class="cbox" data-act="ck-all" ${allSel ? 'checked' : ''} aria-label="전체 선택"></th>${cfg.cols.map(c => {
+    const s = !NOSORT.includes(c.t), on = st.sort?.k === c.k;
+    return `<th class="${['num','won'].includes(c.t) ? 'n' : ''} ${s ? 'sortable' : ''} ${on ? 'sorted' : ''}" ${s ? `data-act="sort" data-k="${c.k}" aria-sort="${on ? (st.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}"` : ''}>${c.l}${s ? ic(on ? (st.sort.dir > 0 ? 'up' : 'down') : 'sortv', 'so') : ''}</th>`; }).join('')}</tr>`;
+  const body = data.length ? data.map(r => `<tr data-act="open" data-id="${r.id}" class="${st.sel.has(r.id) ? 'sel' : ''} ${r.stop ? 'is-del' : ''}" ${r.stop ? `title="삭제 사유: ${esc(r.stop.reason)}"` : ''}>
+      <td class="ck"><input type="checkbox" class="cbox" data-act="ck" data-id="${r.id}" ${st.sel.has(r.id) ? 'checked' : ''} aria-label="선택"></td>
+      ${cfg.cols.map((c, i) => `<td class="${['num','won'].includes(c.t) ? 'n num' : ''} ${c.main ? 'main-c' : ''}">${i === 0 && r.stop ? '<span class="del-tag">삭제</span>' : ''}${cell(c, r)}</td>`).join('')}</tr>`).join('')
+    : `<tr><td colspan="${cfg.cols.length + 1}"><div class="empty">${ic('search')}<div>조건에 맞는 자료가 없습니다.</div></div></td></tr>`;
+  return PH(cfg.title, cfg.desc, extra) + logTabs + (cfg.kpis ? KPIS(cfg.kpis(all.filter(r => !r.stop))) : '')
+  + `<section class="card">
+    <div class="tb">
+      <label class="sfield">${ic('search')}<input data-q value="${esc(st.q)}" placeholder="검색어 입력 후 Enter"></label>
+      <button class="btn" data-act="search">검색</button>
+      <button class="btn ${st.adv ? 'is-on' : ''}" data-act="adv">${ic('filter')}다중검색${Object.values(st.f).filter(v => v !== '').length + (st.from || st.to ? 1 : 0) ? ` <b>${Object.values(st.f).filter(v => v !== '').length + (st.from || st.to ? 1 : 0)}</b>` : ''}</button>
+      <span class="grow"></span>
+      <label class="switch"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>삭제자료표시</label>
+      <span class="vsep"></span>
+      <button class="btn" data-act="excel">${ic('download')}엑셀로</button>
+      ${cfg.noEdit ? '' : `<button class="btn btn-d" data-act="delete" ${st.sel.size ? '' : 'disabled'}>${ic('trash')}삭제${st.sel.size ? ' ' + st.sel.size : ''}</button>
+      ${cfg.noEditBtn ? '' : `<button class="btn" data-act="edit" ${st.sel.size === 1 ? '' : 'disabled'}>${ic('edit')}수정</button>`}`}
+      ${cfg.noCreate ? '' : `<button class="btn btn-p" data-act="create">${ic('plus')}등록</button>`}
+    </div>${adv}${chips}
+    <div class="tbl-wrap"><table class="tbl"><thead>${head}</thead><tbody>${body}</tbody></table></div>
+    <div class="tf"><span>총 <b class="num">${fmt(all.length)}</b>건${all.length ? ` <span class="muted num">(${(st.pg - 1) * st.size + 1}–${Math.min(st.pg * st.size, all.length)})</span>` : ''}</span>
+      ${st.sel.size ? `<span><b style="color:var(--brand)">${st.sel.size}건 선택</b> <button class="linkbtn" data-act="sel-clear">선택 해제</button></span>` : ''}
+      <select class="select" data-size style="height:30px;font-size:12.5px" aria-label="페이지당 행 수">${[20, 50, 100].map(n => `<option value="${n}" ${st.size === n ? 'selected' : ''}>${n}개씩</option>`).join('')}</select>
+      <div class="pager">${pager(st.pg, pages)}</div></div>
+  </section>`;
+}
+
+/* ---------- Trans (인증내역관리) ---------- */
+CFG['trans'] = {
+  title:'인증내역관리', desc:'kycTransMaster / kycTransDetail — 승인번호 단위의 KYC 인증 처리 내역과 모듈별 결과를 조회합니다.', noCreate:true, noEdit:true,
+  cols:[ C('no','승인번호','mono',{main:1}), C('dt','인증일시','date'), C('partner','거래처','strong'), C('nat','국가','nat'), C('name','여권 성명'), C('pass','여권번호','mono'),
+         C('res','인증 모듈','res'), C('status','상태','badge'), C('err','오류코드','mono'), C('sec','처리(초)','num'), C('fee','수수료','won') ],
+  rows: TRANS, opts:{ status:['완료','실패','진행중'], pid:PARTNERS.filter(p => p.status === '등록완료').map(p => p.pid), nat:Object.keys(NAT) }, filters:['status','pid','nat'], dateKey:'dt',
+  extra:[['coins','인증수수료계산']], detail: transDetail,
+  kpis: rs => [['조회 건수', fmt(rs.length), '건'], ['완료', rs.filter(r => r.status === '완료').length, '건'], ['실패', rs.filter(r => r.status === '실패').length, '건', '오류코드별 상세는 행 클릭'], ['수수료 합계', fmt(rs.reduce((a, r) => a + r.fee, 0)), '원']],
+};
+const _cell = cell;
+cell = function (c, r) { if (c.t === 'res') return resChips(r.res); return _cell(c, r); };
+const Trans = () => ListPage('trans');
+
+/* ---------- Fee (인증수수료관리) ---------- */
+const FEE = (() => {
+  return PARTNERS.filter(p => p.status === '등록완료').map((p, i) => {
+    const cnt = p.pid === 'Lordsystem' ? 0 : Math.round(p.cnt * (0.9 + i * .03));
+    const unit = 1100, use = cnt * unit, min = p.pid === 'Lordsystem' ? 0 : p.pid === 'GDKOREA' ? 300000 : 500000;
+    const bill = Math.max(use, min), admin = p.kt && p.pid !== 'KTGLOBAL' ? 500000 : 0, tot = bill + admin;
+    const paid = [tot, tot, Math.round(tot * .6), 0, tot, 0][i] ?? 0;
+    return { id:'f' + i, pid:p.pid, name:p.name, cnt, unit, use, min, bill, admin, tot, paid, due:tot - paid, minApplied: min > use,
+      status: tot === 0 ? '청구전' : paid >= tot ? '입금완료' : paid > 0 ? '부분입금' : '미입금' };
+  });
+})();
+CFG['fee'] = {
+  title:'인증수수료관리', desc:'월별 인증 건수 × 단가와 월 최소이용금액을 비교해 청구 금액을 산출합니다. (VAT 별도)', noCreate:true, noEdit:true,
+  cols:[ C('name','거래처','strong',{main:1}), C('cnt','인증 건수','num'), C('use','실사용금액','won'), C('min','월 최소이용','won'), C('bill','청구 인증료','billcell'),
+         C('admin','관리자 사용료','won'), C('tot','청구 합계','won'), C('paid','입금액','won'), C('due','미수금','duecell'), C('status','상태','badge') ],
+  rows: FEE, opts:{ status:['입금완료','부분입금','미입금','청구전'] }, filters:['status'], detail: invoiceDetail,
+  extra:[['refresh','인증수수료생성'],['file','인증수수료청구자료작성'],['plus','입금등록'],['table','입금내역LIST'],['coins','미수금계산'],['alert','미수금내역LIST']],
+  kpis: rs => [['10월 인증 건수', fmt(rs.reduce((a, r) => a + r.cnt, 0)), '건'], ['청구 합계', fmt(rs.reduce((a, r) => a + r.tot, 0)), '원'], ['입금액', fmt(rs.reduce((a, r) => a + r.paid, 0)), '원'], ['미수금', fmt(rs.reduce((a, r) => a + r.due, 0)), '원', `${rs.filter(r => r.due > 0).length}개 거래처`]],
+};
+const _cell2 = cell;
+cell = function (c, r) {
+  if (c.t === 'billcell') return `${fmt(r.bill)}원${r.minApplied ? '<span class="sub" style="color:var(--warn)">최소이용금액 적용</span>' : ''}`;
+  if (c.t === 'duecell') return r.due ? `<span class="down">${fmt(r.due)}원</span>` : '<span class="muted">—</span>';
+  return _cell2(c, r);
+};
+const Fee = () => {
+  return ListPage('fee').replace('</h1>', ` <span class="chip" style="vertical-align:middle;margin-left:6px">2026년 10월분</span></h1>`);
+};
+
+/* ---------- Details ---------- */
+function partnerDetail(p) {
+  const tab = (id, l, on) => `<button class="tab ${on ? 'on' : ''}" data-act="tab" data-t="${id}">${l}</button>`;
+  return {
+    title: `${esc(p.name)} ${badge(p.status)} ${badge(p.mode)}`, sub: `<span class="mono">${p.pid}</span> · ${NAT[p.nat]} · 등록일 ${p.rg}`,
+    body: `<div class="tabs">${tab('a','기본정보',1)}${tab('b','접속정보')}${tab('c','토큰 · 암호화KEY')}${tab('d','사업자 · 대표자')}${tab('e','계약서류')}${tab('f','메모')}</div>
+    <div class="pane on" data-p="a">
+      <div class="steps">${['등록요청접수','등록심사중','등록완료'].map((s, i, a) => { const cur = ['등록요청접수','등록심사중','등록완료'].indexOf(p.status); const done = cur > i || p.status === '등록완료'; return `<span class="step ${done ? 'done' : cur === i ? 'cur' : ''}"><span class="b">${done ? ic('check') : i + 1}</span>${s}</span>${i < a.length - 1 ? `<span class="step-ln ${cur > i ? 'done' : ''}"></span>` : ''}`; }).join('')}</div>
+      ${p.status === '자료보완요청' ? `<div class="callout warn" style="margin-top:14px">${ic('alert')}<div><b>자료보완요청</b> · 사업자등록증 사본 해상도 불량 — 재제출 요청 (2026-11-04)</div></div>` : ''}
+      ${p.status === '등록거부' ? `<div class="callout bad" style="margin-top:14px">${ic('x')}<div><b>등록거부</b> · 현지 법인 확인 불가</div></div>` : ''}
+      <div class="sec-t">서비스 설정</div>
+      <dl class="kv"><dt>서비스 모드</dt><dd>${badge(p.mode)} ${p.mode === '테스트' ? '<span class="muted" style="font-size:12.5px">테스트 접속 — 과금 제외</span>' : ''}</dd>
+        <dt>인증 모듈</dt><dd><span class="chips" style="flex-wrap:wrap">${Object.keys(MOD).map(m => `<span class="chip ${p.mods.includes(m) ? 'ok' : 'skip'}">${p.mods.includes(m) ? ic('check') : ''}${MOD[m]}</span>`).join('')}</span></dd>
+        <dt>여권정보 반환</dt><dd>성명 · 여권번호 · 생년월일 · 국적 · 만료일 <span class="muted">(isPassportDataReturn = 1)</span></dd>
+        <dt>이미지 보관 정책</dt><dd>${p.kt ? '저장 후 일정 기간(2개월) 경과 시 백업 후 삭제' : '이미지 저장 없음'}</dd>
+        <dt>이번달 인증</dt><dd class="num">${fmt(p.cnt)}건</dd></dl>
+      <div class="sec-t">담당자</div>
+      <dl class="kv"><dt>이메일</dt><dd>${esc(p.mail)}</dd><dt>연락처</dt><dd class="mono">${esc(p.tel)}</dd><dt>로그인 ID</dt><dd class="mono">${p.pid}</dd></dl>
+    </div>
+    <div class="pane" data-p="b">
+      <div class="sec-t">접속정보 <span class="r"><button class="btn btn-sm" data-act="extra" data-l="제휴사접속정보등록">${ic('plus')}제휴사접속정보등록</button></span></div>
+      <dl class="kv"><dt>접속타입</dt><dd>WEB 접속 URL</dd><dt>접속정보</dt><dd class="mono">${esc(p.url)}</dd><dt>응답 URL</dt><dd class="mono">${p.url === '—' ? '—' : esc(p.url) + '/kyc/callback'}</dd><dt>허용 IP</dt><dd class="mono">${esc(p.ip)}</dd></dl>
+      <div class="callout info" style="margin-top:18px">${ic('shieldl')}<div>프론트 및 백오피스는 DB에 직접 접속하지 않고 <b>globalekycapi</b>를 통해서만 접근합니다. 업체별 접속을 확인해 Crypto Key를 자동으로 가져옵니다.</div></div>
+    </div>
+    <div class="pane" data-p="c">
+      <div class="sec-t">masterToken <span class="r"><button class="btn btn-sm" data-act="extra" data-l="마스터Token생성">${ic('key')}마스터Token생성</button></span></div>
+      <div class="secret">${ic('key')}<span class="mono">mt_8f3a••••••••••••••••••••c21d</span><button class="btn btn-sm btn-ghost" data-act="toast" data-msg="복사되었습니다 (마스킹 해제 권한 필요)">${ic('copy')}</button></div>
+      <p class="muted" style="font-size:12.5px;margin:8px 0 0">생성 2026-10-14 09:12 · connectToken은 세션마다 자동 발급됩니다.</p>
+      <div class="sec-t">암호화KEY <span class="r"><button class="btn btn-sm" data-act="extra" data-l="암호화KEY생성">${ic('lock')}암호화KEY생성</button></span></div>
+      <dl class="kv"><dt>방식</dt><dd class="mono">AES-CBC-256</dd><dt>masterKey</dt><dd class="mono">••••••••••••••••••••••••3fa9</dd><dt>IvKey</dt><dd class="mono">••••••••••••b71c</dd><dt>발급일</dt><dd>2026-11-01</dd></dl>
+    </div>
+    <div class="pane" data-p="d">
+      <div class="sec-t">사업자정보</div><dl class="kv"><dt>상호</dt><dd>${esc(p.name)}</dd><dt>사업자등록번호</dt><dd class="mono">${p.biz}</dd><dt>소재지</dt><dd>${p.loc} · ${NAT[p.nat]}</dd></dl>
+      <div class="sec-t">대표자</div><dl class="kv"><dt>대표자명</dt><dd>${esc(p.ceo)}</dd><dt>연락처</dt><dd class="mono">${esc(p.tel)}</dd></dl>
+    </div>
+    <div class="pane" data-p="e">
+      <div class="sec-t">계약서류 <span class="r"><button class="btn btn-sm" data-act="extra" data-l="계약서류업로드">${ic('upload')}계약서류업로드</button></span></div>
+      <div class="docs">${['서비스 이용계약서','사업자등록증','개인정보 처리위탁 계약서','통장사본'].map((d, i) => `<div class="doc"><span class="st ${i < 3 || p.status === '등록완료' ? 'ok' : 'miss'}">${ic(i < 3 || p.status === '등록완료' ? 'check' : 'x')}</span><span class="nm">${d}</span><span class="ct">${i < 3 || p.status === '등록완료' ? '1개 파일' : '미제출'}</span><button class="btn btn-sm btn-ghost" data-act="toast" data-msg="${d} 다운로드">${ic('download')}</button></div>`).join('')}</div>
+    </div>
+    <div class="pane" data-p="f">
+      <div class="sec-t">메모 <span class="r"><button class="btn btn-sm" data-act="extra" data-l="메모등록">${ic('plus')}메모등록</button></span></div>
+      <ul class="tl"><li><span class="dot grp">${ic('memo')}</span><div class="t">계약 단가 1,100원 / 월 최소 50만원 확정</div><div class="c">김시그 · 2026-10-02 14:20</div></li><li><span class="dot grp">${ic('memo')}</span><div class="t">현지 IP 대역 변경 예정 (11월 중)</div><div class="c">김연구 · 2026-10-28 10:05</div></li></ul>
+    </div>`,
+    foot: `<button class="btn" data-act="extra" data-l="비밀번호초기화">${ic('lock')}비밀번호초기화</button><button class="btn" data-act="extra" data-l="아이디수정">${ic('edit')}아이디수정</button><span class="sp"></span><button class="btn" data-act="status-change">${ic('refresh')}등록상태변경</button><button class="btn btn-p" data-act="edit-one">${ic('edit')}수정</button>`,
+  };
+}
+function accountDetail(a) {
+  const kids = ACCOUNTS.filter(x => x.tier === a.tier + 1 && (a.tier === 0 || x.uid.startsWith(a.uid.replace('-MASTER', '') + '-')));
+  const perms = ['- 전체 관리자 계정 발급/수정/삭제\n- 전체 관리자 계정 모니터링\n- 모든 계정을 통해 등록된 전체 정보 조회', '- 현지 총괄 관리자 계정 발급/수정/삭제\n- 총괄이 발급한 서브 계정 모니터링\n- 총괄·서브가 등록한 모든 정보 조회', '- 현지 영업 사무소 관리자 계정 발급/수정/삭제\n- 서브 계정이 등록한 모든 정보 조회', '- 여권인증, 서류 업로드\n- 해당 계정이 등록한 정보 조회'];
+  return {
+    title: `${a.uid} <span class="tier tier-${a.tier}">${TIERS[a.tier]}</span> ${badge(a.status)}`, sub: `${esc(a.org)} · ${NAT[a.nat]}`,
+    body: `<div class="sec-t">계정 정보</div>
+      <dl class="kv"><dt>담당자</dt><dd>${esc(a.man)}</dd><dt>2FA 이메일</dt><dd>${esc(a.mail)} <span class="badge t-ok">${ic('check')}인증 등록</span></dd><dt>최근 접속</dt><dd><span class="num">${a.last}</span> · <span class="mono">${a.ip}</span></dd>
+      <dt>등록 고객</dt><dd class="num">${a.cust}명</dd><dt>개인정보 보관</dt><dd>${a.tier <= 1 ? '양사 계약 기간까지 한국 서버 보관' : '마스터 관리자가 지정한 기간까지 클라우드 보관'}</dd></dl>
+      <div class="sec-t">권한 범위</div><div class="callout info" style="white-space:pre-line">${ic('shieldl')}<div>${perms[a.tier]}</div></div>
+      <div class="sec-t">하위 계정 <span class="muted" style="font-weight:500">${kids.length}</span>${a.tier < 3 ? `<span class="r"><button class="btn btn-sm" data-act="create-in" data-k="kt/overview">${ic('plus')}하위 계정 발급</button></span>` : ''}</div>
+      ${kids.length ? `<div class="docs">${kids.map(k => `<div class="doc"><span class="tier tier-${k.tier}" style="grid-column:1/3;width:max-content">${TIERS[k.tier]}</span><span class="nm" style="grid-column:auto">${k.uid}<small>${esc(k.org)}</small></span>${badge(k.status)}</div>`).join('')}</div>` : '<p class="muted">하위 계정이 없습니다.</p>'}
+      <div class="sec-t">접속 이력 (관리자 사용 로그)</div>
+      <ul class="tl">${[['로그인 성공 · 2FA 인증', a.last], ['등록서류관리 · 통합 PDF 발급', '2026-11-04 16:31'], ['로그인 성공 · 2FA 인증', '2026-11-04 09:02']].map(([t, d]) => `<li><span class="dot">${ic('check')}</span><div class="t">${t}</div><div class="c"><span class="num">${d}</span> · ${a.ip}</div></li>`).join('')}</ul>`,
+    foot: `<button class="btn" data-act="extra" data-l="비밀번호초기화">${ic('lock')}비밀번호초기화</button><button class="btn" data-act="extra" data-l="아이디수정">${ic('edit')}아이디수정</button><button class="btn" data-act="extra" data-l="메모등록">${ic('memo')}메모등록</button><span class="sp"></span><button class="btn" data-act="status-change">${ic('refresh')}등록상태변경</button><button class="btn btn-p" data-act="edit-one">${ic('edit')}수정</button>`,
+  };
+}
+function mrz(c) {
+  const nm = c.name.split(' '); const sur = nm[0], giv = nm.slice(1).join('<');
+  const l1 = (`P<${c.nat}${sur}<<${giv}`).padEnd(44, '<').slice(0, 44);
+  const l2 = (`${c.pass.slice(0, 2)}****${c.pass.slice(-2)}<0${c.nat}${c.birth.slice(2).replace(/-/g, '')}0${c.sex}${c.pexp.slice(2).replace(/-/g, '')}4`).padEnd(44, '<').slice(0, 44);
+  return l1 + '\n' + l2;
+}
+function customerDetail(c) {
+  const docs = reqDocs(c); const [a, b] = docProgress(c); const si = STAGES.indexOf(c.stage);
+  const flow = ['서류접수','검수','KT제출','개통완료'];
+  const cur = c.stage === '서류미비' || c.stage === '검수대기' ? (c.stage === '서류미비' ? 0 : 1) : c.stage === '검수완료' ? 2 : c.stage === 'KT제출' ? 3 : 4;
+  const docRow = (d, req) => { const fs = c.files[d] || []; const ok = fs.length > 0;
+    return `<div class="doc" data-drop="${c.id}|${esc(d)}"><span class="st ${ok ? 'ok' : req ? 'miss' : 'opt'}">${ic(ok ? 'check' : req ? 'x' : 'plus')}</span>
+      <span class="nm">${d}${req ? '' : '<small>선택</small>'}${DOC_MINOR.includes(d) ? '<small>미성년자</small>' : ''}</span><span class="ct">${fs.length}/10</span>
+      <button class="btn btn-sm" data-act="upload" data-c="${c.id}" data-d="${d}" ${fs.length >= 10 ? 'disabled' : ''}>${ic('upload')}업로드</button>
+      ${fs.length ? `<div class="files">${fs.map((f, i) => `<span class="file">${ic(f.endsWith('pdf') ? 'pdf' : 'file')}${f}<button data-act="toast" data-msg="${f} 다운로드" aria-label="다운로드">${ic('download')}</button><button data-act="rmfile" data-c="${c.id}" data-d="${d}" data-i="${i}" aria-label="삭제">${ic('x')}</button></span>`).join('')}</div>` : ''}</div>`; };
+  const r = retain(c);
+  return {
+    title: `${esc(c.name)} ${badge(c.stage)}`, sub: `<span class="mono">${c.no}</span> · ${c.agency} / <span class="mono">${c.sub}</span> · 등록 ${c.rg}`,
+    body: `<div class="steps" style="margin-bottom:18px">${flow.map((s, i) => `<span class="step ${cur > i ? 'done' : cur === i ? 'cur' : ''}"><span class="b">${cur > i ? ic('check') : i + 1}</span>${s}</span>${i < flow.length - 1 ? `<span class="step-ln ${cur > i ? 'done' : ''}"></span>` : ''}`).join('')}</div>
+      <div class="pp"><div class="pp-photo">${ic('user')}</div>
+        <div><div class="muted" style="font-size:11.5px;font-weight:600;letter-spacing:.06em">PASSPORT · ${NAT[c.nat]}</div><h3>${esc(c.name)}</h3>
+        <dl class="kv"><dt>여권번호</dt><dd class="mono">${maskPass(c.pass)}</dd><dt>생년월일 · 성별</dt><dd>${c.birth} · ${c.sex}${c.minor ? ' <span class="badge t-warn">미성년자</span>' : ''}</dd><dt>만료일</dt><dd>${c.pexp}</dd><dt>비자</dt><dd>${c.visa} (${c.visa.startsWith('E') ? '근로자' : '유학생'})</dd></dl></div>
+        <div class="mrz" aria-label="MRZ">${esc(mrz(c))}</div></div>
+      <div class="sec-t">여권인증 결과</div>
+      <div class="chips" style="flex-wrap:wrap;gap:6px">${[['OCR', c.ocr], ['FACE', c.face]].map(([k, v]) => `<span class="chip ${v}" style="height:26px;padding:0 10px;font-size:12.5px">${ic(v === 'ok' ? 'check' : 'x')}${MOD[k]} ${v === 'ok' ? '성공' : '실패'}</span>`).join('')}<span class="chip" style="height:26px;padding:0 10px;font-size:12.5px">${ic('clock')}처리 7.4초</span></div>
+      <div class="sec-t">필수 서류 <span class="muted" style="font-weight:500">${a}/${b}</span><span class="r"><button class="btn btn-sm" data-act="toast" data-msg="고객정보 엑셀 양식을 다운로드했습니다. (여권정보 자동 기입)">${ic('download')}엑셀 양식</button><button class="btn btn-sm" data-act="toast" data-msg="엑셀 업로드 — 세부 양식은 KT·대리점 협의 후 확정">${ic('upload')}엑셀 업로드</button></span></div>
+      <div class="docs">${docs.map(d => docRow(d, true)).join('')}${docRow('기타', false)}</div>
+      <p class="muted" style="font-size:12.5px;margin:8px 2px 0">파일을 각 서류 행에 끌어다 놓아도 됩니다 · 서류 항목별 최대 10개 · 파일당 50MB 이하 · S3 암호화 저장</p>
+      <div class="sec-t">개인정보 보관</div>
+      <div class="callout ${typeof r === 'string' ? 'bad' : 'info'}">${ic('clock')}<div>${typeof r === 'string' ? '<b>개통 완료</b> — 고객 개인정보 및 제출 서류가 정책에 따라 삭제 대기 중입니다. 담당자 승인 후 근거를 남기고 삭제됩니다.' : `클라우드 보관 만료 <b>${r.d} (D-${r.left})</b> · 개통 완료 처리 시 즉시 삭제가 원칙입니다.`}</div></div>`,
+    foot: `<button class="btn" data-act="inspect" data-c="${c.id}" ${a < b || c.inspected ? 'disabled' : ''}>${ic('check')}${c.inspected ? '검수 완료됨' : '검수 완료'}</button>
+      <button class="btn" data-act="merge" data-c="${c.id}" ${a < b ? 'disabled' : ''}>${ic('pdf')}KT 제출용 통합 PDF</button>
+      <span class="sp"></span>
+      <button class="btn btn-df" data-act="complete" data-c="${c.id}" ${c.stage === '개통완료' || !c.inspected ? 'disabled' : ''}>${ic('sim')}개통 완료 처리</button>`,
+  };
+}
+const STEP_DEF = {
+  OCR:[['3001','AIOCR 인식 시작'],['3002','AIOCR BIZ-MRZ 투팩터 검증'],['3003','AIOCR 인식 완료']],
+  NFC:[['4001','전자여권 인식 시작'],['4002','전자여권 데이터 추출 완료'],['4003','전자여권 HASH 인증'],['4005','전자여권 인식/인증 완료']],
+  FACE:[['5001','안면인식 시작'],['5002','안면인식 정면 인식'],['5003','안면 라이브니스 인식'],['5004','안면인식 여권 사진과 비교'],['5005','안면인식 인식/인증 완료']],
+  GOV:[['7100','대한민국 정부 여권 인증 요청'],['7101','대한민국 정부 여권 인증 완료']],
+  VISA:[['7200','대한민국 정부 체류자격 인증 요청'],['7201','대한민국 정부 체류자격 인증 완료']],
+};
+function transDetail(t) {
+  let ts = new Date(t.dt.replace(' ', 'T')).getTime(); const tick = s => { ts += s; const d = new Date(ts); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${String(ri(100, 999))}`; };
+  const li = (code, label, cls = '', extra = '') => `<li><span class="dot ${cls}">${ic(cls === 'bad' ? 'x' : cls === 'run' ? 'clock' : 'check')}</span><div class="t"><span class="mono" style="color:var(--muted);font-weight:500">${code}</span>${label}</div><div class="c num">${tick(ri(200, 1600))}</div>${extra}</li>`;
+  let tl = li('1000', 'KYC인증시작') + li('2000', '아이디인증요청') + li('2001', '아이디인증완료 · 파트너 자격 검증');
+  for (const r of t.res) {
+    const st = STEP_DEF[r.k]; if (r.r === 'skip') { tl += `<li><span class="dot" style="background:var(--neutral-bg);color:var(--muted)">${ic('more')}</span><div class="t" style="color:var(--muted)">${MOD[r.k]} — 이전 단계 실패로 미진행</div></li>`; continue; }
+    if (r.r === 'ok') st.forEach(([c, l]) => tl += li(c, l));
+    else if (r.r === 'run') { tl += li(st[0][0], st[0][1]); tl += li(st[1][0], st[1][1] + ' — 진행 중', 'run'); }
+    else { const fi = Math.min(st.length - 1, r.k === 'FACE' ? 2 : 1); st.slice(0, fi).forEach(([c, l]) => tl += li(c, l)); tl += li(st[fi][0], st[fi][1], 'bad', `<div class="e"><span class="badge t-bad">${ic('x')}${t.err}</span> <span style="font-size:12.5px;color:var(--ink-2)">${esc(t.errMsg)}</span></div>`); }
+  }
+  if (t.status === '완료') tl += li('9000', 'KYC인증완료');
+  const imgs = [['여권 이미지','passport','wide'],['OCR 얼굴','face'],['NFC 얼굴','face'],['정면','user'],['좌측','user'],['우측','user'],['위','user'],['아래','user']];
+  return {
+    title: `<span class="mono" style="font-size:16px">${t.no}</span> ${badge(t.status)}`, sub: `${esc(t.partner)} · ${t.dt} · 처리 ${t.sec}초`,
+    body: `<dl class="kv kv2"><div><dl class="kv"><dt>여권 성명</dt><dd>${esc(t.name)}</dd><dt>여권번호</dt><dd class="mono">${t.pass}</dd><dt>국적</dt><dd>${natL(t.nat)}</dd></dl></div>
+      <div><dl class="kv"><dt>거래처</dt><dd><span class="mono">${t.pid}</span></dd><dt>서비스 모드</dt><dd>${badge(t.mode)}</dd><dt>수수료</dt><dd class="num">${t.fee ? fmt(t.fee) + '원 · 0.79 USD' : '—'}</dd></dl></div></dl>
+      <div class="sec-t">인증 처리 단계 <span class="muted" style="font-weight:500">kycTransDetail · transType</span></div><ul class="tl">${tl}</ul>
+      <div class="sec-t">인증 이미지 <span class="muted" style="font-weight:500">암호화 저장 · 열람 시 로그 기록</span><span class="r"><button class="btn btn-sm" data-act="toast" data-msg="열람 사유 입력 후 원본 이미지를 복호화합니다.">${ic('eye')}원본 보기</button></span></div>
+      <div class="imgs">${imgs.map(([l, i, w]) => `<div class="ph-img ${w || ''}">${ic(i)}${l}</div>`).join('')}</div>`,
+    foot: `<button class="btn" data-act="toast" data-msg="요청/응답 JSON을 내려받았습니다.">${ic('download')}요청/응답 JSON</button><span class="sp"></span><button class="btn" data-act="extra" data-l="인증수수료계산">${ic('coins')}인증수수료계산</button>`,
+  };
+}
+function jsonHL(o) {
+  return esc(JSON.stringify(o, null, 2)).replace(/(&quot;[^&]*?&quot;)(\s*:)?|\b(-?\d+(?:\.\d+)?)\b/g, (m, s, colon, n) => s ? (colon ? `<span class="k">${s}</span>${colon}` : `<span class="s">${s}</span>`) : `<span class="nn">${n}</span>`);
+}
+function logDetail(l) {
+  const req = { cmd: l.req.split(' · ')[0], partnerId: l.who, approvalNo: l.ref, connectToken: 'ct_••••••••' + Math.random().toString(16).slice(2, 6), payload: '<AES-CBC-256 encrypted · 2,418 bytes>', requestTime: l.dt };
+  const res = { statusCode: l.code, statusMsg: l.lv === 'SUCCESS' ? '성공' : l.lv === 'WARN' ? '재시도 후 성공' : '실패', elapsedMs: l.ms, returnData: l.lv === 'SUCCESS' ? { isComplete: 1 } : null };
+  return { title: `${badge(l.lv)} <span class="mono" style="font-size:15px">${esc(l.req)}</span>`, sub: `${l.dt} · ${l.who} · ${l.ip}`,
+    body: `<div class="sec-t">Request</div><pre class="json">${jsonHL(req)}</pre><div class="sec-t">Response</div><pre class="json">${jsonHL(res)}</pre>
+      <p class="muted" style="font-size:12.5px;margin-top:12px">개인정보(여권번호·이미지)는 로그에 원문으로 저장하지 않습니다.</p>`,
+    foot: `<span class="sp"></span><button class="btn" data-act="toast" data-msg="로그를 복사했습니다.">${ic('copy')}복사</button>` };
+}
+function invoiceDetail(f) {
+  return { title: `${esc(f.name)} ${badge(f.status)}`, sub: '2026년 10월분 거래명세서 · VAT 별도',
+    body: `<div class="inv"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div style="width:120px">${logo('h')}</div><span class="muted mono">INV-202610-${f.pid}</span></div>
+      <h4 style="margin-top:22px">거 래 명 세 서</h4>
+      <div class="meta"><span>공급받는자 <b style="color:var(--ink)">${esc(f.name)}</b></span><span>공급자 <b style="color:var(--ink)">㈜로드시스템 (SIGNION)</b></span><span>청구일 2026-11-05</span></div>
+      <table><thead><tr><th>항목</th><th style="text-align:right">수량</th><th style="text-align:right">단가</th><th style="text-align:right">금액</th></tr></thead><tbody>
+      <tr><td>여권인증 사용료 (OCR + 안면인식)</td><td class="num" style="text-align:right">${fmt(f.cnt)}건</td><td class="num" style="text-align:right">${fmt(f.unit)}</td><td class="num" style="text-align:right">${fmt(f.use)}</td></tr>
+      ${f.minApplied ? `<tr><td>월 최소이용금액 차액 <span class="muted">(최소 ${fmt(f.min)}원)</span></td><td></td><td></td><td class="num" style="text-align:right">${fmt(f.min - f.use)}</td></tr>` : ''}
+      ${f.admin ? `<tr><td>관리자 시스템 · 고객정보 위탁운영 (12계정)</td><td class="num" style="text-align:right">1식</td><td class="num" style="text-align:right">${fmt(f.admin)}</td><td class="num" style="text-align:right">${fmt(f.admin)}</td></tr>` : ''}
+      <tr class="tot"><td>합계 (VAT 별도)</td><td></td><td></td><td class="num" style="text-align:right">${fmt(f.tot)}원</td></tr></tbody></table></div>
+      <div class="sec-t">입금 내역</div>
+      ${f.paid ? `<dl class="kv"><dt>입금일</dt><dd>2026-11-0${f.status === '입금완료' ? 3 : 4}</dd><dt>입금액</dt><dd class="num">${fmt(f.paid)}원</dd><dt>입금계좌</dt><dd class="mono">KB국민은행 5620-81-0128**</dd></dl>` : '<p class="muted">입금 내역이 없습니다.</p>'}
+      ${f.due ? `<div class="callout warn" style="margin-top:12px">${ic('alert')}<div>미수금 <b>${fmt(f.due)}원</b></div></div>` : ''}`,
+    foot: `<button class="btn" data-act="toast" data-msg="거래명세서를 인쇄합니다.">${ic('print')}인쇄</button><button class="btn" data-act="toast" data-msg="PDF로 저장했습니다.">${ic('pdf')}PDF</button><span class="sp"></span><button class="btn btn-p" data-act="extra" data-l="입금등록">${ic('plus')}입금등록</button>` };
+}
+function genericDetail(key, r) {
+  const cfg = CFG[key];
+  return { title: cell(cfg.cols[0], r).replace(/<[^>]+>/g, '') + (r.stop ? ' ' + badge('삭제됨', 'bad') : ''), sub: cfg.title,
+    body: `${r.stop ? `<div class="callout bad" style="margin-bottom:18px">${ic('trash')}<div><b>삭제 자료</b> · ${r.stop.date} · ${esc(r.stop.by)}<br>사유: ${esc(r.stop.reason)}</div></div>` : ''}
+      <dl class="kv">${cfg.cols.map(c => `<dt>${c.l}</dt><dd>${cell(c, r)}</dd>`).join('')}</dl>
+      <div class="sec-t">이력</div><ul class="tl"><li><span class="dot">${ic('check')}</span><div class="t">등록</div><div class="c">signion.admin · 2026-10-01 10:00</div></li></ul>`,
+    foot: cfg.noEdit ? '' : `<span class="sp"></span><button class="btn btn-p" data-act="edit-one">${ic('edit')}수정</button>` };
+}
+
+/* ---------- Drawer / Modal / Toast ---------- */
+let DR = null;
+function openDrawer(key, id) {
+  const cfg = CFG[key]; const r = cfg.rows.find(x => x.id === id); if (!r) return;
+  const d = cfg.detail ? cfg.detail(r) : genericDetail(key, r);
+  DR = { key, id };
+  const el = $('#drawer');
+  el.innerHTML = `<div class="dr-h"><div style="min-width:0"><h2>${d.title}</h2><p>${d.sub || ''}</p></div><button class="ibtn" data-act="close-drawer" aria-label="닫기">${ic('x')}</button></div>
+    <div class="dr-b">${d.body}</div>${d.foot ? `<div class="dr-f">${d.foot}</div>` : ''}`;
+  el.classList.add('on'); el.setAttribute('aria-hidden', 'false'); $('#scrim').classList.add('on');
+}
+function closeDrawer(silent) { $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden', 'true'); $('#scrim').classList.remove('on'); DR = null; }
+function switchTab(t) { $$('.tab').forEach(x => x.classList.toggle('on', x.dataset.t === t)); $$('.pane').forEach(x => x.classList.toggle('on', x.dataset.p === t)); }
+let MD = null;
+function openModal(html, opts = {}) { const m = $('#modal'); m.className = 'modal ' + (opts.wide ? 'wide' : ''); m.innerHTML = html; void m.offsetWidth; m.classList.add('on'); $('#mscrim').classList.add('on'); MD = opts; setTimeout(() => m.querySelector('input,textarea,select')?.focus(), 60); }
+function closeModal() { $('#modal').classList.remove('on'); $('#mscrim').classList.remove('on'); MD = null; }
+const MH = (t, p) => `<div class="m-h"><div><h3>${t}</h3>${p ? `<p>${p}</p>` : ''}</div><button class="ibtn" data-act="close-modal" aria-label="닫기">${ic('x')}</button></div>`;
+function toast(msg, bad) { const t = document.createElement('div'); t.className = 'toast ' + (bad ? 'bad' : ''); t.innerHTML = ic(bad ? 'alert' : 'check') + esc(msg); $('#toasts').appendChild(t); setTimeout(() => t.remove(), 2600); }
+
+function openForm(key, row) {
+  const cfg = CFG[key]; const fields = cfg.cols.filter(c => !c.ro && !['mods','res','auth','docs','ret','billcell','duecell'].includes(c.t));
+  openModal(MH(`${cfg.title} ${row ? '수정' : '등록'}`, row ? '변경 내용은 데이터수정LOG에 기록됩니다.' : '')
+    + `<form id="frm"><div class="m-b"><div class="fgrid">${fields.map((c, i) => {
+      const v = row ? row[c.k] : ''; const opts = cfg.opts?.[c.k] || (c.t === 'tier' ? TIERS.map((t, j) => j) : null);
+      const full = ['desc','memo','ret','txt','a','q','road','range'].includes(c.k) || fields.length % 2 && i === fields.length - 1;
+      return `<div class="fld ${full ? 'full' : ''}"><label>${c.l}${i < 2 ? '<span class="req">*</span>' : ''}</label>${opts
+        ? `<select class="select" name="${c.k}">${opts.map(o => `<option value="${o}" ${String(v) === String(o) ? 'selected' : ''}>${c.t === 'tier' ? TIERS[o] : c.k === 'nat' ? (NAT[o] || o) + ' (' + o + ')' : o}</option>`).join('')}</select>`
+        : `<input class="input" name="${c.k}" value="${esc(v)}" ${i < 2 ? 'required' : ''} ${['won','num'].includes(c.t) ? 'inputmode="numeric"' : ''}>`}</div>`; }).join('')}</div></div>
+      <div class="m-f"><button type="button" class="btn" data-act="close-modal">취소</button><button class="btn btn-p" type="submit">${row ? '저장' : '등록'}</button></div></form>`);
+  $('#frm').onsubmit = e => {
+    e.preventDefault(); const fd = new FormData(e.target); const o = {};
+    fields.forEach(c => { let v = fd.get(c.k); if (['won','num'].includes(c.t) || c.t === 'tier') v = Number(String(v).replace(/[^\d.-]/g, '')) || 0; o[c.k] = v; });
+    if (row) Object.assign(row, o); else cfg.rows.unshift(Object.assign({ id:'n' + Date.now(), rg:TODAY, mods:['OCR','FACE'], cnt:0, children:0, cust:0, last:'—', ip:'—' }, o));
+    closeModal(); render(); if (row && DR) openDrawer(key, row.id); toast(row ? '수정되었습니다.' : '등록되었습니다.');
+  };
+}
+function openDelete(key, ids) {
+  openModal(MH(`${ids.length}건 삭제`, '삭제 자료는 즉시 지워지지 않으며 「삭제자료표시」로 조회할 수 있습니다. (StopChk · StopDate · StopRemark)')
+    + `<div class="m-b"><div class="fld"><label>삭제 사유<span class="req">*</span></label><textarea class="input" id="delr" placeholder="예) 계약 해지 요청 (공문 2026-11-04)"></textarea><div class="hint">사유와 작업자, 일시가 데이터수정LOG에 기록됩니다.</div></div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-delete">${ic('trash')}삭제</button></div>`);
+  MD.onConfirm = () => {
+    const reason = $('#delr').value.trim(); if (!reason) { $('#delr').focus(); $('#delr').style.borderColor = 'var(--bad)'; return; }
+    CFG[key].rows.forEach(r => { if (ids.includes(r.id)) r.stop = { date:TODAY, reason, by:ME.id }; });
+    ls(key).sel.clear(); closeModal(); render(); toast(`${ids.length}건을 삭제 처리했습니다.`);
+  };
+}
+function openMerge(c) {
+  const order = [...reqDocs(c), ...((c.files['기타'] || []).length ? ['기타'] : [])].filter(d => d !== '안면인식 정보');
+  const draw = () => `<ol class="order">${order.map((d, i) => `<li><span class="no">${i + 1}</span>${d}<span class="muted" style="font-size:12px">${(c.files[d] || []).length}개</span><span class="mv"><button data-act="mv" data-i="${i}" data-dir="-1" ${i === 0 ? 'disabled' : ''} aria-label="위로">${ic('up')}</button><button data-act="mv" data-i="${i}" data-dir="1" ${i === order.length - 1 ? 'disabled' : ''} aria-label="아래로">${ic('down')}</button></span></li>`).join('')}</ol>`;
+  openModal(MH('KT 제출용 통합 PDF 발급', '여권 데이터를 포함해 업로드된 서류를 지정 순서로 병합합니다.')
+    + `<div class="m-b"><div class="fld"><label>병합 순서 <span class="muted" style="font-weight:400">— 대리점 기본값 · 서류종류타입관리에서 변경</span></label><div id="ord">${draw()}</div></div>
+      <div class="fld" style="margin-top:14px"><label>파일명 양식</label><input class="input mono" id="fnp" value="{대리점}_{고객명}_{여권번호}_{YYYYMMDD}.pdf"><div class="hint">미리보기: <span class="mono">${c.agency.replace(/㈜/, '')}_${c.name.replace(/\s/g, '')}_${maskPass(c.pass)}_${TODAY.replace(/-/g, '')}.pdf</span></div></div></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-merge">${ic('pdf')}PDF 발급 · 다운로드</button></div>`, { wide:true });
+  MD.order = order; MD.redraw = () => $('#ord').innerHTML = draw();
+  MD.onConfirm = () => { if (c.stage === '검수완료') c.stage = 'KT제출'; closeModal(); render(); openDrawer('kt/docs', c.id); toast(`통합 PDF (${order.length}개 서류)를 생성했습니다.`); };
+}
+function openComplete(c) {
+  openModal(MH('개통 완료 처리', `${esc(c.name)} · <span class="mono">${c.no}</span>`)
+    + `<div class="m-b"><div class="callout bad">${ic('alert')}<div>개통 완료 시 <b>고객 개인정보와 제출 서류가 자동 삭제</b>됩니다. 개인정보 미포함 운영·거래 로그는 3년간 보관됩니다.</div></div>
+      <div class="fld" style="margin-top:16px"><label>KT 서비스계약번호<span class="req">*</span></label><input class="input mono" id="ktno" placeholder="예) 5G-2611-00012345"></div>
+      <label class="switch" style="margin-top:6px"><input type="checkbox" id="ackd">삭제 정책을 확인했습니다.</label></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-complete">개통 완료</button></div>`);
+  MD.onConfirm = () => { if (!$('#ktno').value.trim() || !$('#ackd').checked) { toast('계약번호 입력과 삭제 정책 확인이 필요합니다.', true); return; } c.stage = '개통완료'; closeModal(); render(); openDrawer('kt/docs', c.id); toast('개통 완료 — 개인정보 삭제가 예약되었습니다.'); };
+}
+function openStatus(key, r) {
+  const opts = CFG[key].opts.status;
+  openModal(MH('등록상태변경', `현재 상태: ${r.status}`) + `<div class="m-b"><div class="fld"><label>변경할 상태</label><select class="select" id="nst">${opts.map(o => `<option ${o === r.status ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
+    <div class="fld" style="margin-top:14px"><label>처리 의견</label><textarea class="input" id="nmemo" placeholder="자료보완요청 · 등록거부 시 거래처에 안내 메일로 발송됩니다."></textarea></div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-status">변경</button></div>`);
+  MD.onConfirm = () => { r.status = $('#nst').value; closeModal(); render(); openDrawer(key, r.id); toast(`등록상태를 「${r.status}」(으)로 변경했습니다.`); };
+}
+function exportCSV(key) {
+  const cfg = CFG[key], data = filtered(key);
+  const val = (c, r) => { const v = r[c.k]; if (c.t === 'mods') return v.join('/'); if (c.t === 'res') return r.res.map(x => x.k + ':' + x.r).join('/'); if (c.t === 'tier') return TIERS[r.tier]; if (c.t === 'docs') return docProgress(r).join('/'); if (c.t === 'ret') { const x = retain(r); return typeof x === 'string' ? x : x.d; } if (c.t === 'auth') return `OCR:${r.ocr}/FACE:${r.face}`; if (['billcell','duecell'].includes(c.t)) return r[c.k]; return v ?? ''; };
+  const lines = [cfg.cols.map(c => c.l), ...data.map(r => cfg.cols.map(c => val(c, r)))].map(a => a.map(x => `"${String(x).replace(/"/g, '""')}"`).join(','));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${cfg.title}_${TODAY}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast(`${data.length}건을 엑셀(CSV)로 내보냈습니다.`);
+}
+const curKey = () => route();
+
+/* ---------- 행 단위 기능 (메뉴구성도 기능버튼) ---------- */
+function openConfirm(t, body, ok, fn, danger) {
+  openModal(MH(t) + `<div class="m-b" style="font-size:13.5px;line-height:1.65">${body}</div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn ${danger ? 'btn-df' : 'btn-p'}" data-act="confirm-generic">${ok}</button></div>`);
+  MD.onConfirm = () => { closeModal(); fn(); };
+}
+function rowAction(key, r, l) {
+  const nm = r.name || r.org || r.pid || r.uid || '';
+  if (l === '등록상태변경') return openStatus(key, r);
+  if (l === '제휴사접속정보등록') return openForm('partner/conn', null);
+  if (l === '비밀번호초기화') return openConfirm('비밀번호초기화', `<b>${esc(nm)}</b> 계정의 비밀번호를 초기화하고, 임시 비밀번호를 2단계 인증 이메일 <b>${esc(r.mail || '')}</b>(으)로 발송합니다.<br>다음 로그인 시 비밀번호 변경이 필요합니다.`, '초기화', () => toast('임시 비밀번호를 발송했습니다.'));
+  if (l === '마스터Token생성' || l === '암호화KEY생성') {
+    const tk = l === '마스터Token생성';
+    return openConfirm(l, `<b>${esc(nm)}</b>의 ${tk ? 'masterToken' : '암호화KEY (AES-CBC-256 · masterKey / IvKey)'}을 새로 생성합니다.<div class="callout warn" style="margin-top:12px">${ic('alert')}<div>기존 ${tk ? '토큰' : 'KEY'}은 즉시 만료되어 거래처 연동에 영향을 줄 수 있습니다. 거래처 담당자와 일정 협의 후 진행하세요.</div></div>`, '생성', () => toast(`${l} 완료 — ${tk ? '발행토큰관리' : '암호화KEY관리'}에 이력이 기록됩니다.`));
+  }
+  if (l === '메모등록') {
+    openModal(MH('메모등록', esc(nm)) + `<div class="m-b"><div class="fld"><label>메모<span class="req">*</span></label><textarea class="input" id="memo-t" placeholder="내부 공유용 메모 (거래처에는 노출되지 않습니다)"></textarea></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">등록</button></div>`);
+    MD.onConfirm = () => { const v = $('#memo-t').value.trim(); if (!v) return $('#memo-t').focus(); CFG['work/memo'].rows.unshift({ id:'m' + Date.now(), target:r.pid || r.uid || r.no, menu:crumbOf(key)[0], memo:v, who:ME.name, dt:fDT(new Date()).slice(0, 16) }); closeModal(); toast('메모를 등록했습니다 · 작업관리 > 자료메모관리에서 통합 조회'); };
+    return;
+  }
+  if (l === '아이디수정') {
+    const f = r.pid !== undefined ? 'pid' : 'uid';
+    openModal(MH('아이디수정', '변경 이력은 데이터수정LOG에 기록됩니다.') + `<div class="m-b"><div class="fgrid"><div class="fld"><label>현재 아이디</label><input class="input mono" value="${esc(r[f])}" disabled></div><div class="fld"><label>새 아이디<span class="req">*</span></label><input class="input mono" id="nid"></div></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">변경</button></div>`);
+    MD.onConfirm = () => { const v = $('#nid').value.trim(); if (!v) return $('#nid').focus(); CFG['work/datalog'].rows.unshift({ id:'d' + Date.now(), dt:fDT(new Date()).slice(0, 16), tbl:key.startsWith('kt') ? 'ProgUser' : 'Member', key:r[f], field:'UserID', before:r[f], after:v, who:ME.id }); r[f] = v; closeModal(); rerenderKeep(); toast('아이디를 변경했습니다.'); };
+    return;
+  }
+  toast(`${nm} · 「${l}」 — 파일 업로드 화면은 개발 단계에서 연결됩니다.`);
+}
+
+/* ---------- 서류 파일 업로드 (선택 / 끌어다 놓기) ---------- */
+let UP = null;
+function addFiles(cid, d, files) {
+  const c = CUSTOMERS.find(x => x.id === cid); if (!c || !files.length) return;
+  const list = (c.files[d] ||= []), room = 10 - list.length;
+  const big = files.filter(f => f.size > 50 * 1024 * 1024), okf = files.filter(f => f.size <= 50 * 1024 * 1024);
+  okf.slice(0, room).forEach(f => list.push(f.name));
+  if (c.stage === '서류미비' && docProgress(c)[0] === docProgress(c)[1]) c.stage = '검수대기';
+  rerenderKeep();
+  if (big.length) toast(`50MB를 넘는 파일 ${big.length}개는 제외했습니다.`, true);
+  else if (okf.length > room) toast(`서류당 최대 10개까지 등록됩니다. ${okf.length - room}개는 제외했습니다.`, true);
+  else toast(`${d} · ${okf.length}개 파일 업로드 완료`);
+}
+document.body.insertAdjacentHTML('beforeend', '<input type="file" id="fpick" multiple hidden accept=".pdf,.jpg,.jpeg,.png,.json">');
+document.addEventListener('dragover', e => { const d = e.target.closest('[data-drop]'); if (!d) return; e.preventDefault(); $$('.doc.drag').forEach(x => x !== d && x.classList.remove('drag')); d.classList.add('drag'); });
+document.addEventListener('dragleave', e => { const d = e.target.closest('[data-drop]'); if (d && !d.contains(e.relatedTarget)) d.classList.remove('drag'); });
+document.addEventListener('drop', e => { const d = e.target.closest('[data-drop]'); if (!d) return; e.preventDefault(); d.classList.remove('drag'); const [cid, doc] = d.dataset.drop.split('|'); addFiles(cid, doc, [...e.dataTransfer.files]); });
+
+/* ---------- 통합 검색 (Ctrl+K) ---------- */
+document.body.insertAdjacentHTML('beforeend', `<div class="scrim cscrim" id="cscrim"></div><div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="통합 검색"><div class="cmdk-in">${ic('search')}<input id="cq" placeholder="메뉴, 승인번호, 고객명, 여권번호, 거래처, 계정…" autocomplete="off" role="combobox" aria-controls="cr"><kbd>ESC</kbd></div><div class="cmdk-r" id="cr" role="listbox"></div><div class="cmdk-f"><span>↑↓ 이동</span><span>Enter 열기</span><span>Ctrl K 열기 · 닫기</span></div></div>`);
+const MENU_FLAT = [['대시보드', '#/dashboard', 'grid', ''],
+  ...MENU.filter(m => m.label && m.id !== 'dashboard').flatMap(m => m.children ? m.children.map(([id, l]) => [l, `#/${m.id}/${id}`, m.icon, m.label]) : [[m.label, `#/${m.id}`, m.icon, '']]),
+  ['디자인 가이드 · BI', '#/bi', 'palette', '']];
+const CK = { items:[], i:0 };
+function goOpen(key, id) { if (route() === key) openDrawer(key, id); else { S.pending = [key, id]; location.hash = '#/' + key; } }
+function hl(s, q) { const i = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1; return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + q.length)) + '</mark>' + esc(s.slice(i + q.length)); }
+function cmdkSearch(q) {
+  const ql = q.toLowerCase(), m = (...a) => a.some(x => String(x ?? '').toLowerCase().includes(ql)), out = [];
+  out.push(...MENU_FLAT.filter(([l, , , p]) => !q || m(l, p)).slice(0, q ? 6 : 10).map(([l, h, i, p]) => ({ g:'메뉴', i, l: p ? `${p} › ${l}` : l, sub:'', go:() => location.hash = h })));
+  if (q) {
+    out.push(...TRANS.filter(t => m(t.no, t.name, t.pass)).slice(0, 4).map(t => ({ g:'인증내역', i:'shield', l:`${t.no} · ${t.name}`, sub:`${t.dt.slice(5, 16)} · ${t.status}`, go:() => goOpen('trans', t.id) })));
+    out.push(...CUSTOMERS.filter(c => m(c.no, c.name, c.pass)).slice(0, 4).map(c => ({ g:'KT 가입 고객', i:'passport', l:`${c.name} · ${c.no}`, sub:c.stage, go:() => goOpen('kt/docs', c.id) })));
+    out.push(...PARTNERS.filter(p => m(p.pid, p.name)).slice(0, 4).map(p => ({ g:'인증거래처', i:'building', l:`${p.name} · ${p.pid}`, sub:p.status, go:() => goOpen('partner/overview', p.id) })));
+    out.push(...ACCOUNTS.filter(a => m(a.uid, a.org, a.man)).slice(0, 4).map(a => ({ g:'관리자 계정', i:'users', l:`${a.uid} · ${a.org}`, sub:TIERS[a.tier], go:() => goOpen('kt/overview', a.id) })));
+  }
+  return out;
+}
+function cmdkRender() {
+  const q = $('#cq').value.trim(); CK.items = cmdkSearch(q); CK.i = Math.min(CK.i, Math.max(0, CK.items.length - 1)); let last = '';
+  $('#cr').innerHTML = CK.items.length ? CK.items.map((o, i) => (o.g !== last ? `<div class="cmdk-g">${last = o.g}</div>` : '') + `<div class="cmdk-o ${i === CK.i ? 'on' : ''}" role="option" aria-selected="${i === CK.i}" data-act="ck-go" data-ci="${i}">${ic(o.i)}<span>${hl(o.l, q)}</span><small>${esc(o.sub)}</small></div>`).join('')
+    : `<div class="empty">${ic('search')}<div>「${esc(q)}」 검색 결과가 없습니다.</div></div>`;
+  $('#cr .cmdk-o.on')?.scrollIntoView({ block:'nearest' });
+}
+function openCmdk() { if (!S.authed) return; $('#cmdk').classList.add('on'); $('#cscrim').classList.add('on'); $('#cq').value = ''; CK.i = 0; cmdkRender(); setTimeout(() => $('#cq').focus(), 0); }
+function closeCmdk() { $('#cmdk').classList.remove('on'); $('#cscrim').classList.remove('on'); }
+function chooseCmdk(i) { const o = CK.items[i]; if (!o) return; closeCmdk(); o.go(); }
+$('#cq').addEventListener('input', () => { CK.i = 0; cmdkRender(); });
+$('#cq').addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const n = CK.items.length; if (n) { CK.i = (CK.i + (e.key === 'ArrowDown' ? 1 : -1) + n) % n; cmdkRender(); } }
+  else if (e.key === 'Enter') { e.preventDefault(); chooseCmdk(CK.i); }
+  else if (e.key === 'Escape') { e.stopPropagation(); closeCmdk(); }
+});
+
+/* ---------- Events ---------- */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act]');
+  if (!e.target.closest('.dd-wrap') || (a && a.dataset.act !== 'dd')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open'));
+  if (!a) { if (e.target.id === 'scrim') closeDrawer(); if (e.target.id === 'mscrim') closeModal(); if (e.target.id === 'cscrim') closeCmdk(); if (!e.target.closest('.sb') && !e.target.closest('.burger')) $('#sb')?.classList.remove('open'); return; }
+  const act = a.dataset.act, key = curKey(), st = CFG[key] ? ls(key) : null;
+  switch (act) {
+    case 'nav-toggle':
+      if (S.mini && innerWidth > 1024) { const m = MENU.find(x => x.id === a.dataset.id); location.hash = `#/${m.id}/${m.children[0][0]}`; break; }
+      S.open[a.dataset.id] = !S.open[a.dataset.id]; a.parentElement.classList.toggle('open'); a.setAttribute('aria-expanded', S.open[a.dataset.id]); break;
+    case 'burger': $('#sb').classList.toggle('open'); break;
+    case 'mini': S.mini = !S.mini; $('.app').classList.toggle('mini', S.mini); try { localStorage.setItem('sg_mini', S.mini ? '1' : '0'); } catch (x) {} break;
+    case 'dd': { const w = a.closest('.dd-wrap'), was = w.classList.contains('open'); $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); if (!was) w.classList.add('open'); break; }
+    case 'cmdk': openCmdk(); break;
+    case 'ck-go': chooseCmdk(+a.dataset.ci); break;
+    case 'sort': { const k = a.dataset.k, s = st.sort; st.sort = !s || s.k !== k ? { k, dir:1 } : s.dir === 1 ? { k, dir:-1 } : null; render(); break; }
+    case 'page': st.pg = +a.dataset.p; render(); $('.tbl-wrap')?.closest('.card')?.scrollIntoView({ block:'nearest' }); break;
+    case 'chip-x': { const k = a.dataset.k; if (k === 'q') st.q = ''; else if (k === '_date') st.from = st.to = ''; else st.f[k] = ''; st.pg = 1; render(); break; }
+    case 'chips-clear': st.q = ''; st.f = {}; st.from = st.to = ''; st.pg = 1; render(); break;
+    case 'sel-clear': st.sel.clear(); render(); break;
+    case 'theme': S.theme = S.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = S.theme; try { localStorage.setItem('sg_theme', S.theme); } catch (x) {} $$('.ibtn[data-act="theme"]').forEach(b => b.innerHTML = ic(S.theme === 'dark' ? 'sun' : 'moon')); break;
+    case 'logout': S.authed = false; S.step = 1; try { sessionStorage.removeItem('sg_auth'); } catch (x) {} location.hash = '#/login'; break;
+    case 'noti': toast('새 알림 3건 — 검수 대기 고객이 있습니다.'); break;
+    case 'toast': e.stopPropagation(); toast(a.dataset.msg); break;
+    case 'dash-range': S.dashRange = +a.dataset.n; render(); break;
+    case 'chart-table': S.chartTable = !S.chartTable; render(); break;
+    case 'go-trans': goOpen('trans', a.dataset.id); break;
+    case 'search': st.q = $('[data-q]').value; st.sel.clear(); st.pg = 1; render(); break;
+    case 'adv': st.adv = !st.adv; render(); break;
+    case 'adv-apply': $$('[data-f]').forEach(s => st.f[s.dataset.f] = s.value); st.from = $('[data-from]')?.value || ''; st.to = $('[data-to]')?.value || ''; st.pg = 1; render(); break;
+    case 'adv-reset': st.f = {}; st.from = st.to = ''; st.pg = 1; render(); break;
+    case 'ck-all': { e.stopPropagation(); const d = listView(key).data; if (a.checked) d.forEach(r => st.sel.add(r.id)); else d.forEach(r => st.sel.delete(r.id)); render(); break; }
+    case 'ck': e.stopPropagation(); a.checked ? st.sel.add(a.dataset.id) : st.sel.delete(a.dataset.id); render(); break;
+    case 'open': if (e.target.closest('.ck')) return; openDrawer(key, a.dataset.id); break;
+    case 'close-drawer': closeDrawer(); break;
+    case 'close-modal': closeModal(); break;
+    case 'tab': switchTab(a.dataset.t); break;
+    case 'create': openForm(key, null); break;
+    case 'create-in': openForm(a.dataset.k, null); break;
+    case 'edit': { const id = [...st.sel][0]; openForm(key, CFG[key].rows.find(r => r.id === id)); break; }
+    case 'edit-one': if (DR) openForm(DR.key, CFG[DR.key].rows.find(r => r.id === DR.id)); break;
+    case 'delete': openDelete(key, [...st.sel]); break;
+    case 'excel': exportCSV(key); break;
+    case 'extra': {
+      const l = a.dataset.l;
+      if (l === '서류 PDF변환 통합 다운로드') { const ids = [...st.sel]; if (!ids.length) { toast('통합 다운로드할 고객을 선택하세요.', true); break; } toast(`${ids.length}명의 서류를 고객별 PDF로 변환해 ZIP으로 내려받습니다.`); break; }
+      if (l === '서류 다운로드') { toast(st.sel.size ? `${st.sel.size}명의 원본 서류를 내려받습니다.` : '다운로드할 고객을 선택하세요.', !st.sel.size); break; }
+      if (ROW_SCOPED.includes(l)) {
+        const k2 = DR ? DR.key : key, id = DR ? DR.id : (st && st.sel.size === 1 ? [...st.sel][0] : null);
+        const r = id && CFG[k2]?.rows.find(x => x.id === id);
+        if (!r) { toast('목록에서 1건을 선택하세요.', true); break; }
+        rowAction(k2, r, l); break;
+      }
+      toast(`「${l}」 — 처리 화면은 개발 단계에서 연결됩니다.`); break;
+    }
+    case 'status-change': if (DR) openStatus(DR.key, CFG[DR.key].rows.find(r => r.id === DR.id)); break;
+    case 'confirm-delete': case 'confirm-merge': case 'confirm-complete': case 'confirm-status': case 'confirm-generic': MD?.onConfirm?.(); break;
+    case 'mv': { const i = +a.dataset.i, j = i + +a.dataset.dir; [MD.order[i], MD.order[j]] = [MD.order[j], MD.order[i]]; MD.redraw(); break; }
+    case 'upload': UP = [a.dataset.c, a.dataset.d]; $('#fpick').value = ''; $('#fpick').click(); break;
+    case 'rmfile': { e.stopPropagation(); const c = CUSTOMERS.find(x => x.id === a.dataset.c), d = a.dataset.d; c.files[d].splice(+a.dataset.i, 1); if (docProgress(c)[0] < docProgress(c)[1]) { c.stage = '서류미비'; c.inspected = false; } rerenderKeep(); toast('파일을 삭제했습니다.'); break; }
+    case 'inspect': { const c = CUSTOMERS.find(x => x.id === a.dataset.c); c.inspected = true; c.stage = '검수완료'; rerenderKeep(); toast('검수 완료로 체크했습니다.'); break; }
+    case 'merge': openMerge(CUSTOMERS.find(x => x.id === a.dataset.c)); break;
+    case 'complete': openComplete(CUSTOMERS.find(x => x.id === a.dataset.c)); break;
+    case 'copy-tok': { const t = a.dataset.v; navigator.clipboard?.writeText(t).then(() => toast('복사했습니다.'), () => toast('복사할 수 없습니다.', true)); break; }
+  }
+});
+document.addEventListener('change', e => {
+  const a = e.target.closest('[data-act="del-toggle"]'); if (a) { const st = ls(curKey()); st.del = a.checked; st.pg = 1; render(); }
+  if (e.target.matches('[data-size]')) { const st = ls(curKey()); st.size = +e.target.value; st.pg = 1; render(); }
+  if (e.target.id === 'fpick' && UP) { addFiles(UP[0], UP[1], [...e.target.files]); UP = null; }
+});
+document.addEventListener('keydown', e => {
+  const t = e.target instanceof Element ? e.target : null;
+  const typing = !!t?.matches('input, textarea, select');
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); $('#cmdk').classList.contains('on') ? closeCmdk() : openCmdk(); return; }
+  if (e.key === '/' && !typing) { e.preventDefault(); openCmdk(); return; }
+  if (e.key === 'Escape') { if ($('#cmdk').classList.contains('on')) closeCmdk(); else if ($('.dd-wrap.open')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); else if (MD) closeModal(); else if (DR) closeDrawer(); }
+  if (e.key === 'Enter' && t?.matches('[data-q]')) { const st = ls(curKey()); st.q = e.target.value; st.pg = 1; render(); setTimeout(() => { const q = $('[data-q]'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }, 0); }
+});
+const tip = $('#tip');
+document.addEventListener('mousemove', e => {
+  const t = e.target.closest('[data-tip]'); if (!t) { tip.style.opacity = 0; return; }
+  tip.innerHTML = t.dataset.tip; tip.style.opacity = 1;
+  const w = tip.offsetWidth; tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + 'px'; tip.style.top = (e.clientY - 46) + 'px';
+});
+window.addEventListener('hashchange', render);
+
+/* ---------- Login ---------- */
+function Login() {
+  return `<div class="login">
+  <section class="lg-vis">${logo('h', 'mono-w')}
+    <div class="scanbox" aria-hidden="true"><div class="pht"></div><div class="ln"><i style="width:70%"></i><i style="width:90%"></i><i style="width:55%"></i><i style="width:80%"></i></div><div class="mz"><i></i><i style="width:92%"></i></div><span class="beam"></span></div>
+    <div class="lg-copy"><h1>여권이 확인되면,<br>비즈니스가 켜집니다.</h1><p>Passport Verified. Business On.</p></div>
+    <div class="lg-feat"><div><b>AI 여권인증</b><span>OCR · 전자여권 NFC · 안면인식 · 라이브니스</span></div><div><b>E2E 암호화</b><span>AES-256 · masterToken · connectToken</span></div><div><b>관리자 보안</b><span>2단계 인증 · 접속 IP · 사용 로그 기록</span></div></div>
+    <div class="lg-copyr">© 2026 LORDSYSTEM Co., Ltd. All rights reserved.</div>
+  </section>
+  <section class="lg-form"><div class="lg-card">${logo('h')}
+    ${S.step === 1 ? `<h2>관리자 로그인</h2><p>SIGNION BackOffice에 오신 것을 환영합니다.</p>
+      <form id="lf"><div class="fld"><label for="lid">아이디</label><input class="input input-lg" id="lid" style="width:100%" value="${ME.id}" autocomplete="username" required></div>
+      <div class="fld"><label for="lpw">비밀번호</label><input class="input input-lg" id="lpw" type="password" style="width:100%" value="prototype" autocomplete="current-password" required></div>
+      <div class="lg-row"><label class="switch"><input type="checkbox" checked>아이디 저장</label><a href="#/login" data-act="toast" data-msg="비밀번호 초기화는 상위 관리자에게 요청하세요.">비밀번호 찾기</a></div>
+      <button class="btn btn-p btn-block" type="submit">로그인</button></form>`
+    : `<h2>이메일 인증</h2><p><b>s****n@signion.example</b>(으)로 발송된 6자리 인증번호를 입력하세요.</p>
+      <form id="of"><div class="otp">${Array.from({ length:6 }, (_, i) => `<input class="input" inputmode="numeric" maxlength="1" aria-label="인증번호 ${i + 1}번째" value="${'261105'[i]}">`).join('')}</div>
+      <div class="lg-row"><span class="ink2">남은 시간 <span class="timer" id="otpt">04:59</span></span><a href="#/login" data-act="toast" data-msg="인증번호를 다시 보냈습니다.">재발송</a></div>
+      <button class="btn btn-p btn-block" type="submit">인증하고 시작하기</button>
+      <button class="btn btn-ghost btn-block" type="button" id="back" style="margin-top:8px;font-size:14px;font-weight:500">이전으로</button></form>`}
+    <div class="lg-note">${ic('shieldl')}<span>접속 IP(${ME.ip})와 사용 이력이 기록됩니다. 허가되지 않은 접근은 관련 법령에 따라 처벌될 수 있습니다.</span></div>
+  </div></section></div>`;
+}
+function bindLogin() {
+  const lf = $('#lf'); if (lf) lf.onsubmit = e => { e.preventDefault(); S.step = 2; render(); };
+  const of = $('#of');
+  if (of) {
+    const ins = $$('.otp input'); ins.forEach((inp, i) => { inp.oninput = () => { inp.value = inp.value.replace(/\D/g, ''); if (inp.value && ins[i + 1]) ins[i + 1].focus(); }; inp.onkeydown = e => { if (e.key === 'Backspace' && !inp.value && ins[i - 1]) ins[i - 1].focus(); }; });
+    $('#back').onclick = () => { S.step = 1; render(); };
+    of.onsubmit = e => { e.preventDefault(); if (ins.some(x => !x.value)) { toast('인증번호 6자리를 입력하세요.', true); return; } S.authed = true; S.step = 1; try { sessionStorage.setItem('sg_auth', '1'); } catch (x) {} location.hash = '#/dashboard'; toast(`${ME.name} 님, 로그인되었습니다.`); };
+    let left = 299; clearInterval(otpTimer); otpTimer = setInterval(() => { left--; const t = $('#otpt'); if (!t || left < 0) return clearInterval(otpTimer); t.textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)}`; }, 1000);
+  }
+}
+
+/* ---------- BI Guide ---------- */
+function BI() {
+  const tints = (hex) => `<div class="tints">${[10,20,30,40,50,60,70,80,90,100].map(p => `<i style="background:color-mix(in srgb,${hex} ${p}%,#fff)" title="${p}%"></i>`).join('')}</div>`;
+  const tokens = [['--brand','#0063FF','Neon Blue · 주요 액션'],['--cyan','#00E0FF','Vivid Cyan · 스캔 모티프'],['--ink','#0E1726','본문 텍스트'],['--ink-2','#4A5568','보조 텍스트'],['--muted','#8792A4','캡션 · 비활성'],['--line','#E3E8EF','구분선'],['--bg','#F4F6FA','페이지 배경'],['--ok','#0B8A5B','성공 · 완료'],['--warn','#B26A00','주의 · 대기'],['--bad','#D92D3A','실패 · 위험']];
+  return PH('SIGNION 디자인 가이드', 'SIGNION Brand Identity Guidelines를 백오피스 UI에 적용한 기준입니다. 개발 시 아래 토큰과 원본 로고 데이터를 사용하세요.',
+    `<button class="btn" data-act="toast" data-msg="assets/logo-h.svg · assets/logo-sym.svg 를 사용하세요.">${ic('download')}로고 SVG</button>`)
+  + `<section class="card bi-hero" style="margin-bottom:16px"><div class="lg">${logo('h')}</div>
+    <div class="cp"><div class="muted" style="font-size:12px;font-weight:700;letter-spacing:.08em">BS 1-2 · CONCEPT</div><h2>Trusted Scan</h2>
+      <p class="ink2" style="margin:8px 0 0;line-height:1.7">시그니온의 이니셜 <b>S</b>와 신원인증을 의미하는 <b>스캔 라인</b>을 결합한 이니셜 로고. 심벌을 가로지르는 라인은 여권과 신원을 정확하게 확인하는 스캐닝·검증 과정을, 좌우로 열린 구조는 검증된 신원이 다양한 서비스로 연결되는 확장성을, S의 하단 곡선은 신뢰와 안심의 <b>스마일</b>을 담았습니다.</p>
+      <div class="kw"><span>Signion</span><span>Scan</span><span>Smile</span><span>Identity Verification</span></div>
+      <div class="callout info" style="margin-top:18px">${ic('scan')}<div>UI에서는 스캔 라인을 <b>Cyan → Blue 그라데이션 2–3px 라인</b>으로만 사용합니다 — 활성 메뉴 표시, 활성 탭, 핵심 KPI 상단, 로그인 키비주얼.</div></div></div></section>
+  <section class="card" style="margin-bottom:16px"><div class="card-h"><h3>로고 색상 활용 규정</h3><span class="sub">BS 3-2 · 흰 배경 적용을 가장 우선합니다</span></div><div class="card-b"><div class="variants">
+    <div class="variant"><div class="bx" style="background:#fff">${logo('h')}</div><div class="cap">White Background — 기본</div></div>
+    <div class="variant"><div class="bx" style="background:#0063FF">${logo('h', 'mono-w')}</div><div class="cap">Neon Blue Background — 로그인</div></div>
+    <div class="variant"><div class="bx" style="background:#00E0FF">${logo('h')}</div><div class="cap">Neon Mint Background</div></div>
+    <div class="variant on-black"><div class="bx" style="background:#000">${logo('h')}</div><div class="cap">Black Background — 다크 모드</div></div>
+    <div class="variant"><div class="bx" style="background:var(--surface-2)">${logo('sym', 'sym-l')}</div><div class="cap">Symbol · Favicon (라운드 사각형)</div></div>
+  </div></div></section>
+  <div class="g2e">
+    <section class="card"><div class="card-h"><h3>전용 색상</h3><span class="sub">BS 3-1 · 화면은 RGB 기준</span></div><div class="card-b"><div class="swatches">
+      <div class="sw"><div class="c" style="background:#0063FF">Neon Blue</div>${tints('#0063FF')}<dl><dt>HEX</dt><dd>#0063FF</dd><dt>RGB</dt><dd>0 · 99 · 255</dd><dt>CMYK</dt><dd>100 · 70 · 0 · 0</dd><dt>Pantone</dt><dd>285 C</dd></dl></div>
+      <div class="sw"><div class="c" style="background:#00E0FF;color:#002A66">Vivid Cyan</div>${tints('#00E0FF')}<dl><dt>HEX</dt><dd>#00E0FF</dd><dt>RGB</dt><dd>0 · 224 · 255</dd><dt>CMYK</dt><dd>60 · 0 · 7 · 0</dd><dt>Pantone</dt><dd>311 C</dd></dl></div>
+      <div class="sw" style="grid-column:1/-1"><div class="c" style="background:linear-gradient(180deg,#00E0FF,#0063FF);height:72px">Gradient</div><dl><dt>사용</dt><dd style="font-weight:500">심벌 하단 · UI 스캔 라인 (90deg Cyan → Blue). 면 채우기·배경으로 확대 사용 금지.</dd></dl></div>
+    </div></div></section>
+    <section class="card"><div class="card-h"><h3>UI 확장 토큰</h3><span class="sub">관리자 화면 전용 · 라이트 기준</span></div><div class="card-b"><div class="tok">${tokens.map(([n, h, d]) => `<div><i style="background:${h}"></i><p><b>${d}</b><span>${n} ${h}</span></p></div>`).join('')}</div>
+      <div class="sec-t">상태 표시</div><div class="demo-row">${badge('등록완료')}${badge('검수대기')}${badge('실패')}${badge('진행중')}${badge('대기중')}</div>
+      <p class="muted" style="font-size:12.5px;margin:10px 0 0">상태 색상은 항상 아이콘과 텍스트를 함께 표시합니다 (색상만으로 의미 전달 금지).</p></div></section>
+  </div>
+  <section class="card" style="margin-bottom:16px"><div class="card-h"><h3>지정 서체 — Pretendard</h3><span class="sub">BS 5-1 · 5-2 · 문자폭 100%, 자간 0</span></div><div class="card-b">
+    ${[['Bold 700','제목 · 페이지 타이틀 22px',700,'여권이 확인되면, 비즈니스가 켜집니다.'],['SemiBold 600','소제목 · 카드 제목 15px',600,'Passport Verified. Business On.'],['Medium 500','버튼 · 메뉴 14px',500,'여권이 확인되면, 비즈니스가 켜집니다.'],['Regular 400','본문 · 표 13.5–14px',400,'가나다라마바사아자차카타파하 ABCDEFGHIJKLM 0123456789'],['Light 300','슬로건 영문 · 보조',300,'Passport Verified. Business On.']].map(([n, d, w, s]) => `<div class="type-row"><div class="m"><b>${n}</b><span>${d}</span></div><div class="s" style="font-weight:${w}">${s}</div></div>`).join('')}
+  </div></section>
+  <div class="g2e">
+    <section class="card"><div class="card-h"><h3>사용 금지 규정</h3><span class="sub">BS 4-1</span></div><div class="card-b"><div class="rules">
+      ${['로고를 임의로 기울이기','로고 색상 임의 변경','시그니처 조합 변경','저화질 로고 사용','복잡한 배경 위 적용','배경색 때문에 불분명','로고 형태 변형','비례 왜곡','로고타입 대소문자 혼용'].map(t => `<div>${ic('x')}<span>${t}</span></div>`).join('')}</div></div></section>
+    <section class="card"><div class="card-h"><h3>UI 적용 원칙</h3></div><div class="card-b"><div class="rules do">
+      ${['로고는 원본 SVG만 사용 (assets/)','로고 주변 최소 공간 3 Unit 확보','주요 버튼은 Neon Blue 단색','Cyan은 라인·포인트에만 사용','숫자는 tabular-nums 정렬','개인정보는 기본 마스킹 표시','삭제는 사유 입력 후 논리 삭제','다크 모드는 Black 배경 로고 변형'].map(t => `<div>${ic('check')}<span>${t}</span></div>`).join('')}</div></div></section>
+  </div>
+  <section class="card"><div class="card-h"><h3>컴포넌트</h3><span class="sub">버튼 · 입력 · 칩</span></div><div class="card-b">
+    <div class="demo-row" style="margin-bottom:14px"><button class="btn btn-p">${ic('plus')}등록</button><button class="btn">${ic('edit')}수정</button><button class="btn btn-d">${ic('trash')}삭제</button><button class="btn">${ic('download')}엑셀로</button><button class="btn btn-soft">${ic('pdf')}통합 PDF</button><button class="btn btn-df">개통 완료</button><button class="btn" disabled>비활성</button></div>
+    <div class="demo-row" style="margin-bottom:14px"><input class="input" placeholder="입력 필드" style="width:220px"><select class="select" style="width:160px"><option>선택</option></select><label class="switch"><input type="checkbox" checked>삭제자료표시</label></div>
+    <div class="demo-row">${resChips([{ k:'OCR', r:'ok' }, { k:'NFC', r:'ok' }, { k:'FACE', r:'fail' }, { k:'GOV', r:'skip' }])}<span class="tier tier-0">헤드마스터</span><span class="tier tier-1">마스터</span><span class="tier tier-2">총괄</span><span class="tier tier-3">서브</span></div>
+    <div class="sec-t">CSS 토큰 (개발 전달용)</div>
+<pre class="code"><span class="c3">/* SIGNION BackOffice — design tokens */</span>
+:root {
+  <span class="c2">--brand</span>: <span class="c1">#0063FF</span>;        <span class="c3">/* Neon Blue · Pantone 285 C */</span>
+  <span class="c2">--cyan</span>: <span class="c1">#00E0FF</span>;         <span class="c3">/* Vivid Cyan · Pantone 311 C */</span>
+  <span class="c2">--scan</span>: linear-gradient(90deg, <span class="c1">#00E0FF</span>, <span class="c1">#0063FF</span>);
+  <span class="c2">--font</span>: Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  <span class="c2">--radius</span>: 8px;  <span class="c2">--radius-card</span>: 12px;
+  <span class="c2">--sidebar</span>: 256px; <span class="c2">--topbar</span>: 60px;
+}</pre></div></section>`;
+}
+
+render();
+</script>
+</body>
+</html>
