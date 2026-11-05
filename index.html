@@ -348,11 +348,12 @@ table.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 .lg-copy h1{font-size:clamp(28px,3vw,40px);line-height:1.3;margin:0;font-weight:700;letter-spacing:-.02em}
 .lg-copy p{margin:12px 0 0;font-size:16px;font-weight:300;opacity:.9;letter-spacing:.01em}
 .scanbox{position:relative;width:min(340px,80%);aspect-ratio:1.45/1;margin:48px 0 40px;border-radius:18px;border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.06);padding:22px;display:grid;grid-template-columns:30% 1fr;gap:16px}
-.scanbox .pht{background:rgba(255,255,255,.22);border-radius:8px}
-.scanbox .ln{display:flex;flex-direction:column;gap:9px;padding-top:4px}
+.scanbox .pht{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.16));border-radius:8px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.scanbox .pht svg{width:82%;height:auto;fill:rgba(255,255,255,.62)}
+.scanbox .ln{display:flex;flex-direction:column;gap:9px;padding-top:2px;min-width:0}
+.scanbox .ln b{font-size:11px;font-weight:700;letter-spacing:.14em;opacity:.85;margin-bottom:2px}
 .scanbox .ln i{display:block;height:7px;border-radius:4px;background:rgba(255,255,255,.3)}
-.scanbox .mz{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;align-self:end}
-.scanbox .mz i{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.22)}
+.scanbox .mz{grid-column:1/-1;display:flex;flex-direction:column;gap:3px;align-self:end;font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:10.5px;letter-spacing:.14em;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden}
 .scanbox .beam{position:absolute;left:-6%;right:-6%;height:3px;border-radius:3px;background:#00E0FF;box-shadow:0 0 18px 4px rgba(0,224,255,.55);animation:beam 3.2s ease-in-out infinite}
 @keyframes beam{0%,100%{top:14%}50%{top:84%}}
 @media (prefers-reduced-motion:reduce){.scanbox .beam{animation:none;top:50%}}
@@ -1676,7 +1677,11 @@ window.addEventListener('hashchange', render);
 function Login() {
   return `<div class="login">
   <section class="lg-vis">${logo('h', 'mono-w')}
-    <div class="scanbox" aria-hidden="true"><div class="pht"></div><div class="ln"><i style="width:70%"></i><i style="width:90%"></i><i style="width:55%"></i><i style="width:80%"></i></div><div class="mz"><i></i><i style="width:92%"></i></div><span class="beam"></span></div>
+    <div class="scanbox" aria-hidden="true">
+      <div class="pht"><svg viewBox="0 0 80 92"><circle cx="40" cy="34" r="17"/><path d="M6 92c0-21 15-35 34-35s34 14 34 35z"/></svg></div>
+      <div class="ln"><b>PASSPORT · 여권</b><i style="width:70%"></i><i style="width:90%"></i><i style="width:55%"></i><i style="width:80%"></i></div>
+      <div class="mz"><span>P&lt;KORSIGNION&lt;&lt;VERIFIED&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span><span>S1G2N0N26&lt;0KOR9001015M3011058&lt;&lt;&lt;&lt;&lt;&lt;</span></div>
+      <span class="beam"></span></div>
     <div class="lg-copy"><h1>여권이 확인되면,<br>비즈니스가 켜집니다.</h1><p>Passport Verified. Business On.</p></div>
     <div class="lg-feat"><div><b>AI 여권인증</b><span>OCR · 전자여권 NFC · 안면인식 · 라이브니스</span></div><div><b>E2E 암호화</b><span>AES-256 · masterToken · connectToken</span></div><div><b>관리자 보안</b><span>2단계 인증 · 접속 IP · 사용 로그 기록</span></div></div>
     <div class="lg-copyr">© 2026 LORDSYSTEM Co., Ltd. All rights reserved.</div>
