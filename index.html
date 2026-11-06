@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SIGNION BackOffice</title>
 <link rel="icon" href="assets/logo-sym.svg" type="image/svg+xml">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<link rel="preload" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"></noscript>
 <style>
 /* ============================================================
    SIGNION Design Tokens — BI Guidelines BS 3-1 / BS 5-1 기준
@@ -38,6 +41,7 @@
 .on-black .logo path[fill="#0063ff"]{fill:#fff} .on-black .logo path[fill="#ffffff"]{fill:#000} .on-black .logo image{filter:brightness(0) invert(1)}
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{margin:0;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;font-size:14px;line-height:1.5;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
 a{color:var(--brand);text-decoration:none}
@@ -224,13 +228,19 @@ table.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
 /* ---------- Drawer / Modal / Toast ---------- */
 .scrim{position:fixed;inset:0;background:rgba(8,13,22,.42);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(760px,100vw);background:var(--surface);z-index:60;transform:translateX(102%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility 0s .26s;display:flex;flex-direction:column}
-.drawer.on{transform:none;visibility:visible;box-shadow:var(--shadow-lg);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.drawer{position:fixed;top:50%;left:50%;width:min(1080px,calc(100vw - 48px));max-height:min(880px,calc(100vh - 48px));background:var(--surface);z-index:60;border-radius:16px;border:1px solid var(--line);transform:translate(-50%,-48%) scale(.98);opacity:0;visibility:hidden;transition:transform .2s cubic-bezier(.2,.8,.2,1),opacity .2s,visibility 0s .2s;display:flex;flex-direction:column;overflow:hidden}
+.drawer.on{transform:translate(-50%,-50%);opacity:1;visibility:visible;box-shadow:0 24px 64px -16px rgba(8,13,22,.45);transition:transform .2s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.drawer::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#00E0FF,#0063FF)}
+@media (prefers-reduced-motion:reduce){.drawer,.drawer.on{transition:none}}
+@media (max-width:720px){.drawer{width:100vw;height:100dvh;max-height:none;border-radius:0;border:0}}
 .dr-h{padding:18px 24px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
 .dr-h h2{margin:0;font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .dr-h p{margin:4px 0 0;color:var(--ink-2);font-size:13px}
 .dr-h .ibtn{margin-left:auto;margin-top:-4px}
-.dr-b{flex:1;overflow-y:auto;padding:20px 24px 28px}
+.dr-nav{margin-left:auto;display:flex;align-items:center;gap:2px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dr-nav .ibtn{margin:0} .dr-nav .ibtn:disabled{opacity:.35;cursor:default}
+.dr-nav+.ibtn{margin-left:6px}
+.dr-b{flex:1 1 auto;min-height:0;overflow-y:auto;padding:20px 24px 28px}
 .dr-f{padding:14px 24px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;background:var(--surface-2)}
 .dr-f .sp{flex:1}
 .mscrim{z-index:70}
@@ -481,6 +491,229 @@ button.gsearch span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:elli
   .app.mini .sb-fold .i{transform:scaleX(-1)}
 }
 
+/* ---------- Datepicker ---------- */
+.dp{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dp:hover{border-color:color-mix(in srgb,var(--ink) 22%,var(--line))}
+.dp[aria-expanded="true"]{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.dp>.i{width:16px;height:16px;color:var(--brand)} .dp .dn{color:var(--muted);font-size:12px} .dp .chev{width:14px;height:14px;color:var(--muted)}
+.dpop{position:fixed;z-index:120;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);display:none;overflow:hidden;max-width:calc(100vw - 24px)}
+.dpop.on{display:flex;flex-direction:column}
+.dp-body{display:flex}
+.dp-pre{display:flex;flex-direction:column;gap:2px;padding:12px 8px;border-right:1px solid var(--line-2);min-width:132px}
+.dp-pre .t{font-size:11px;font-weight:700;color:var(--muted);padding:4px 10px 6px;letter-spacing:.04em}
+.dp-pre button{border:0;background:none;text-align:left;padding:8px 10px;border-radius:8px;cursor:pointer;font:inherit;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.dp-pre button:hover{background:var(--surface-2);color:var(--ink)} .dp-pre button.on{background:var(--brand-50);color:var(--brand);font-weight:600}
+.dp-cals{padding:12px 16px 6px;position:relative}
+.dp-nav{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none}
+.dp-nav button{pointer-events:auto;width:30px;height:30px;border-radius:8px;border:1px solid transparent;background:none;cursor:pointer;display:grid;place-items:center;color:var(--ink-2)}
+.dp-nav button:hover:not(:disabled){background:var(--surface-2);border-color:var(--line)} .dp-nav button:disabled{opacity:.25;cursor:default}
+.dp-nav .i{width:16px;height:16px}
+.dp-months{display:flex;gap:24px}
+.cal{width:252px}
+.cal-t{text-align:center;font-weight:700;font-size:14px;height:30px;line-height:30px;margin-bottom:4px}
+.cal-w,.cal-g{display:grid;grid-template-columns:repeat(7,36px)}
+.cal-w span{text-align:center;font-size:11.5px;color:var(--muted);height:26px;line-height:26px;font-weight:600}
+.cal-w span:first-child{color:var(--bad)}
+.cal-g .d{height:36px;border:0;background:none;cursor:pointer;font:inherit;font-size:13px;color:var(--ink);padding:0;font-variant-numeric:tabular-nums}
+.cal-g .d span{display:grid;place-items:center;width:34px;height:34px;margin:auto;border-radius:50%}
+.cal-g .d:hover:not(:disabled) span{background:var(--surface-2)}
+.cal-g .d:focus-visible{outline:none} .cal-g .d:focus-visible span{box-shadow:0 0 0 2px var(--brand)}
+.cal-g .d.sun{color:var(--bad)}
+.cal-g .d.today span{box-shadow:inset 0 0 0 1.5px var(--brand);font-weight:700}
+.cal-g .d.in{background:var(--brand-50)}
+.cal-g .d.rs{background:linear-gradient(90deg,transparent 50%,var(--brand-50) 50%)}
+.cal-g .d.re{background:linear-gradient(90deg,var(--brand-50) 50%,transparent 50%)}
+.cal-g .d.rs.re{background:none}
+.cal-g .d.rs span,.cal-g .d.re span{background:var(--brand)!important;color:#fff;font-weight:700}
+.cal-g .d:disabled{color:color-mix(in srgb,var(--muted) 45%,transparent);cursor:default}
+.cal-g .d.pilot:not(.rs):not(.re) span::after{content:"";display:block}
+.cal-g .out{visibility:hidden}
+.dp-foot{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--line-2);flex-wrap:wrap;background:var(--surface-2)}
+.dp-foot .input{width:118px;height:32px;font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:12.5px;text-align:center}
+.dp-foot .input.err{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+.dp-foot .sp{flex:1}
+.dp-foot .hint{font-size:12px;color:var(--muted)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px 4px 10px;width:260px}
+.mgrid button{height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font:inherit;font-size:13.5px;color:var(--ink)}
+.mgrid button:hover:not(:disabled){border-color:var(--brand);color:var(--brand)}
+.mgrid button.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+.mgrid button:disabled{opacity:.35;cursor:default}
+@media(max-width:640px){.dp-pre{display:none}}
+.dp.empty>span:first-of-type{color:var(--ink-2)}
+.dp-foot .btn-ghost{color:var(--ink-2)}
+
+/* ---------- 검색 조건 패널 (다중검색) ---------- */
+.sp{border-bottom:1px solid var(--line-2);background:var(--surface-2);border-radius:12px 12px 0 0}
+.sp-h{display:flex;align-items:center;gap:8px;padding:12px 16px;flex-wrap:wrap}
+.sp-h>.i{width:16px;height:16px;color:var(--brand)}
+.sp-h b{font-size:14px}
+.sp-h .r{margin-left:auto;display:flex;gap:6px;align-items:center}
+.sp-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px 14px;padding:0 16px 12px;align-items:end}
+.sp-g .fld label{font-size:12px}
+.sp-g .wide{grid-column:span 2}
+.sp-g .csel,.sp-g .dp,.sp-g .input{width:100%}
+.sp-g .dp .chev,.fld .dp .chev{margin-left:auto}
+@media(max-width:720px){.sp-g .wide{grid-column:auto}}
+.qbox{display:flex;gap:6px} .qbox .csel{flex:none;width:132px} .qbox .input{flex:1;min-width:0;width:auto}
+.sp-f{display:flex;gap:8px;align-items:center;padding:0 16px 14px;flex-wrap:wrap}
+.sp-f .grow{flex:1}
+.sp-f kbd{margin-left:4px;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff}
+.dirty-dot{display:none;width:8px;height:8px;border-radius:50%;background:var(--cyan);margin-left:2px;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+.btn.dirty .dirty-dot{display:inline-block}
+.dirty-t{font-size:12.5px;color:var(--warn);display:inline-flex;align-items:center;gap:5px}
+.dirty-t .i{width:14px;height:14px}
+.tb2{display:flex;align-items:center;gap:8px;padding:10px 16px;flex-wrap:wrap;border-bottom:1px solid var(--line-2)}
+.tb2 .grow{flex:1}
+.res-n{font-size:13.5px;color:var(--ink-2)} .res-n b{font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
+.qtime{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.saved-i{display:flex;align-items:center;gap:4px}
+.saved-i .dd-i{flex:1}
+.saved-i .x{border:0;background:none;cursor:pointer;color:var(--muted);width:28px;height:28px;border-radius:6px;display:grid;place-items:center}
+.saved-i .x:hover{color:var(--bad);background:var(--bad-bg)} .saved-i .x .i{width:14px;height:14px}
+/* 그리드 */
+.tbl-wrap.scroll{max-height:calc(100vh - 210px);overflow:auto}
+.tbl thead th{position:sticky;top:0;z-index:2}
+.tbl.compact td{padding:6px 12px;font-size:13px} .tbl.compact th{padding:7px 12px}
+.tbl tfoot.sum td{position:sticky;bottom:0;background:var(--surface-2);border-top:1px solid var(--line);font-weight:700;z-index:1;border-bottom:0}
+.colset{max-height:340px;overflow:auto;min-width:230px}
+.colset label{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:13.5px;cursor:pointer}
+.colset label:hover{background:var(--surface-2)}
+.colset .cbox:disabled+span{color:var(--muted)}
+/* 입력 폼 */
+.fld .err-t{font-size:12px;color:var(--bad);margin-top:5px;display:none}
+.fld.err .input,.fld.err .csel,.fld.err .dp{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+.fld.err .err-t{display:block}
+.m-warn{margin-right:auto;font-size:12.5px;color:var(--warn);display:flex;align-items:center;gap:6px}
+.m-warn .i{width:15px;height:15px}
+.m-f kbd{margin-left:6px;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff}
+.kbd-l{display:grid;grid-template-columns:150px 1fr;gap:10px 16px;font-size:13.5px;align-items:center}
+.kbd-l kbd{justify-self:start;font-size:12px;padding:2px 8px}
+.modal.xwide{width:min(1120px,calc(100vw - 32px))}
+/* 리포트 */
+.rpt{background:#fff;color:#111;border:1px solid #dde3ec;border-radius:6px;padding:26px 30px;font-size:12px;position:relative;overflow:hidden;font-family:Pretendard,"Malgun Gothic",sans-serif}
+.rpt-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}
+.rpt-h h2{margin:2px 0 0;font-size:20px} .rpt-h .logo{width:108px}
+.rpt-k{font-size:10.5px;color:#666;letter-spacing:.1em;font-weight:700}
+.rpt-meta{display:grid;grid-template-columns:72px 1fr 72px 1fr;gap:4px 12px;font-size:11.5px;margin-bottom:12px;color:#555}
+.rpt-meta b{color:#111;font-weight:600}
+.rpt table{width:100%;border-collapse:collapse;font-size:11px}
+.rpt th,.rpt td{border:1px solid #cfd5df;padding:5px 6px;text-align:left;white-space:nowrap}
+.rpt th{background:#f1f4f8;font-weight:700}
+.rpt td.n,.rpt th.n{text-align:right;font-variant-numeric:tabular-nums}
+.rpt tfoot td{font-weight:700;background:#f7f9fc}
+.rpt-f{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-size:10.5px;color:#666}
+.rpt-wm{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-size:46px;font-weight:800;color:rgba(0,0,0,.045);transform:rotate(-22deg);white-space:nowrap}
+.rpt-scroll{max-height:62vh;overflow:auto;background:var(--surface-2);padding:14px;border-radius:10px;border:1px solid var(--line)}
+#rpt-print{display:none}
+@media print{
+  body.printing>*:not(#rpt-print){display:none!important}
+  body.printing #rpt-print{display:block}
+  body.printing{background:#fff}
+  #rpt-print .rpt{border:0;padding:0}
+  #rpt-print .rpt-wm{position:fixed}
+  #rpt-print thead{display:table-header-group}
+  @page{size:A4 landscape;margin:12mm}
+}
+/* 세션 */
+.sess{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);height:30px;padding:0 10px;border:1px solid var(--line);border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums;background:none;cursor:pointer;font-family:inherit}
+.sess .i{width:14px;height:14px}
+.sess:hover{border-color:var(--brand);color:var(--brand)}
+.sess.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:var(--warn-bg)}
+.sess-warn{position:fixed;inset:0;z-index:140;display:grid;place-items:center;background:rgba(8,13,22,.55);padding:16px}
+.sess-warn>div{background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);padding:26px 24px 20px;width:min(420px,100%);text-align:center}
+.sess-warn h3{margin:0;font-size:17px}
+.sess-warn p{margin:6px 0 0;color:var(--ink-2);font-size:13.5px}
+.sess-warn .big{font-size:44px;font-weight:800;color:var(--warn);font-variant-numeric:tabular-nums;margin:10px 0 14px}
+.sess-warn .row{display:flex;gap:8px;justify-content:center}
+
+/* ---------- 행 펼쳐 보기 ---------- */
+.tbl tr.peek-tr>td{padding:0 0 4px;background:var(--surface)!important;border-bottom:1px solid var(--line);cursor:default}
+.tbl tbody tr.peek-tr:hover td{background:var(--surface)!important}
+.peek{position:sticky;left:48px;width:calc(100cqi - 64px);max-width:1180px;margin:2px 0 10px;border:1px solid color-mix(in srgb,var(--brand) 28%,var(--line));border-radius:12px;background:var(--surface);box-shadow:0 6px 20px -8px rgba(16,24,40,.18);white-space:normal;overflow:hidden;animation:peekIn .16s ease-out}
+.lst .tbl-wrap{container-type:inline-size}
+.peek::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#00E0FF,#0063FF)}
+@keyframes peekIn{from{opacity:0;transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.peek{animation:none}}
+.peek-h{display:flex;align-items:center;gap:6px 12px;padding:14px 16px 8px 20px;flex-wrap:wrap}
+.peek-t{font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.peek-s{color:var(--ink-2);font-size:12.5px}
+.peek-h .r{margin-left:auto;display:flex;gap:6px;align-items:center}
+.peek-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px 22px;padding:6px 20px 16px}
+.pk{min-width:0}
+.pk>span{display:block;font-size:11.5px;color:var(--muted);margin-bottom:3px;font-weight:600}
+.pk b{display:block;font-weight:500;font-size:13.5px;overflow-wrap:anywhere}
+.pk .sub{display:block}
+.pk b .chips{flex-wrap:wrap}
+.peek-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px 10px 20px;border-top:1px solid var(--line-2);background:var(--surface-2)}
+.peek-f .sp{flex:1}
+.tbl tr.open>td{background:var(--brand-50)!important;border-bottom-color:transparent}
+.tbl tbody tr[data-act="open"]{scroll-margin-top:60px}
+/* ---------- 분할 보기 (목록 + 상세) — 사용 안 함 ---------- */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,40%)}
+.split-l{min-width:0;border-right:1px solid var(--line-2)}
+.split-d{display:flex;flex-direction:column;min-width:0;max-height:calc(100vh - 150px);position:sticky;top:calc(var(--top) + 8px);align-self:start;background:var(--surface);border-radius:0 0 12px 0}
+.split-d .dr-h{padding:16px 18px 12px} .split-d .dr-h h2{font-size:16px}
+.split-d .dr-b{padding:16px 18px 20px;overflow:auto;flex:1}
+.split-d .dr-f{padding:12px 18px;border-radius:0 0 12px 0}
+.split-d .kv{grid-template-columns:110px minmax(0,1fr)}
+.split-d .kv2{grid-template-columns:1fr}
+.split-empty{display:grid;place-items:center;gap:8px;text-align:center;color:var(--muted);padding:80px 20px;font-size:13.5px}
+.split-empty .i{width:28px;height:28px}
+.tbl tr.cur td:first-child{box-shadow:inset 3px 0 0 var(--brand)}
+@media(max-width:1199px){.split{grid-template-columns:minmax(0,1fr)}.split-d,.split-tg{display:none}.split-l{border-right:0}}
+.preview-bar{margin-bottom:16px;align-items:center}
+.preview-bar .btn{margin-left:auto;flex:none}
+/* ---------- 권한관리 ---------- */
+.role-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:1000px){.role-grid{grid-template-columns:1fr}}
+.role-list{padding:8px;display:grid;gap:4px}
+.role-i{display:grid;gap:2px;text-align:left;padding:12px;border-radius:10px;border:1px solid transparent;background:none;cursor:pointer;font:inherit;color:var(--ink)}
+.role-i:hover{background:var(--surface-2)}
+.role-i.on{background:var(--brand-50);border-color:color-mix(in srgb,var(--brand) 35%,transparent)}
+.role-i .nm{font-weight:700;font-size:14px;display:flex;gap:6px;align-items:center}
+.role-i .ds{font-size:12.5px;color:var(--ink-2)}
+.role-i .ct{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px}
+.role-i .ct .i{width:13px;height:13px}
+.ptbl th.pc,.ptbl td.pc{text-align:center;width:74px;padding-left:6px;padding-right:6px}
+.ptbl th .linkbtn{color:var(--ink-2);font-size:12.5px;font-weight:600}
+.ptbl th .linkbtn:hover{color:var(--brand)}
+.ptbl td.na{color:var(--line)}
+.ptbl tbody tr{cursor:default}
+.ptbl tr.pg td{background:var(--surface-2);font-weight:700;padding-top:9px;padding-bottom:9px}
+.ptbl .pg-t{display:inline-flex;align-items:center;gap:8px}
+.ptbl .pg-t .i{width:16px;height:16px;color:var(--brand)}
+.ptbl td.pm{min-width:180px}
+.ptbl td.pb .btn b{color:var(--brand)}
+.ptbl tr.off td{opacity:.5}
+.ptbl tr.pbtns td{background:var(--brand-50);padding-top:8px;padding-bottom:10px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:13px;cursor:pointer}
+.pchip.on{border-color:color-mix(in srgb,var(--brand) 45%,transparent);color:var(--brand);font-weight:600}
+.tbl tr.off td{color:var(--muted)}
+.tbl tr.psub td{background:var(--surface-2);font-size:13px}
+
+/* ---------- Custom select (네이티브 select → BI 드롭다운) ---------- */
+.csel-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0;pointer-events:none;margin:0!important;padding:0!important}
+.csel{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;text-align:left;min-width:0;max-width:100%;transition:border-color .15s,box-shadow .15s;vertical-align:middle}
+.csel:hover:not(:disabled){border-color:color-mix(in srgb,var(--ink) 22%,var(--line))}
+.csel[aria-expanded="true"],.csel:focus-visible{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.csel:disabled{opacity:.55;cursor:not-allowed;background:var(--surface-2)}
+.csel-v{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csel.is-all .csel-v{color:var(--ink-2)}
+.csel>svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.csel[aria-expanded="true"]>svg{transform:rotate(180deg);stroke:var(--brand)}
+.csel-pop{position:fixed;z-index:130;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;max-height:320px;overflow-y:auto;display:none;scrollbar-width:thin}
+.csel-pop.on{display:block;animation:cselIn .12s ease-out}
+@keyframes cselIn{from{opacity:0;transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.csel-pop.on{animation:none}}
+.csel-o{display:flex;align-items:center;gap:8px;min-height:36px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--ink);white-space:nowrap}
+.csel-o svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--brand);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;visibility:hidden}
+.csel-o.act{background:var(--surface-2)}
+.csel-o.on{color:var(--brand);font-weight:600} .csel-o.on svg{visibility:visible}
+.csel-o.on.act{background:var(--brand-50)}
+.csel-o.dis{color:var(--muted);cursor:not-allowed;background:none}
+.csel-sep{height:1px;background:var(--line-2);margin:4px 6px}
+
 /* ---------- Responsive ---------- */
 @media (max-width:1200px){.g2,.g2e{grid-template-columns:1fr}.bi-hero{grid-template-columns:1fr}.bi-hero .lg{border-right:0;border-bottom:1px solid var(--line-2)}}
 @media (max-width:1024px){
@@ -500,6 +733,19 @@ button.gsearch span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:elli
   .pp{grid-template-columns:1fr}
   .dr-h,.dr-b,.dr-f{padding-left:16px;padding-right:16px}
 }
+/* ---------- 요청 남기기 · 개발 정보 ---------- */
+.req-btn,.dev-btn{flex:none}
+.req-n{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--brand);color:#fff;font-size:11.5px;font-weight:700;display:inline-grid;place-items:center}
+.rq-tbl td{vertical-align:top}
+.rq-text{white-space:pre-wrap;min-width:220px;max-width:340px;line-height:1.5}
+.rq-tbl td:nth-child(7) .input{min-width:120px!important}
+.top .crumb{flex:0 0 auto}
+.top .gsearch{flex:0 1 340px;width:auto;min-width:150px}
+.top .gsearch>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rq-rec span{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink-2)}
+.dev-spec .sp-h{margin:18px 0 8px;font-size:14px;font-weight:700}
+.dev-spec .sp-h:first-child{margin-top:0}
+@media (max-width:1100px){.req-btn span,.dev-btn span{display:none}}
 </style>
 </head>
 <body>
@@ -585,6 +831,7 @@ const IC = {
   memo:'<path d="M5 3h14v18l-7-4-7 4z"/>',
   history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   sortv:'<path d="M8 9l4-4 4 4M8 15l4 4 4-4"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.4c-.6.3-1 .8-1 1.5v.6M12 17v.01"/>',
   fold:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/>',
 };
 const ic = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${IC[n] || ''}</svg>`;
@@ -603,7 +850,7 @@ const pick = a => a[Math.floor(rnd() * a.length)];
 const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1));
 const NOW = new Date('2026-11-05T10:12:00');
 const TODAY = fD(NOW);
-const ME = { name:'김시그', id:'signion.admin', role:'헤드마스터', org:'KT 해외통신사업팀', ip:'211.170.12.44' };
+const ME = { name:'김시그', id:'signion.admin', roleId:'sys', role:'SysAdmin', org:'KT 해외통신사업팀', ip:'211.170.12.44' };
 
 const TONE = {
   '등록완료':'ok','등록심사중':'info','등록요청접수':'info','자료보완요청':'warn','등록거부':'bad','대기중':'',
@@ -611,7 +858,7 @@ const TONE = {
   '사용':'ok','미사용':'','정상':'ok','중지':'bad','발송완료':'ok','발송실패':'bad','예약':'info','게시':'ok','숨김':'',
   '검수완료':'ok','검수대기':'warn','서류미비':'bad','KT제출':'info','개통완료':'','발급완료':'ok','회수':'',
   '입금완료':'ok','부분입금':'warn','미입금':'bad','청구전':'','SUCCESS':'ok','FAIL':'bad','WARN':'warn','INFO':'info',
-  '로그인 성공':'ok','로그인 실패':'bad','2FA 인증':'info','로그아웃':'','답변완료':'ok','미답변':'warn','차단':'bad','활성':'ok','만료됨':'',
+  '로그인 성공':'ok','로그인 실패':'bad','2FA 인증':'info','로그아웃':'','엑셀 다운로드':'info','리포트 출력':'info','개인정보 열람':'warn','세션 만료':'warn','답변완료':'ok','미답변':'warn','차단':'bad','활성':'ok','만료됨':'',
 };
 const TONE_IC = { ok:'check', warn:'alert', bad:'x', info:'clock' };
 function badge(v, tone) {
@@ -753,7 +1000,7 @@ const MENU = [
   { id:'code', label:'기초코드관리', icon:'db', children:[['nation','국가코드관리'],['bank','은행코드관리'],['cardco','카드사코드관리'],['zip','우편번호관리'],['vacct','가상계좌번호채번관리'],['vcard','가상카드번호채번관리']] },
   { id:'issue', label:'발급관리', icon:'card', children:[['card','카드번호발급관리'],['acct','계좌번호발급관리']] },
   { id:'cs', label:'고객센터', icon:'headset', children:[['top','상단관리'],['comment','댓글관리'],['bot','챗봇관리'],['sms','SMS전송관리'],['push','PUSH전송관리'],['notice','공지사항관리'],['guide','이용안내관리']] },
-  { id:'work', label:'작업관리', icon:'settings', children:[['staff','직원관리'],['prog','프로그램관리'],['memo','자료메모관리'],['datalog','데이터수정LOG']] },
+  { id:'work', label:'작업관리', icon:'settings', children:[['staff','직원관리'],['prog','프로그램관리'],['memo','자료메모관리'],['datalog','데이터수정LOG'],['role','권한관리'],['audit','감사LOG']], newKids:['work/role','work/audit'] },
 ];
 function crumbOf(r) {
   if (r === 'bi') return ['디자인 가이드', 'SIGNION BI'];
@@ -890,7 +1137,7 @@ function makeLogRows(kind) {
 Object.entries(LOGDEF).forEach(([k, [t, d]]) => {
   CFG['log/' + k] = { title:t, desc:d, isLog:true, noCreate:true, noEdit:true,
     cols:[C('dt','일시','date',{main:1}),C('lv',k === 'server' ? '이벤트' : '결과','badge'),C('who',k === 'server' ? '계정' : '거래처','mono'),C('ref','승인번호','mono'),C('req',k === 'server' ? '접근 메뉴' : k === 'db' ? '프로시저' : '요청'),C('code','코드','mono'),C('ms','소요(ms)','num'),C('ip','IP','mono')],
-    rows: makeLogRows(k), opts:{ lv:k === 'server' ? ['로그인 성공','로그인 실패','2FA 인증','로그아웃'] : ['SUCCESS','WARN','FAIL'] }, filters:['lv'], detail: logDetail };
+    rows: makeLogRows(k), opts:{ lv:k === 'server' ? ['로그인 성공','로그인 실패','2FA 인증','로그아웃','엑셀 다운로드','리포트 출력','개인정보 열람','세션 만료'] : ['SUCCESS','WARN','FAIL'] }, filters:['lv'], detail: logDetail };
 });
 
 /* 기초코드 · 발급 · 고객센터 · 작업관리 */
@@ -942,8 +1189,8 @@ CFG['cs/guide'] = { title:'이용안내관리', desc:'관리자/고객 이용 �
   rows: rows(['title','cat','lang','dt','use'],[['필수 서류 업로드 가이드','KT 관리자','KOR','2026-11-02','게시'],['여권 촬영 가이드','고객','KOR','2026-10-20','게시'],['Passport capture guide','고객','USA','2026-10-20','게시'],['Hướng dẫn chụp hộ chiếu','고객','VNM','2026-10-20','게시']]), opts:{ use:['게시','숨김'] } };
 CFG['work/staff'] = { title:'직원관리', desc:'SIGNION 본사 백오피스 직원 계정 · 권한',
   cols:[C('uid','계정','mono',{main:1}),C('name','이름','strong'),C('dept','부서'),C('role','권한'),C('mail','이메일 (2FA)'),C('last','최근 접속','date'),C('status','상태','badge')],
-  rows: rows(['uid','name','dept','role','mail','last','status'],[['signion.admin','김시그','운영팀','SysAdmin','admin@signion.example','2026-11-05 10:12','정상'],['lab.kim','김연구','연구소','개발자','lab.kim@signion.example','2026-11-05 09:02','정상'],['cs.park','박상담','CS','상담원','cs.park@signion.example','2026-11-04 18:20','정상'],['biz.jang','장사업','사업기획','조회전용','biz@signion.example','2026-11-03 14:11','정상'],['old.lee','이퇴사','운영팀','상담원','old@signion.example','2026-08-30 17:00','중지']]),
-  opts:{ status:['정상','중지'], role:['SysAdmin','개발자','상담원','조회전용'] }, filters:['role','status'] };
+  rows: rows(['uid','name','dept','role','mail','last','status'],[['signion.admin','김시그','운영팀','SysAdmin','admin@signion.example','2026-11-05 10:12','정상'],['ops.choi','최운영','운영팀','운영 관리자','ops.choi@signion.example','2026-11-05 08:51','정상'],['lab.kim','김연구','연구소','연구소 개발자','lab.kim@signion.example','2026-11-05 09:02','정상'],['cs.park','박상담','CS','상담원 (CS)','cs.park@signion.example','2026-11-04 18:20','정상'],['cs.lee','이응대','CS','상담원 (CS)','cs.lee@signion.example','2026-11-04 17:42','정상'],['biz.jang','장사업','사업기획','조회 전용','biz@signion.example','2026-11-03 14:11','정상'],['old.lee','이퇴사','운영팀','상담원 (CS)','old@signion.example','2026-08-30 17:00','중지']]),
+  opts:{ status:['정상','중지'], role:[] }, filters:['role','status'] };
 CFG['work/prog'] = { title:'프로그램관리', desc:'메뉴(대메뉴·소메뉴)와 기능버튼 권한 정의 — ProgList_ 테이블 (mainMenu · subMenu · funcBtn)',
   cols:[C('main','대메뉴','strong',{main:1}),C('sub','소메뉴'),C('fn','기능버튼'),C('use','사용','badge')], rows:[], opts:{ use:['사용','미사용'] } };
 CFG['work/memo'] = { title:'자료메모관리', desc:'각 화면에서 등록한 메모 통합 조회',
@@ -957,9 +1204,17 @@ CFG['work/prog'].rows = (() => { const r = []; MENU.filter(m => m.label && m.id 
 /* =====================================================================
    STATE
    ===================================================================== */
-const S = { authed:false, step:1, theme:'light', open:{}, dashRange:14, chartTable:false };
+const S = { authed:false, step:1, theme:'light', open:{}, dashRange:14, chartTable:false, unmask:{}, preview:null };
 const LS = {};
-const ls = k => LS[k] ??= { q:'', adv:false, del:false, sel:new Set(), f:{}, from:'', to:'', pg:1, size:20, sort:null };
+/* 화면별 개인 설정(표시 항목 · 행 간격 · 페이지 크기 · 저장된 검색 조건)은 이 브라우저에만 저장 — 업무 데이터는 저장하지 않음 */
+const PREF = k => { try { return JSON.parse(localStorage.getItem('sg_pref_' + k) || '{}'); } catch (e) { return {}; } };
+const persist = k => { const s = ls(k); try { localStorage.setItem('sg_pref_' + k, JSON.stringify({ size:s.size, open:s.open, hidden:[...s.hidden], dense:s.dense, saved:s.saved, split:s.split })); } catch (e) {} };
+const ls = k => LS[k] ??= (() => { const p = PREF(k); return { q:'', qf:'', adv:false, del:false, sel:new Set(), f:{}, from:'', to:'', pg:1, size:p.size || 20, sort:null, open:p.open ?? true, hidden:new Set(p.hidden || []), dense:!!p.dense, saved:p.saved || [], draft:null, cur:null, peek:null, autoPeek:false }; })();
+const condOf = s => JSON.parse(JSON.stringify({ q:s.q, qf:s.qf, f:s.f, from:s.from, to:s.to }));
+const draftOf = k => { const s = ls(k); return s.draft ??= condOf(s); };
+const visCols = k => CFG[k].cols.filter(c => c.main || !ls(k).hidden.has(c.k));
+const maskName = n => String(n || '').split(' ').map((p, i) => i === 0 || !p ? p : p[0] + '**').join(' ');
+const NUMT = ['num', 'won', 'billcell', 'duecell'];
 try { S.authed = sessionStorage.getItem('sg_auth') === '1'; const th = localStorage.getItem('sg_theme'); if (th) S.theme = th; S.mini = localStorage.getItem('sg_mini') === '1'; } catch (e) {}
 document.documentElement.dataset.theme = S.theme;
 
@@ -978,6 +1233,7 @@ function render() {
   clearInterval(otpTimer);
   const g = r.split('/')[0]; S.open[g] = true;
   root.innerHTML = Shell(r, Page(r));
+  const sp = $('.peek[data-id]'); if (sp) { DR = { key:r, id:sp.dataset.id, split:true }; permFilter(sp, r); }
   if (r !== lastR) window.scrollTo(0, 0);
   lastR = r;
   if (S.pending && S.pending[0] === r) { const [k, id] = S.pending; S.pending = null; openDrawer(k, id); }
@@ -985,11 +1241,15 @@ function render() {
 let lastR = '';
 /* 상태 변경 후 목록과 열린 상세(스크롤 · 탭 유지)를 함께 갱신 */
 function rerenderKeep() {
-  const k = DR?.key, id = DR?.id, sc = $('.dr-b')?.scrollTop || 0, tab = $('.tab.on')?.dataset.t;
+  const k = DR?.key, id = DR?.id, sp = DR?.split, sc = $(sp ? '.peek' : '.dr-b')?.scrollTop || 0, tab = $('.tab.on')?.dataset.t;
   render();
-  if (k) { openDrawer(k, id); $('.dr-b').scrollTop = sc; if (tab) switchTab(tab); }
+  if (k && !sp) openDrawer(k, id);
+  const b = $(sp ? '.peek' : '#drawer .dr-b'); if (b) b.scrollTop = sc; if (tab) switchTab(tab);
 }
 function Page(r) {
+  if (PROG_BY[r] && !can(r, '조회')) return Denied(r);
+  if (r === 'work/role') return RolePage();
+  if (r === 'work/prog') return ProgPage();
   if (r === 'dashboard') return Dashboard();
   if (r === 'trans') return Trans();
   if (r === 'fee') return Fee();
@@ -1001,8 +1261,13 @@ function Page(r) {
   return Dashboard();
 }
 
+function Denied(r) {
+  return PH('접근 권한이 없습니다', `「${esc(menuName(r))}」 메뉴는 현재 역할(${esc(roleName(myRole()))})에 조회 권한이 없습니다.`, `<a class="btn" href="#/dashboard">${ic('grid')}대시보드</a>`)
+    + `<div class="callout info">${ic('shieldl')}<div>필요하면 SysAdmin에게 <b>작업관리 › 권한관리</b>에서 역할 권한을 요청하세요. 이 접근 시도는 감사LOG에 남습니다.</div></div>`;
+}
 function Shell(r, body) {
-  const nav = MENU.map(m => {
+  const navM = MENU.map(m => m.sec ? m : m.children ? { ...m, children:m.children.filter(([id]) => can(`${m.id}/${id}`)) } : m).filter(m => m.sec || (m.children ? m.children.length : can(m.id)));
+  const nav = navM.filter((m, i) => !m.sec || (navM[i + 1] && !navM[i + 1].sec)).map(m => {
     if (m.sec) return `<div class="nav-sec">${m.sec}</div>`;
     if (!m.children) return `<a class="nav-btn ${r === m.id ? 'on' : ''}" href="#/${m.id}" title="${m.label}">${ic(m.icon)}<span>${m.label}</span></a>`;
     const active = r.startsWith(m.id + '/');
@@ -1025,6 +1290,8 @@ function Shell(r, body) {
       <div class="crumb">${cr.map((c, i) => i === cr.length - 1 ? `<b>${c}</b>` : `<span>${c}</span>${ic('chev')}`).join('')}</div>
       <button class="gsearch" data-act="cmdk" aria-label="통합 검색 열기">${ic('search')}<span>메뉴 이동 · 승인번호 · 고객 · 거래처 검색</span><kbd>Ctrl K</kbd></button>
       <span class="env">운영 · AWS 싱가포르</span>
+      <button class="sess" data-act="sess-ext" title="자동 로그아웃까지 남은 시간 — 누르면 연장">${ic('clock')}<span>${mmss(SESS.left)}</span></button>
+      <button class="ibtn" data-act="help" aria-label="단축키 · 도움말" title="단축키 · 도움말 (?)">${ic('help')}</button>
       <button class="ibtn" data-act="theme" aria-label="테마 전환" title="라이트/다크">${ic(S.theme === 'dark' ? 'sun' : 'moon')}</button>
       <div class="dd-wrap"><button class="ibtn" data-act="dd" aria-label="알림" aria-haspopup="true">${ic('bell')}<span class="dotn"></span></button>
         <div class="dd noti"><div class="dd-h">알림<span class="muted" style="margin-left:auto;font-weight:500">새 알림 4</span></div>
@@ -1032,15 +1299,17 @@ function Shell(r, body) {
           <a href="#/partner/overview"><span class="ic t-info">${ic('building')}</span><span>주식회사 이스턴텔레콤 등록 요청 접수<small>2026-11-03 14:20</small></span></a>
           <a href="#/pkd"><span class="ic t-warn">${ic('globe')}</span><span>CSCA 인증서 만료 임박 2건 (IDN · THA)<small>가장 빠른 만료 2026-11-28</small></span></a>
           <a href="#/log/server"><span class="ic t-bad">${ic('alert')}</span><span>로그인 실패 반복 감지 — BND-HCM-01<small>5회 · 175.223.10.x</small></span></a></div></div>
-      <div class="dd-wrap"><button class="me" data-act="dd" aria-haspopup="true"><span class="av">${ME.name[0]}</span><span class="me-t">${ME.name}<small>${ME.role} · ${ME.org}</small></span>${ic('down')}</button>
+      <div class="dd-wrap"><button class="me" data-act="dd" aria-haspopup="true"><span class="av">${ME.name[0]}</span><span class="me-t">${ME.name}<small>${esc(roleName(myRole()))}${S.preview ? ' · 미리보기' : ''} · ${ME.org}</small></span>${ic('down')}</button>
         <div class="dd"><div class="dd-h">${ME.id} · 접속 IP ${ME.ip}</div>
           <a class="dd-i" href="#/log/server">${ic('history')}로그인 이력</a>
           <button class="dd-i" data-act="toast" data-msg="2단계 인증 이메일: s****n@signion.example">${ic('mail')}2단계 인증 설정</button>
           <button class="dd-i" data-act="theme">${ic('moon')}라이트 / 다크 전환</button>
+          <div class="dd-sep"></div><div class="dd-h">권한 미리보기 (프로토타입)</div>
+          ${ROLES_.map(rl => `<button class="dd-i ${myRole() === rl.id ? 'on' : ''}" data-act="preview" data-r="${rl.id}">${ic(myRole() === rl.id ? 'check' : 'users')}${esc(rl.name)}</button>`).join('')}
           <div class="dd-sep"></div>
           <button class="dd-i" data-act="logout">${ic('logout')}로그아웃</button></div></div>
     </header>
-    <main class="content">${body}</main>
+    <main class="content">${S.preview ? `<div class="callout warn preview-bar">${ic('eye')}<div><b>권한 미리보기 중 — ${esc(roleName(S.preview))}</b> · 이 역할에게 보이는 메뉴와 버튼만 표시됩니다. 실제 계정 권한은 ${esc(roleName(ME.roleId))}입니다.</div><button class="btn btn-sm" data-act="preview" data-r="">미리보기 끝내기</button></div>` : ''}${body}</main>
   </div></div>`;
 }
 
@@ -1122,7 +1391,7 @@ function filtered(key) {
   const cfg = CFG[key], st = ls(key), q = st.q.trim().toLowerCase();
   return cfg.rows.filter(r => {
     if (r.stop && !st.del) return false;
-    if (q && !(cfg.cols.map(c => r[c.k] ?? '').join(' ') + ' ' + (r.pass || '') + ' ' + (r.name || '') + ' ' + (r.pid || '')).toLowerCase().includes(q)) return false;
+    if (q && !(st.qf ? String(r[st.qf] ?? '') : cfg.cols.map(c => r[c.k] ?? '').join(' ') + ' ' + (r.pass || '') + ' ' + (r.name || '') + ' ' + (r.pid || '')).toLowerCase().includes(q)) return false;
     for (const [k, v] of Object.entries(st.f)) if (v !== '' && String(r[k]) !== String(v)) return false;
     if (cfg.dateKey && st.from && r[cfg.dateKey].slice(0, 10) < st.from) return false;
     if (cfg.dateKey && st.to && r[cfg.dateKey].slice(0, 10) > st.to) return false;
@@ -1140,8 +1409,9 @@ function cell(c, r) {
     case 'nat': return natL(v);
     case 'mods': return modChips(v);
     case 'date': return `<span class="num">${esc(v)}</span>`;
+    case 'pname': return esc(S.unmask[r.id] ? v : maskName(v));
     case 'tier': return `<span style="display:inline-block;width:${r.tier * 14}px"></span><span class="tier tier-${r.tier}">${TIERS[r.tier]}</span>`;
-    case 'cust': return `<span class="strong">${esc(r.name)}</span><span class="sub">${NAT[r.nat]} · ${maskPass(r.pass)}${r.minor ? ' · 미성년' : ''}</span>`;
+    case 'cust': return `<span class="strong">${esc(S.unmask[r.id] ? r.name : maskName(r.name))}</span><span class="sub">${NAT[r.nat]} · ${maskPass(r.pass)}${r.minor ? ' · 미성년' : ''}</span>`;
     case 'visa': return `<span class="chip">${esc(v)}</span> <span class="muted" style="font-size:12px">${v.startsWith('E') ? '근로자' : '유학생'}</span>`;
     case 'auth': return resChips([{ k:'OCR', r:r.ocr }, { k:'FACE', r:r.face }]);
     case 'docs': { const [a, b] = docProgress(r); return `<span class="prog ${a === b ? 'full' : ''}"><span class="bar"><i style="width:${a / b * 100}%"></i></span>${a}/${b}</span>`; }
@@ -1157,10 +1427,14 @@ function sortVal(c, r) {
   if (c.t === 'cust') return r.name;
   return r[c.k];
 }
+const COLL = new Intl.Collator('ko', { numeric:true });
 function listView(key) {
   const cfg = CFG[key], st = ls(key); let all = filtered(key);
   const c = st.sort && cfg.cols.find(x => x.k === st.sort.k);
-  if (c) all = [...all].sort((a, b) => { const x = sortVal(c, a), y = sortVal(c, b); return (typeof x === 'number' && typeof y === 'number' ? x - y : String(x ?? '').localeCompare(String(y ?? ''), 'ko', { numeric:true })) * st.sort.dir; });
+  if (c) { /* 정렬 키를 한 번만 계산하고 공용 Collator로 비교 (5만 건 기준 수십 ms) */
+    const d = st.sort.dir, keyed = all.map(r => [sortVal(c, r), r]);
+    keyed.sort((p, q) => (typeof p[0] === 'number' && typeof q[0] === 'number' ? p[0] - q[0] : COLL.compare(String(p[0] ?? ''), String(q[0] ?? ''))) * d);
+    all = keyed.map(x => x[1]); }
   const pages = Math.max(1, Math.ceil(all.length / st.size)); if (st.pg > pages) st.pg = pages;
   return { all, pages, data: all.slice((st.pg - 1) * st.size, st.pg * st.size) };
 }
@@ -1172,8 +1446,8 @@ function pager(p, n) {
 }
 /* 목록에서 1건을 선택해야 실행되는 기능 (메뉴구성도 기능버튼 중 행 단위 작업) */
 const ROW_SCOPED = ['제휴사접속정보등록','계약서류업로드','등록상태변경','비밀번호초기화','메모등록','아이디수정','마스터Token생성','암호화KEY생성'];
-function headerActions(cfg, st) {
-  const ex = cfg.extra || [], one = st.sel.size === 1;
+function headerActions(cfg, st, key) {
+  const ex = (cfg.extra || []).filter(([, l]) => !key || can(key, l)), one = st.sel.size === 1;
   const dis = l => ROW_SCOPED.includes(l) && !one;
   const btn = ([i, l]) => `<button class="btn" data-act="extra" data-l="${l}" ${dis(l) ? 'disabled title="목록에서 1건을 선택하세요"' : ''}>${ic(i)}${l}</button>`;
   if (ex.length <= 3) return ex.map(btn).join('');
@@ -1182,54 +1456,219 @@ function headerActions(cfg, st) {
     ${rest.some(([, l]) => dis(l)) ? '<div class="dd-h">목록에서 1건을 선택하면 사용할 수 있습니다</div>' : ''}
     ${rest.map(([i, l]) => `<button class="dd-i" role="menuitem" data-act="extra" data-l="${l}" ${dis(l) ? 'disabled' : ''}>${ic(i)}${l}</button>`).join('')}</div></div>`;
 }
+/* ---------- 검색 조건 패널 (다중검색) — 조건을 바꾼 뒤 「검색」(또는 Enter)으로 적용 ---------- */
+const addDs = (s, n) => DPK.util.addD(s, n);
+const DATE_PRESETS = () => { const m1 = TODAY.slice(0, 8) + '01', pm = DPK.util.addM(TODAY.slice(0, 7), -1); return [['오늘', TODAY, TODAY], ['어제', addDs(TODAY, -1), addDs(TODAY, -1)], ['최근 7일', addDs(TODAY, -6), TODAY], ['최근 30일', addDs(TODAY, -29), TODAY], ['이번 달', m1, TODAY], ['지난 달', pm + '-01', addDs(m1, -1)], ['최근 3개월', addDs(TODAY, -89), TODAY]]; };
+const filterKeys = cfg => cfg.filters || Object.keys(cfg.opts || {}).filter(k => cfg.cols.some(c => c.k === k));
+const colLabel = (cfg, k) => (cfg.cols.find(c => c.k === k) || { l: { nat:'국가', pid:'거래처' }[k] || k }).l;
+const optLabel = (k, o) => k === 'nat' ? (NAT[o] || o) : k === 'tier' ? TIERS[o] : o;
+const TEXT_SKIP = ['mods','res','auth','docs','ret','badge','tier','won','num','billcell','duecell','date'];
+function SearchPanel(key) {
+  const cfg = CFG[key], st = ls(key), d = draftOf(key), applied = condOf(st), dirty = JSON.stringify(d) !== JSON.stringify(applied);
+  const nAct = (st.q ? 1 : 0) + Object.values(st.f).filter(v => v !== '').length + (st.from ? 1 : 0);
+  const head = `<div class="sp-h">${ic('filter')}<b>다중검색</b><span class="muted" style="font-size:12.5px">검색 조건</span>${nAct ? `<span class="badge t-info">${nAct}개 적용 중</span>` : ''}
+    <div class="r"><button class="btn btn-sm btn-ghost" data-act="q-toggle" aria-expanded="${st.open}">${st.open ? '조건 접기' : '조건 펼치기'}${ic(st.open ? 'up' : 'down')}</button></div></div>`;
+  if (!st.open) return `<div class="sp">${head}</div>`;
+  if (cfg.dateKey) DPK.reg('q_' + key, { mode:'range', allowEmpty:true, empty:'전체 기간', min:'2025-01-01', max:TODAY, presets:DATE_PRESETS(),
+    get:() => { const x = draftOf(key); return x.from ? [x.from, x.to] : null; },
+    set:v => { const x = draftOf(key); x.q = $('#dq')?.value ?? x.q; x.from = v ? v[0] : ''; x.to = v ? v[1] : ''; render(); } });
+  const textCols = cfg.cols.filter(c => !TEXT_SKIP.includes(c.t));
+  const fields = [
+    cfg.dateKey ? `<div class="fld"><label>${colLabel(cfg, cfg.dateKey)}</label>${DPK.btn('q_' + key, colLabel(cfg, cfg.dateKey))}</div>` : '',
+    `<div class="fld wide"><label for="dq">검색어</label><div class="qbox"><select class="select" data-qf aria-label="검색 항목"><option value="">전체 항목</option>${textCols.map(c => `<option value="${c.k}" ${d.qf === c.k ? 'selected' : ''}>${c.l}</option>`).join('')}</select>
+      <input class="input" id="dq" data-dq value="${esc(d.q)}" placeholder="${d.qf ? colLabel(cfg, d.qf) + ' ' : ''}입력 후 Enter" autocomplete="off"></div></div>`,
+    ...filterKeys(cfg).map(k => `<div class="fld"><label>${colLabel(cfg, k)}</label><select class="select" data-df="${k}" aria-label="${colLabel(cfg, k)}"><option value="">전체</option>${(cfg.opts?.[k] || []).map(o => `<option value="${o}" ${String(d.f[k] ?? '') === String(o) ? 'selected' : ''}>${optLabel(k, o)}</option>`).join('')}</select></div>`),
+  ].join('');
+  const saved = st.saved.map((s, i) => `<div class="saved-i"><button class="dd-i" data-act="q-load" data-i="${i}">${ic('filter')}${esc(s.name)}</button><button class="x" data-act="q-del" data-i="${i}" aria-label="${esc(s.name)} 삭제">${ic('x')}</button></div>`).join('');
+  return `<div class="sp">${head}<div class="sp-g">${fields}</div>
+    <div class="sp-f"><button class="btn btn-p ${dirty ? 'dirty' : ''}" data-act="q-apply">${ic('search')}검색<span class="dirty-dot"></span><kbd>Enter</kbd></button><button class="btn" data-act="q-reset">${ic('refresh')}초기화</button>
+      <span class="dirty-t" ${dirty ? '' : 'hidden'}>${ic('alert')}바뀐 조건은 「검색」을 눌러야 적용됩니다</span><span class="grow"></span>
+      <div class="dd-wrap"><button class="btn btn-ghost" data-act="dd" aria-haspopup="menu">${ic('memo')}저장된 조건${st.saved.length ? ` <b>${st.saved.length}</b>` : ''}</button><div class="dd" style="min-width:260px">${saved || '<div class="dd-h">자주 쓰는 조건을 저장해 두면 한 번에 불러옵니다</div>'}<div class="dd-sep"></div><button class="dd-i" data-act="q-save">${ic('plus')}현재 조건 저장</button></div></div></div></div>`;
+}
+function applyQ(key) { const st = ls(key), d = draftOf(key); st.cur = null; st.peek = null; st.autoPeek = true; const q = $('#dq'); if (q) d.q = q.value.trim(); Object.assign(st, JSON.parse(JSON.stringify(d)), { pg:1 }); st.draft = null; st.sel.clear(); render(); }
+function sumOf(c, rows) { const v = rows.filter(r => !r.stop && typeof r[c.k] === 'number'); if (!v.length) return ''; const s = v.reduce((a, r) => a + r[c.k], 0); return c.t === 'num' ? fmt(s) : fmt(s) + '원'; }
 function ListPage(key) {
-  const cfg = CFG[key], st = ls(key), { all, pages, data } = listView(key);
+  const cfg = CFG[key], st = ls(key), t0 = performance.now(), { all, pages, data } = listView(key), ms = performance.now() - t0, cols = visCols(key);
   const allSel = data.length && data.every(r => st.sel.has(r.id));
   const logTabs = cfg.isLog ? `<div class="ltabs">${Object.entries(LOGDEF).map(([k, [t]]) => `<a href="#/log/${k}" class="${key === 'log/' + k ? 'on' : ''}">${t}</a>`).join('')}</div>` : '';
-  const extra = headerActions(cfg, st);
   const fl = [];
-  if (st.q) fl.push(['q', `검색어: ${st.q}`]);
-  for (const [k, v] of Object.entries(st.f)) if (v !== '') { const col = cfg.cols.find(c => c.k === k) || { l: { nat:'국가', pid:'거래처' }[k] || k }; fl.push([k, `${col.l}: ${k === 'nat' ? (NAT[v] || v) : v}`]); }
-  if (st.from || st.to) fl.push(['_date', `기간: ${st.from || '처음'} ~ ${st.to || '오늘'}`]);
-  const chips = fl.length ? `<div class="fchips"><span>적용된 조건</span>${fl.map(([k, l]) => `<button class="fchip" data-act="chip-x" data-k="${esc(k)}" aria-label="${esc(l)} 조건 해제">${esc(l)}${ic('x')}</button>`).join('')}<button class="linkbtn" data-act="chips-clear">모두 지우기</button></div>` : '';
-  const adv = st.adv ? `<div class="adv">
-      ${(cfg.filters || []).map(k => { const col = cfg.cols.find(c => c.k === k) || { l: { nat:'국가', pid:'거래처' }[k] || k }; const opts = cfg.opts?.[k] || [];
-        return `<div class="fld"><label>${col.l}</label><select class="select" data-f="${k}"><option value="">전체</option>${opts.map(o => `<option value="${o}" ${String(st.f[k]) === String(o) ? 'selected' : ''}>${k === 'nat' ? (NAT[o] || o) : o}</option>`).join('')}</select></div>`; }).join('')}
-      ${cfg.dateKey ? `<div class="fld" style="grid-column:span 2"><label>기간</label><div class="drange"><input type="date" class="input" data-from value="${st.from}"><span class="muted">~</span><input type="date" class="input" data-to value="${st.to}"></div></div>` : ''}
-      <div class="fld" style="display:flex;gap:6px"><button class="btn" data-act="adv-reset">초기화</button><button class="btn btn-p" data-act="adv-apply">적용</button></div></div>` : '';
-  const head = `<tr><th class="ck"><input type="checkbox" class="cbox" data-act="ck-all" ${allSel ? 'checked' : ''} aria-label="전체 선택"></th>${cfg.cols.map(c => {
+  if (st.q) fl.push(['q', `검색어${st.qf ? '(' + colLabel(cfg, st.qf) + ')' : ''}: ${st.q}`]);
+  for (const [k, v] of Object.entries(st.f)) if (v !== '') fl.push([k, `${colLabel(cfg, k)}: ${optLabel(k, v)}`]);
+  if (st.from) fl.push(['_date', `${colLabel(cfg, cfg.dateKey)}: ${st.from} ~ ${st.to}`]);
+  const chips = !st.open && fl.length ? `<div class="fchips"><span>적용된 조건</span>${fl.map(([k, l]) => `<button class="fchip" data-act="chip-x" data-k="${esc(k)}" aria-label="${esc(l)} 조건 해제">${esc(l)}${ic('x')}</button>`).join('')}<button class="linkbtn" data-act="chips-clear">모두 지우기</button></div>` : '';
+  const editable = !cfg.noEdit && !cfg.noEditBtn && can(key, '수정');
+  if (!data.some(r => r.id === st.cur)) st.cur = data[0]?.id || null;
+  if (st.autoPeek) { st.autoPeek = false; if (all.length === 1) S.pending = [key, all[0].id]; }
+  const head = `<tr><th class="ck"><input type="checkbox" class="cbox" data-act="ck-all" ${allSel ? 'checked' : ''} aria-label="이 페이지 전체 선택"></th>${cols.map(c => {
     const s = !NOSORT.includes(c.t), on = st.sort?.k === c.k;
-    return `<th class="${['num','won'].includes(c.t) ? 'n' : ''} ${s ? 'sortable' : ''} ${on ? 'sorted' : ''}" ${s ? `data-act="sort" data-k="${c.k}" aria-sort="${on ? (st.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}"` : ''}>${c.l}${s ? ic(on ? (st.sort.dir > 0 ? 'up' : 'down') : 'sortv', 'so') : ''}</th>`; }).join('')}</tr>`;
-  const body = data.length ? data.map(r => `<tr data-act="open" data-id="${r.id}" class="${st.sel.has(r.id) ? 'sel' : ''} ${r.stop ? 'is-del' : ''}" ${r.stop ? `title="삭제 사유: ${esc(r.stop.reason)}"` : ''}>
+    return `<th class="${NUMT.includes(c.t) ? 'n' : ''} ${s ? 'sortable' : ''} ${on ? 'sorted' : ''}" ${s ? `data-act="sort" data-k="${c.k}" aria-sort="${on ? (st.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}" title="눌러서 정렬"` : ''}>${c.l}${s ? ic(on ? (st.sort.dir > 0 ? 'up' : 'down') : 'sortv', 'so') : ''}</th>`; }).join('')}</tr>`;
+  const body = data.length ? data.map(r => `<tr data-act="open" data-id="${r.id}" class="${st.sel.has(r.id) ? 'sel' : ''} ${r.stop ? 'is-del' : ''} ${st.cur === r.id ? 'cur' : ''}" ${r.stop ? `title="삭제 사유: ${esc(r.stop.reason)}"` : ''}>
       <td class="ck"><input type="checkbox" class="cbox" data-act="ck" data-id="${r.id}" ${st.sel.has(r.id) ? 'checked' : ''} aria-label="선택"></td>
-      ${cfg.cols.map((c, i) => `<td class="${['num','won'].includes(c.t) ? 'n num' : ''} ${c.main ? 'main-c' : ''}">${i === 0 && r.stop ? '<span class="del-tag">삭제</span>' : ''}${cell(c, r)}</td>`).join('')}</tr>`).join('')
-    : `<tr><td colspan="${cfg.cols.length + 1}"><div class="empty">${ic('search')}<div>조건에 맞는 자료가 없습니다.</div></div></td></tr>`;
-  return PH(cfg.title, cfg.desc, extra) + logTabs + (cfg.kpis ? KPIS(cfg.kpis(all.filter(r => !r.stop))) : '')
-  + `<section class="card">
-    <div class="tb">
-      <label class="sfield">${ic('search')}<input data-q value="${esc(st.q)}" placeholder="검색어 입력 후 Enter"></label>
-      <button class="btn" data-act="search">검색</button>
-      <button class="btn ${st.adv ? 'is-on' : ''}" data-act="adv">${ic('filter')}다중검색${Object.values(st.f).filter(v => v !== '').length + (st.from || st.to ? 1 : 0) ? ` <b>${Object.values(st.f).filter(v => v !== '').length + (st.from || st.to ? 1 : 0)}</b>` : ''}</button>
-      <span class="grow"></span>
-      <label class="switch"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>삭제자료표시</label>
-      <span class="vsep"></span>
-      <button class="btn" data-act="excel">${ic('download')}엑셀로</button>
-      ${cfg.noEdit ? '' : `<button class="btn btn-d" data-act="delete" ${st.sel.size ? '' : 'disabled'}>${ic('trash')}삭제${st.sel.size ? ' ' + st.sel.size : ''}</button>
-      ${cfg.noEditBtn ? '' : `<button class="btn" data-act="edit" ${st.sel.size === 1 ? '' : 'disabled'}>${ic('edit')}수정</button>`}`}
-      ${cfg.noCreate ? '' : `<button class="btn btn-p" data-act="create">${ic('plus')}등록</button>`}
-    </div>${adv}${chips}
-    <div class="tbl-wrap"><table class="tbl"><thead>${head}</thead><tbody>${body}</tbody></table></div>
-    <div class="tf"><span>총 <b class="num">${fmt(all.length)}</b>건${all.length ? ` <span class="muted num">(${(st.pg - 1) * st.size + 1}–${Math.min(st.pg * st.size, all.length)})</span>` : ''}</span>
-      ${st.sel.size ? `<span><b style="color:var(--brand)">${st.sel.size}건 선택</b> <button class="linkbtn" data-act="sel-clear">선택 해제</button></span>` : ''}
-      <select class="select" data-size style="height:30px;font-size:12.5px" aria-label="페이지당 행 수">${[20, 50, 100].map(n => `<option value="${n}" ${st.size === n ? 'selected' : ''}>${n}개씩</option>`).join('')}</select>
-      <div class="pager">${pager(st.pg, pages)}</div></div>
+      ${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n num' : ''} ${c.main ? 'main-c' : ''}">${i === 0 && r.stop ? '<span class="del-tag">삭제</span>' : ''}${cell(c, r)}</td>`).join('')}</tr>`).join('')
+    : `<tr><td colspan="${cols.length + 1}"><div class="empty">${ic('search')}<div>조건에 맞는 자료가 없습니다.<br><span style="font-size:12.5px">검색 조건을 바꾸거나 「초기화」를 눌러 보세요.</span></div></div></td></tr>`;
+  const sums = cols.map(c => NUMT.includes(c.t) ? sumOf(c, all) : null);
+  const foot = all.length && sums.some(x => x) ? `<tfoot class="sum"><tr><td class="ck"></td>${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n num' : ''}">${sums[i] || (i === 0 ? `합계 <span class="muted" style="font-weight:500">(${fmt(all.filter(r => !r.stop).length)}건)</span>` : '')}</td>`).join('')}</tr></tfoot>` : '';
+  return PH(cfg.title, cfg.desc, headerActions(cfg, st, key)) + logTabs + (cfg.kpis ? KPIS(cfg.kpis(all.filter(r => !r.stop))) : '')
+  + `<section class="card">${SearchPanel(key)}${chips}
+    <div class="tb2"><span class="res-n">조회 결과 <b>${fmt(all.length)}</b>건</span><span class="qtime" title="검색 · 정렬 처리 시간">${ms < 1 ? '1ms 미만' : ms.toFixed(1) + 'ms'}</span><span class="grow"></span>
+      ${can(key, '삭제자료표시') ? `<label class="switch"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>삭제자료표시</label><span class="vsep"></span>` : ''}
+      <div class="dd-wrap colset-wrap"><button class="btn btn-ghost" data-act="dd" aria-haspopup="true">${ic('table')}표시 항목${st.hidden.size ? ` <b>${cols.length}/${cfg.cols.length}</b>` : ''}</button><div class="dd colset"><div class="dd-h">표에 보일 항목 · 엑셀 · 리포트에도 적용</div>${cfg.cols.map(c => `<label><input type="checkbox" class="cbox" data-colk="${c.k}" ${c.main || !st.hidden.has(c.k) ? 'checked' : ''} ${c.main ? 'disabled' : ''}><span>${c.l}</span></label>`).join('')}</div></div>
+      <button class="btn btn-ghost" data-act="dense" aria-pressed="${st.dense}" title="행 간격">${ic('menu')}${st.dense ? '좁게' : '기본'}</button>
+<span class="vsep"></span>
+      ${can(key, '엑셀로') ? `<button class="btn" data-act="excel">${ic('download')}엑셀로</button>` : ''}${can(key, '리포트') ? `<button class="btn" data-act="report">${ic('print')}리포트</button>` : ''}
+      ${cfg.noEdit || !can(key, '삭제') ? '' : `<button class="btn btn-d" data-act="delete" ${st.sel.size ? '' : 'disabled'}>${ic('trash')}삭제${st.sel.size ? ' ' + st.sel.size : ''}</button>`}${cfg.noEdit || cfg.noEditBtn || !can(key, '수정') ? '' : `<button class="btn" data-act="edit" ${st.sel.size === 1 ? '' : 'disabled'}>${ic('edit')}수정</button>`}
+      ${cfg.noCreate || !can(key, '등록') ? '' : `<button class="btn btn-p" data-act="create">${ic('plus')}등록</button>`}
+    </div>
+    <div class="lst"><div><div class="tbl-wrap scroll"><table class="tbl ${st.dense ? 'compact' : ''}"><thead>${head}</thead><tbody>${body}</tbody>${foot}</table></div>
+    <div class="tf"><span>등록 <b class="num">${fmt(cfg.rows.filter(r => !r.stop).length)}</b>건 · 검색 <b class="num">${fmt(all.length)}</b>건${all.length ? ` <span class="muted num">(${(st.pg - 1) * st.size + 1}–${Math.min(st.pg * st.size, all.length)})</span>` : ''}</span>
+      ${st.sel.size ? `<span><b style="color:var(--brand)">${st.sel.size}건 선택</b> <button class="linkbtn" data-act="sel-clear">선택 해제</button></span>` : `<span class="muted" style="font-size:12.5px">행을 누르면 바로 상세 · 상세에서 ↑↓ 로 이전 · 다음 건${editable ? ' · 두 번 누르면 수정' : ''}</span>`}
+      <select class="select" data-size style="height:30px;font-size:12.5px" aria-label="페이지당 행 수">${[20, 50, 100, 500].map(n => `<option value="${n}" ${st.size === n ? 'selected' : ''}>${n}개씩</option>`).join('')}</select>
+      <div class="pager">${pager(st.pg, pages)}</div></div></div></div>
   </section>`;
+}
+
+/* ---------- 입력 · 수정 폼 — 필수 항목 검사, 날짜 선택기, 변경 이력(데이터수정LOG) 기록 ---------- */
+const FORM_LONG = ['desc','memo','ret','txt','a','q','road','range'];
+const TBL = { 'partner/overview':'Member', 'partner/fee':'MemberServiceInfo', 'partner/conn':'MemberConnectInfo', 'partner/biz':'MemberTaxInfo', 'partner/ceo':'MemberCEO', 'kt/overview':'ProgUser', 'kt/docs':'common_file_info', 'kt/doctype':'_documentType', 'kt/ratetype':'_ratePlanType', 'pkd':'PKDinfo', 'msg':'_msgCode', 'code/nation':'National_', 'code/bank':'Bank_', 'code/cardco':'Card_', 'code/zip':'ZipCode', 'work/staff':'ProgUser', 'work/prog':'ProgList_' };
+function openForm(key, row) {
+  const cfg = CFG[key], fields = cfg.cols.filter(c => !c.ro && !['mods','res','auth','docs','ret','billcell','duecell'].includes(c.t));
+  const isD = (c, v) => c.t === 'date' && (!v || /^\d{4}-\d{2}-\d{2}$/.test(v));
+  const FV = {}; fields.forEach(c => FV[c.k] = row ? row[c.k] : (isD(c, '') ? TODAY : ''));
+  const req = new Set(cfg.req || fields.slice(0, 2).map(c => c.k));
+  fields.filter(c => isD(c, FV[c.k])).forEach(c => DPK.reg('frm_' + c.k, { mode:'single', min:'2000-01-01', max:'2099-12-31', allowEmpty:!req.has(c.k), get:() => FV[c.k], set:v => {
+    FV[c.k] = v || ''; const h = $(`#frm input[name="${c.k}"]`); if (h) h.value = FV[c.k]; const b = $(`#frm [data-dpk="frm_${c.k}"]`); if (b) b.outerHTML = DPK.btn('frm_' + c.k, c.l); if (MD) MD.dirty = true; $(`#frm [data-fk="${c.k}"]`)?.classList.remove('err'); } }));
+  const field = (c, i) => {
+    const v = FV[c.k] ?? '', opts = cfg.opts?.[c.k] || (c.t === 'tier' ? TIERS.map((t, j) => j) : null), full = FORM_LONG.includes(c.k) || (fields.length % 2 && i === fields.length - 1);
+    const ctl = opts ? `<select class="select" name="${c.k}" id="f_${c.k}" style="width:100%">${opts.map(o => `<option value="${o}" ${String(v) === String(o) ? 'selected' : ''}>${c.t === 'tier' ? TIERS[o] : c.k === 'nat' ? (NAT[o] || o) + ' (' + o + ')' : o}</option>`).join('')}</select>`
+      : isD(c, v) ? `<input type="hidden" name="${c.k}" value="${esc(v)}">${DPK.btn('frm_' + c.k, c.l)}`
+      : `<input class="input" name="${c.k}" id="f_${c.k}" value="${esc(v)}" style="width:100%" ${NUMT.includes(c.t) ? 'inputmode="numeric"' : ''} autocomplete="off">`;
+    return `<div class="fld ${full ? 'full' : ''}" data-fk="${c.k}"><label for="f_${c.k}">${c.l}${req.has(c.k) ? '<span class="req">*</span>' : ''}</label>${ctl}<div class="err-t" role="alert"></div></div>`;
+  };
+  openModal(MH(`${cfg.title} ${row ? '수정' : '등록'}`, row ? '바꾼 항목은 작업자 · 일시와 함께 데이터수정LOG에 기록됩니다.' : '<span class="req">*</span> 표시는 필수 항목입니다.')
+    + `<form id="frm" novalidate><div class="m-b"><div class="fgrid">${fields.map(field).join('')}</div></div>
+      <div class="m-f"><span class="m-warn" hidden>${ic('alert')}저장하지 않은 변경 내용이 있습니다. 한 번 더 누르면 닫힙니다.</span><button type="button" class="btn" data-act="form-cancel">취소</button>${row ? '' : '<button type="button" class="btn" data-act="form-next">저장 후 계속 등록</button>'}<button class="btn btn-p" type="submit">${row ? '저장' : '등록'}<kbd>Ctrl Enter</kbd></button></div></form>`);
+  MD.form = true; MD.dirty = false;
+  const frm = $('#frm');
+  frm.addEventListener('input', () => { if (MD) MD.dirty = true; });
+  frm.addEventListener('change', e => { if (MD) MD.dirty = true; if (e.target.name) $(`#frm [data-fk="${e.target.name}"]`)?.classList.remove('err'); });
+  frm.onsubmit = e => {
+    e.preventDefault(); const fd = new FormData(frm), o = {}, errs = [];
+    fields.forEach(c => {
+      let v = String(fd.get(c.k) ?? '').trim();
+      if (req.has(c.k) && v === '') errs.push([c.k, `${c.l}을(를) 입력하세요.`]);
+      else if (NUMT.includes(c.t) && v !== '' && !/^-?[\d,]+(\.\d+)?$/.test(v)) errs.push([c.k, '숫자만 입력할 수 있습니다.']);
+      if (NUMT.includes(c.t) || c.t === 'tier') v = Number(v.replace(/,/g, '')) || 0;
+      o[c.k] = v;
+    });
+    $$('#frm .fld.err').forEach(x => x.classList.remove('err'));
+    if (errs.length) {
+      errs.forEach(([k, m]) => { const f = $(`#frm [data-fk="${k}"]`); f.classList.add('err'); f.querySelector('.err-t').textContent = m; });
+      $(`#frm [data-fk="${errs[0][0]}"]`).querySelector('input:not([type=hidden]), .csel, .dp')?.focus(); toast(`입력 항목 ${errs.length}개를 확인하세요.`, true); return;
+    }
+    const next = MD.next;
+    if (row) {
+      const ch = fields.filter(c => String(row[c.k] ?? '') !== String(o[c.k] ?? ''));
+      ch.forEach((c, i) => CFG['work/datalog'].rows.unshift({ id:'d' + Date.now() + i, dt:fDT(new Date()).slice(0, 16), tbl:TBL[key] || key, key:String(row[cfg.cols[0].k] ?? ''), field:c.l, before:String(row[c.k] ?? ''), after:String(o[c.k] ?? ''), who:ME.id }));
+      if (ch.length) audit('수정', ch.map(c => `${c.l}: ${row[c.k] ?? ''} → ${o[c.k] ?? ''}`).join(' · '), key, rowLabel(key, row));
+      Object.assign(row, o); closeModal(); render(); if (DR) openDrawer(key, row.id);
+      toast(ch.length ? `${ch.length}개 항목을 수정했습니다 · 데이터수정LOG에 기록` : '바뀐 항목이 없습니다.');
+    } else {
+      cfg.rows.unshift(Object.assign({ id:'n' + Date.now(), rg:TODAY, mods:['OCR','FACE'], cnt:0, children:0, cust:0, last:'—', ip:'—' }, o));
+      audit('등록', fields.filter(c => o[c.k] !== '' && o[c.k] !== 0).slice(0, 4).map(c => `${c.l}=${o[c.k]}`).join(' · '), key, rowLabel(key, cfg.rows[0]));
+      closeModal(); render(); toast('등록되었습니다.'); if (next) openForm(key, null);
+    }
+  };
+}
+function formCancel() { if (MD?.dirty && !MD.warned) { MD.warned = true; $('#modal .m-warn').hidden = false; return; } closeModal(); }
+
+/* ---------- 출력 — 엑셀 · 리포트(인쇄 · PDF) · 감사 로그 ---------- */
+function expVal(c, r) {
+  const v = r[c.k];
+  if (c.t === 'mods') return v.join('/'); if (c.t === 'res') return r.res.map(x => MODS_SHORT[x.k] + ({ ok:'✓', fail:'✗', run:'…' }[x.r] || '-')).join(' '); if (c.t === 'tier') return TIERS[r.tier];
+  if (c.t === 'docs') return docProgress(r).join('/'); if (c.t === 'ret') { const x = retain(r); return typeof x === 'string' ? x : x.d; }
+  if (c.t === 'auth') return `OCR:${r.ocr}/FACE:${r.face}`; if (c.t === 'cust') return maskName(r.name); if (c.t === 'pname') return maskName(v); if (c.t === 'nat') return `${v} ${NAT[v] || ''}`;
+  return v ?? '';
+}
+function exportCSV(key) {
+  const cfg = CFG[key], { all } = listView(key), cols = visCols(key);
+  const lines = [cols.map(c => c.l), ...all.map(r => cols.map(c => expVal(c, r)))].map(a => a.map(x => `"${String(x).replace(/"/g, '""')}"`).join(','));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${cfg.title}_${TODAY}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  audit('엑셀 다운로드', `${cfg.title} · ${all.length}건 · 개인정보 마스킹`); toast(`${all.length}건을 엑셀(CSV)로 내보냈습니다 · 다운로드 기록됨`);
+}
+function condText(key) {
+  const cfg = CFG[key], st = ls(key), p = [];
+  if (st.from) p.push(`${colLabel(cfg, cfg.dateKey)} ${st.from} ~ ${st.to}`);
+  if (st.q) p.push(`검색어${st.qf ? '(' + colLabel(cfg, st.qf) + ')' : ''} "${st.q}"`);
+  Object.entries(st.f).forEach(([k, v]) => { if (v !== '') p.push(`${colLabel(cfg, k)} = ${optLabel(k, v)}`); });
+  if (st.del) p.push('삭제자료 포함');
+  return p.join(' · ') || '전체 (조건 없음)';
+}
+function reportHTML(key) {
+  const cfg = CFG[key], st = ls(key), { all } = listView(key), cols = visCols(key), rows = all.slice(0, 1000), stamp = fDT(new Date());
+  const sums = cols.map(c => NUMT.includes(c.t) ? sumOf(c, all) : null);
+  return `<div class="rpt"><div class="rpt-wm">SIGNION 내부용 · ${ME.id} · ${stamp}</div>
+    <div class="rpt-h"><div><div class="rpt-k">SIGNION BACKOFFICE · REPORT</div><h2>${esc(cfg.title)}</h2></div>${logo('h')}</div>
+    <div class="rpt-meta"><span>출력 일시</span><b>${stamp}</b><span>출력자</span><b>${esc(ME.name)} (${ME.id}) · ${ME.ip}</b>
+      <span>조회 조건</span><b style="grid-column:span 3">${esc(condText(key))}</b>
+      <span>건수</span><b>${fmt(all.length)}건${all.length > rows.length ? ` (앞 ${fmt(rows.length)}건 출력)` : ''}</b><span>정렬</span><b>${st.sort ? `${colLabel(cfg, st.sort.k)} ${st.sort.dir > 0 ? '오름차순' : '내림차순'}` : '기본'}</b></div>
+    <table><thead><tr><th class="n">No</th>${cols.map(c => `<th class="${NUMT.includes(c.t) ? 'n' : ''}">${esc(c.l)}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map((r, i) => `<tr><td class="n">${i + 1}</td>${cols.map((c, j) => { const v = expVal(c, r); return `<td class="${NUMT.includes(c.t) ? 'n' : ''}">${typeof v === 'number' ? fmt(v) : esc(v)}${r.stop && j === 0 ? ' (삭제)' : ''}</td>`; }).join('')}</tr>`).join('') || `<tr><td colspan="${cols.length + 1}" style="text-align:center;padding:20px">조건에 맞는 자료가 없습니다.</td></tr>`}</tbody>
+    ${all.length && sums.some(x => x) ? `<tfoot><tr><td></td>${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n' : ''}">${sums[i] || (i === 0 ? '합계' : '')}</td>`).join('')}</tr></tfoot>` : ''}</table>
+    <div class="rpt-f"><span>내부 직원 전용 · 외부 반출 금지 · 개인정보(이름 · 여권번호)는 마스킹되어 출력됩니다.</span><span>SIGNION · ㈜로드시스템</span></div></div>`;
+}
+function openReport(key) {
+  openModal(MH('리포트 출력', '현재 검색 조건 · 표시 항목 · 정렬 그대로 출력합니다. 인쇄와 엑셀 다운로드는 서버접속 LOG에 기록됩니다.')
+    + `<div class="m-b"><div class="rpt-scroll">${reportHTML(key)}</div></div><div class="m-f"><button class="btn" data-act="close-modal">닫기</button><button class="btn" data-act="excel">${ic('download')}엑셀로</button><button class="btn btn-p" data-act="rpt-print">${ic('print')}인쇄 · PDF 저장</button></div>`, { xwide:true });
+  MD.reportKey = key;
+}
+function printReport(key) {
+  let el = $('#rpt-print'); if (!el) { el = document.createElement('div'); el.id = 'rpt-print'; document.body.appendChild(el); }
+  el.innerHTML = reportHTML(key); document.body.classList.add('printing');
+  audit('리포트 출력', `${CFG[key].title} · ${listView(key).all.length}건`);
+  const done = () => { document.body.classList.remove('printing'); removeEventListener('afterprint', done); };
+  addEventListener('afterprint', done); window.print();
+}
+
+/* ---------- 개인정보 열람 — 사유 입력 후 원문 표시, 열람 기록 ---------- */
+const unmaskBtn = (k, id) => S.unmask[id] ? `<button class="btn btn-sm btn-ghost" data-act="remask" data-id="${id}">${ic('lock')}다시 가리기</button>` : `<button class="btn btn-sm" data-act="unmask" data-k="${k}" data-id="${id}">${ic('eye')}개인정보 보기</button>`;
+function openUnmask(k, id) {
+  const r = CFG[k].rows.find(x => x.id === id);
+  openModal(MH('개인정보 원문 보기', '사유와 함께 열람 기록이 서버접속 LOG에 남습니다.') + `<div class="m-b"><div class="fld"><label for="umr">열람 사유<span class="req">*</span></label><textarea class="input" id="umr" style="width:100%" placeholder="예) 고객 문의 응대 — 여권 성명 대조"></textarea><div class="hint">화면을 벗어나거나 로그아웃하면 다시 가려집니다.</div></div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('eye')}원문 보기</button></div>`);
+  MD.onConfirm = () => { const why = $('#umr').value.trim(); if (!why) { $('#umr').focus(); $('#umr').style.borderColor = 'var(--bad)'; return; } S.unmask[id] = true; audit('개인정보 열람', `${CFG[k].title} · ${r.no || r.id} · 사유: ${why}`); closeModal(); rerenderKeep(); };
+}
+
+/* ---------- 보안 — 미사용 시 자동 로그아웃 ---------- */
+const SESS = { max:15 * 60, warn:60, left:15 * 60 };
+const mmss = s => `${pad(Math.floor(Math.max(0, s) / 60))}:${pad(Math.max(0, s) % 60)}`;
+function sessPaint() { const el = $('.sess'); if (el) { el.querySelector('span').textContent = mmss(SESS.left); el.classList.toggle('warn', SESS.left <= 120); } const c = $('#sessCnt'); if (c) c.textContent = Math.max(0, SESS.left); }
+function sessExtend() { SESS.left = SESS.max; $('#sessWarn')?.remove(); sessPaint(); }
+function doLogout(reason) {
+  audit(reason === '세션 만료' ? '세션 만료' : '로그아웃', reason); S.authed = false; S.step = 1; S.unmask = {}; $('#sessWarn')?.remove(); closeDrawer(); closeModal();
+  try { sessionStorage.removeItem('sg_auth'); } catch (x) {} location.hash = '#/login';
+  if (reason === '세션 만료') setTimeout(() => toast('장시간 사용하지 않아 자동 로그아웃되었습니다.', true), 80);
+}
+setInterval(() => {
+  if (!S.authed) return; SESS.left--;
+  if (SESS.left === SESS.warn && !$('#sessWarn')) document.body.insertAdjacentHTML('beforeend', `<div class="sess-warn" id="sessWarn" role="alertdialog" aria-modal="true" aria-labelledby="sessT"><div><h3 id="sessT">곧 자동 로그아웃됩니다</h3><p>보안을 위해 ${SESS.max / 60}분 동안 사용하지 않으면 로그아웃됩니다.</p><div class="big"><span id="sessCnt">${SESS.left}</span>초</div><div class="row"><button class="btn" data-act="sess-out">지금 로그아웃</button><button class="btn btn-p" data-act="sess-ext">계속 사용</button></div></div></div>`);
+  if (SESS.left <= 0) doLogout('세션 만료'); sessPaint();
+}, 1000);
+['pointerdown', 'keydown', 'wheel'].forEach(ev => document.addEventListener(ev, () => { if (S.authed && !$('#sessWarn')) SESS.left = SESS.max; }, { capture:true, passive:true }));
+
+/* ---------- 도움말 ---------- */
+function openHelp() {
+  const k = [['Enter', '검색 조건에서 바로 검색'], ['Ctrl K  /  /', '메뉴 이동 · 승인번호 · 고객 · 거래처 통합 검색'], ['Ctrl Enter', '입력 · 수정 화면 저장'], ['Esc', '열린 창 · 선택기 닫기'], ['↑ ↓ ← →', '날짜 선택기 · 목록 선택기 이동'], ['?', '이 도움말 열기']];
+  openModal(MH('단축키 · 사용 안내', '마우스 없이도 대부분의 업무를 처리할 수 있습니다.') + `<div class="m-b"><div class="kbd-l">${k.map(([a, b]) => `<kbd>${a}</kbd><span>${b}</span>`).join('')}</div>
+    <div class="sec-t">목록 화면</div><ul style="margin:0;padding-left:18px;line-height:1.9;font-size:13.5px;color:var(--ink-2)"><li>행을 누르면 상세, <b>두 번 누르면 바로 수정</b></li><li>머리글을 누르면 정렬 (오름 → 내림 → 해제)</li><li>「표시 항목」 · 「행 간격」 · 「저장된 조건」은 화면별로 기억됩니다</li><li>엑셀 · 리포트는 <b>현재 검색 결과와 표시 항목</b> 그대로 출력됩니다</li></ul>
+    <div class="sec-t">보안</div><ul style="margin:0;padding-left:18px;line-height:1.9;font-size:13.5px;color:var(--ink-2)"><li>${SESS.max / 60}분 동안 사용하지 않으면 자동 로그아웃 (1분 전 안내)</li><li>이름 · 여권번호는 가려서 표시 — 원문은 사유 입력 후 열람, 기록됨</li><li>엑셀 · 리포트 · 개인정보 열람은 모두 서버접속 LOG에 기록</li></ul></div>
+    <div class="m-f"><button class="btn btn-p" data-act="close-modal">확인</button></div>`);
 }
 
 /* ---------- Trans (인증내역관리) ---------- */
 CFG['trans'] = {
   title:'인증내역관리', desc:'kycTransMaster / kycTransDetail — 승인번호 단위의 KYC 인증 처리 내역과 모듈별 결과를 조회합니다.', noCreate:true, noEdit:true,
-  cols:[ C('no','승인번호','mono',{main:1}), C('dt','인증일시','date'), C('partner','거래처','strong'), C('nat','국가','nat'), C('name','여권 성명'), C('pass','여권번호','mono'),
+  cols:[ C('no','승인번호','mono',{main:1}), C('dt','인증일시','date'), C('partner','거래처','strong'), C('nat','국가','nat'), C('name','여권 성명','pname'), C('pass','여권번호','mono'),
          C('res','인증 모듈','res'), C('status','상태','badge'), C('err','오류코드','mono'), C('sec','처리(초)','num'), C('fee','수수료','won') ],
   rows: TRANS, opts:{ status:['완료','실패','진행중'], pid:PARTNERS.filter(p => p.status === '등록완료').map(p => p.pid), nat:Object.keys(NAT) }, filters:['status','pid','nat'], dateKey:'dt',
   extra:[['coins','인증수수료계산']], detail: transDetail,
@@ -1347,12 +1786,12 @@ function customerDetail(c) {
       ${fs.length ? `<div class="files">${fs.map((f, i) => `<span class="file">${ic(f.endsWith('pdf') ? 'pdf' : 'file')}${f}<button data-act="toast" data-msg="${f} 다운로드" aria-label="다운로드">${ic('download')}</button><button data-act="rmfile" data-c="${c.id}" data-d="${d}" data-i="${i}" aria-label="삭제">${ic('x')}</button></span>`).join('')}</div>` : ''}</div>`; };
   const r = retain(c);
   return {
-    title: `${esc(c.name)} ${badge(c.stage)}`, sub: `<span class="mono">${c.no}</span> · ${c.agency} / <span class="mono">${c.sub}</span> · 등록 ${c.rg}`,
+    title: `${esc(S.unmask[c.id] ? c.name : maskName(c.name))} ${badge(c.stage)}`, sub: `<span class="mono">${c.no}</span> · ${c.agency} / <span class="mono">${c.sub}</span> · 등록 ${c.rg}`,
     body: `<div class="steps" style="margin-bottom:18px">${flow.map((s, i) => `<span class="step ${cur > i ? 'done' : cur === i ? 'cur' : ''}"><span class="b">${cur > i ? ic('check') : i + 1}</span>${s}</span>${i < flow.length - 1 ? `<span class="step-ln ${cur > i ? 'done' : ''}"></span>` : ''}`).join('')}</div>
       <div class="pp"><div class="pp-photo">${ic('user')}</div>
-        <div><div class="muted" style="font-size:11.5px;font-weight:600;letter-spacing:.06em">PASSPORT · ${NAT[c.nat]}</div><h3>${esc(c.name)}</h3>
+        <div><div class="muted" style="font-size:11.5px;font-weight:600;letter-spacing:.06em">PASSPORT · ${NAT[c.nat]}</div><h3>${esc(S.unmask[c.id] ? c.name : maskName(c.name))}</h3><div style="margin-top:6px">${unmaskBtn('kt/docs', c.id)}</div>
         <dl class="kv"><dt>여권번호</dt><dd class="mono">${maskPass(c.pass)}</dd><dt>생년월일 · 성별</dt><dd>${c.birth} · ${c.sex}${c.minor ? ' <span class="badge t-warn">미성년자</span>' : ''}</dd><dt>만료일</dt><dd>${c.pexp}</dd><dt>비자</dt><dd>${c.visa} (${c.visa.startsWith('E') ? '근로자' : '유학생'})</dd></dl></div>
-        <div class="mrz" aria-label="MRZ">${esc(mrz(c))}</div></div>
+        <div class="mrz" aria-label="MRZ">${esc(mrz(S.unmask[c.id] ? c : { ...c, name:maskName(c.name).replace(/\*/g, '<'), pass:maskPass(c.pass) }))}</div></div>
       <div class="sec-t">여권인증 결과</div>
       <div class="chips" style="flex-wrap:wrap;gap:6px">${[['OCR', c.ocr], ['FACE', c.face]].map(([k, v]) => `<span class="chip ${v}" style="height:26px;padding:0 10px;font-size:12.5px">${ic(v === 'ok' ? 'check' : 'x')}${MOD[k]} ${v === 'ok' ? '성공' : '실패'}</span>`).join('')}<span class="chip" style="height:26px;padding:0 10px;font-size:12.5px">${ic('clock')}처리 7.4초</span></div>
       <div class="sec-t">필수 서류 <span class="muted" style="font-weight:500">${a}/${b}</span><span class="r"><button class="btn btn-sm" data-act="toast" data-msg="고객정보 엑셀 양식을 다운로드했습니다. (여권정보 자동 기입)">${ic('download')}엑셀 양식</button><button class="btn btn-sm" data-act="toast" data-msg="엑셀 업로드 — 세부 양식은 KT·대리점 협의 후 확정">${ic('upload')}엑셀 업로드</button></span></div>
@@ -1387,7 +1826,7 @@ function transDetail(t) {
   const imgs = [['여권 이미지','passport','wide'],['OCR 얼굴','face'],['NFC 얼굴','face'],['정면','user'],['좌측','user'],['우측','user'],['위','user'],['아래','user']];
   return {
     title: `<span class="mono" style="font-size:16px">${t.no}</span> ${badge(t.status)}`, sub: `${esc(t.partner)} · ${t.dt} · 처리 ${t.sec}초`,
-    body: `<dl class="kv kv2"><div><dl class="kv"><dt>여권 성명</dt><dd>${esc(t.name)}</dd><dt>여권번호</dt><dd class="mono">${t.pass}</dd><dt>국적</dt><dd>${natL(t.nat)}</dd></dl></div>
+    body: `<dl class="kv kv2"><div><dl class="kv"><dt>여권 성명</dt><dd>${esc(S.unmask[t.id] ? t.name : maskName(t.name))} ${unmaskBtn('trans', t.id)}</dd><dt>여권번호</dt><dd class="mono">${t.pass}</dd><dt>국적</dt><dd>${natL(t.nat)}</dd></dl></div>
       <div><dl class="kv"><dt>거래처</dt><dd><span class="mono">${t.pid}</span></dd><dt>서비스 모드</dt><dd>${badge(t.mode)}</dd><dt>수수료</dt><dd class="num">${t.fee ? fmt(t.fee) + '원 · 0.79 USD' : '—'}</dd></dl></div></dl>
       <div class="sec-t">인증 처리 단계 <span class="muted" style="font-weight:500">kycTransDetail · transType</span></div><ul class="tl">${tl}</ul>
       <div class="sec-t">인증 이미지 <span class="muted" style="font-weight:500">암호화 저장 · 열람 시 로그 기록</span><span class="r"><button class="btn btn-sm" data-act="toast" data-msg="열람 사유 입력 후 원본 이미지를 복호화합니다.">${ic('eye')}원본 보기</button></span></div>
@@ -1432,47 +1871,37 @@ function genericDetail(key, r) {
 
 /* ---------- Drawer / Modal / Toast ---------- */
 let DR = null;
-function openDrawer(key, id) {
+function openDrawer(key, id, force) {
   const cfg = CFG[key]; const r = cfg.rows.find(x => x.id === id); if (!r) return;
+  let nav = '';
+  if (route() === key) { const st = ls(key), all = listView(key).all, i = all.findIndex(x => x.id === id);
+    if (i > -1) { const pg = Math.floor(i / st.size) + 1; if (st.cur !== id || st.pg !== pg) { st.pg = pg; st.cur = id; render(); }
+      nav = `<div class="dr-nav"><button class="ibtn" data-act="dr-step" data-d="-1" ${i ? '' : 'disabled'} aria-label="이전 건" title="이전 건 (↑)">${ic('up')}</button><span>${i + 1} / ${all.length}</span><button class="ibtn" data-act="dr-step" data-d="1" ${i < all.length - 1 ? '' : 'disabled'} aria-label="다음 건" title="다음 건 (↓)">${ic('down')}</button></div>`; } }
+  S.lastOpen = { key, id };
   const d = cfg.detail ? cfg.detail(r) : genericDetail(key, r);
   DR = { key, id };
   const el = $('#drawer');
-  el.innerHTML = `<div class="dr-h"><div style="min-width:0"><h2>${d.title}</h2><p>${d.sub || ''}</p></div><button class="ibtn" data-act="close-drawer" aria-label="닫기">${ic('x')}</button></div>
+  el.innerHTML = `<div class="dr-h"><div style="min-width:0"><h2>${d.title}</h2><p>${d.sub || ''}</p></div>${nav}<button class="ibtn" data-act="close-drawer" aria-label="닫기">${ic('x')}</button></div>
     <div class="dr-b">${d.body}</div>${d.foot ? `<div class="dr-f">${d.foot}</div>` : ''}`;
+  permFilter(el, key);
   el.classList.add('on'); el.setAttribute('aria-hidden', 'false'); $('#scrim').classList.add('on');
 }
-function closeDrawer(silent) { $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden', 'true'); $('#scrim').classList.remove('on'); DR = null; }
+function closeDrawer(silent) { $('#drawer').classList.remove('on'); $('#drawer').setAttribute('aria-hidden', 'true'); $('#scrim').classList.remove('on'); const was = DR; DR = null; if (!silent && was && CFG[route()]) $(`tr[data-id="${was.id}"]`)?.scrollIntoView({ block:'nearest' }); }
+function drStep(d) { if (!DR || route() !== DR.key) return; const all = listView(DR.key).all, j = all.findIndex(x => x.id === DR.id) + d; if (j >= 0 && j < all.length) openDrawer(DR.key, all[j].id); }
 function switchTab(t) { $$('.tab').forEach(x => x.classList.toggle('on', x.dataset.t === t)); $$('.pane').forEach(x => x.classList.toggle('on', x.dataset.p === t)); }
 let MD = null;
-function openModal(html, opts = {}) { const m = $('#modal'); m.className = 'modal ' + (opts.wide ? 'wide' : ''); m.innerHTML = html; void m.offsetWidth; m.classList.add('on'); $('#mscrim').classList.add('on'); MD = opts; setTimeout(() => m.querySelector('input,textarea,select')?.focus(), 60); }
+function openModal(html, opts = {}) { const m = $('#modal'); m.className = 'modal ' + (opts.xwide ? 'xwide' : opts.wide ? 'wide' : ''); m.innerHTML = html; void m.offsetWidth; m.classList.add('on'); $('#mscrim').classList.add('on'); MD = opts; setTimeout(() => m.querySelector('input,textarea,select')?.focus(), 60); }
 function closeModal() { $('#modal').classList.remove('on'); $('#mscrim').classList.remove('on'); MD = null; }
 const MH = (t, p) => `<div class="m-h"><div><h3>${t}</h3>${p ? `<p>${p}</p>` : ''}</div><button class="ibtn" data-act="close-modal" aria-label="닫기">${ic('x')}</button></div>`;
 function toast(msg, bad) { const t = document.createElement('div'); t.className = 'toast ' + (bad ? 'bad' : ''); t.innerHTML = ic(bad ? 'alert' : 'check') + esc(msg); $('#toasts').appendChild(t); setTimeout(() => t.remove(), 2600); }
 
-function openForm(key, row) {
-  const cfg = CFG[key]; const fields = cfg.cols.filter(c => !c.ro && !['mods','res','auth','docs','ret','billcell','duecell'].includes(c.t));
-  openModal(MH(`${cfg.title} ${row ? '수정' : '등록'}`, row ? '변경 내용은 데이터수정LOG에 기록됩니다.' : '')
-    + `<form id="frm"><div class="m-b"><div class="fgrid">${fields.map((c, i) => {
-      const v = row ? row[c.k] : ''; const opts = cfg.opts?.[c.k] || (c.t === 'tier' ? TIERS.map((t, j) => j) : null);
-      const full = ['desc','memo','ret','txt','a','q','road','range'].includes(c.k) || fields.length % 2 && i === fields.length - 1;
-      return `<div class="fld ${full ? 'full' : ''}"><label>${c.l}${i < 2 ? '<span class="req">*</span>' : ''}</label>${opts
-        ? `<select class="select" name="${c.k}">${opts.map(o => `<option value="${o}" ${String(v) === String(o) ? 'selected' : ''}>${c.t === 'tier' ? TIERS[o] : c.k === 'nat' ? (NAT[o] || o) + ' (' + o + ')' : o}</option>`).join('')}</select>`
-        : `<input class="input" name="${c.k}" value="${esc(v)}" ${i < 2 ? 'required' : ''} ${['won','num'].includes(c.t) ? 'inputmode="numeric"' : ''}>`}</div>`; }).join('')}</div></div>
-      <div class="m-f"><button type="button" class="btn" data-act="close-modal">취소</button><button class="btn btn-p" type="submit">${row ? '저장' : '등록'}</button></div></form>`);
-  $('#frm').onsubmit = e => {
-    e.preventDefault(); const fd = new FormData(e.target); const o = {};
-    fields.forEach(c => { let v = fd.get(c.k); if (['won','num'].includes(c.t) || c.t === 'tier') v = Number(String(v).replace(/[^\d.-]/g, '')) || 0; o[c.k] = v; });
-    if (row) Object.assign(row, o); else cfg.rows.unshift(Object.assign({ id:'n' + Date.now(), rg:TODAY, mods:['OCR','FACE'], cnt:0, children:0, cust:0, last:'—', ip:'—' }, o));
-    closeModal(); render(); if (row && DR) openDrawer(key, row.id); toast(row ? '수정되었습니다.' : '등록되었습니다.');
-  };
-}
 function openDelete(key, ids) {
   openModal(MH(`${ids.length}건 삭제`, '삭제 자료는 즉시 지워지지 않으며 「삭제자료표시」로 조회할 수 있습니다. (StopChk · StopDate · StopRemark)')
     + `<div class="m-b"><div class="fld"><label>삭제 사유<span class="req">*</span></label><textarea class="input" id="delr" placeholder="예) 계약 해지 요청 (공문 2026-11-04)"></textarea><div class="hint">사유와 작업자, 일시가 데이터수정LOG에 기록됩니다.</div></div></div>
     <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-delete">${ic('trash')}삭제</button></div>`);
   MD.onConfirm = () => {
     const reason = $('#delr').value.trim(); if (!reason) { $('#delr').focus(); $('#delr').style.borderColor = 'var(--bad)'; return; }
-    CFG[key].rows.forEach(r => { if (ids.includes(r.id)) r.stop = { date:TODAY, reason, by:ME.id }; });
+    CFG[key].rows.forEach(r => { if (ids.includes(r.id)) { r.stop = { date:TODAY, reason, by:ME.id }; audit('삭제', `사유: ${reason}`, key, rowLabel(key, r)); } });
     ls(key).sel.clear(); closeModal(); render(); toast(`${ids.length}건을 삭제 처리했습니다.`);
   };
 }
@@ -1484,30 +1913,22 @@ function openMerge(c) {
       <div class="fld" style="margin-top:14px"><label>파일명 양식</label><input class="input mono" id="fnp" value="{대리점}_{고객명}_{여권번호}_{YYYYMMDD}.pdf"><div class="hint">미리보기: <span class="mono">${c.agency.replace(/㈜/, '')}_${c.name.replace(/\s/g, '')}_${maskPass(c.pass)}_${TODAY.replace(/-/g, '')}.pdf</span></div></div></div>
       <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-merge">${ic('pdf')}PDF 발급 · 다운로드</button></div>`, { wide:true });
   MD.order = order; MD.redraw = () => $('#ord').innerHTML = draw();
-  MD.onConfirm = () => { if (c.stage === '검수완료') c.stage = 'KT제출'; closeModal(); render(); openDrawer('kt/docs', c.id); toast(`통합 PDF (${order.length}개 서류)를 생성했습니다.`); };
+  MD.onConfirm = () => { audit('통합 PDF 발급', `${order.length}개 서류`, 'kt/docs', c.no); if (c.stage === '검수완료') c.stage = 'KT제출'; closeModal(); render(); openDrawer('kt/docs', c.id); toast(`통합 PDF (${order.length}개 서류)를 생성했습니다.`); };
 }
 function openComplete(c) {
-  openModal(MH('개통 완료 처리', `${esc(c.name)} · <span class="mono">${c.no}</span>`)
+  openModal(MH('개통 완료 처리', `${esc(maskName(c.name))} · <span class="mono">${c.no}</span>`)
     + `<div class="m-b"><div class="callout bad">${ic('alert')}<div>개통 완료 시 <b>고객 개인정보와 제출 서류가 자동 삭제</b>됩니다. 개인정보 미포함 운영·거래 로그는 3년간 보관됩니다.</div></div>
       <div class="fld" style="margin-top:16px"><label>KT 서비스계약번호<span class="req">*</span></label><input class="input mono" id="ktno" placeholder="예) 5G-2611-00012345"></div>
       <label class="switch" style="margin-top:6px"><input type="checkbox" id="ackd">삭제 정책을 확인했습니다.</label></div>
       <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-complete">개통 완료</button></div>`);
-  MD.onConfirm = () => { if (!$('#ktno').value.trim() || !$('#ackd').checked) { toast('계약번호 입력과 삭제 정책 확인이 필요합니다.', true); return; } c.stage = '개통완료'; closeModal(); render(); openDrawer('kt/docs', c.id); toast('개통 완료 — 개인정보 삭제가 예약되었습니다.'); };
+  MD.onConfirm = () => { if (!$('#ktno').value.trim() || !$('#ackd').checked) { toast('계약번호 입력과 삭제 정책 확인이 필요합니다.', true); return; } c.stage = '개통완료'; audit('개통 완료 처리', `KT 계약번호 ${$('#ktno').value.trim()} · 개인정보 삭제 예약`, 'kt/docs', c.no); closeModal(); render(); openDrawer('kt/docs', c.id); toast('개통 완료 — 개인정보 삭제가 예약되었습니다.'); };
 }
 function openStatus(key, r) {
   const opts = CFG[key].opts.status;
   openModal(MH('등록상태변경', `현재 상태: ${r.status}`) + `<div class="m-b"><div class="fld"><label>변경할 상태</label><select class="select" id="nst">${opts.map(o => `<option ${o === r.status ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
     <div class="fld" style="margin-top:14px"><label>처리 의견</label><textarea class="input" id="nmemo" placeholder="자료보완요청 · 등록거부 시 거래처에 안내 메일로 발송됩니다."></textarea></div></div>
     <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-status">변경</button></div>`);
-  MD.onConfirm = () => { r.status = $('#nst').value; closeModal(); render(); openDrawer(key, r.id); toast(`등록상태를 「${r.status}」(으)로 변경했습니다.`); };
-}
-function exportCSV(key) {
-  const cfg = CFG[key], data = filtered(key);
-  const val = (c, r) => { const v = r[c.k]; if (c.t === 'mods') return v.join('/'); if (c.t === 'res') return r.res.map(x => x.k + ':' + x.r).join('/'); if (c.t === 'tier') return TIERS[r.tier]; if (c.t === 'docs') return docProgress(r).join('/'); if (c.t === 'ret') { const x = retain(r); return typeof x === 'string' ? x : x.d; } if (c.t === 'auth') return `OCR:${r.ocr}/FACE:${r.face}`; if (['billcell','duecell'].includes(c.t)) return r[c.k]; return v ?? ''; };
-  const lines = [cfg.cols.map(c => c.l), ...data.map(r => cfg.cols.map(c => val(c, r)))].map(a => a.map(x => `"${String(x).replace(/"/g, '""')}"`).join(','));
-  const blob = new Blob(['﻿' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${cfg.title}_${TODAY}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  toast(`${data.length}건을 엑셀(CSV)로 내보냈습니다.`);
+  MD.onConfirm = () => { const old = r.status; r.status = $('#nst').value; audit('등록상태변경', `${old} → ${r.status}${$('#nmemo').value.trim() ? ' · ' + $('#nmemo').value.trim() : ''}`, key, rowLabel(key, r)); closeModal(); render(); openDrawer(key, r.id); toast(`등록상태를 「${r.status}」(으)로 변경했습니다.`); };
 }
 const curKey = () => route();
 
@@ -1520,20 +1941,20 @@ function rowAction(key, r, l) {
   const nm = r.name || r.org || r.pid || r.uid || '';
   if (l === '등록상태변경') return openStatus(key, r);
   if (l === '제휴사접속정보등록') return openForm('partner/conn', null);
-  if (l === '비밀번호초기화') return openConfirm('비밀번호초기화', `<b>${esc(nm)}</b> 계정의 비밀번호를 초기화하고, 임시 비밀번호를 2단계 인증 이메일 <b>${esc(r.mail || '')}</b>(으)로 발송합니다.<br>다음 로그인 시 비밀번호 변경이 필요합니다.`, '초기화', () => toast('임시 비밀번호를 발송했습니다.'));
+  if (l === '비밀번호초기화') return openConfirm('비밀번호초기화', `<b>${esc(nm)}</b> 계정의 비밀번호를 초기화하고, 임시 비밀번호를 2단계 인증 이메일 <b>${esc(r.mail || '')}</b>(으)로 발송합니다.<br>다음 로그인 시 비밀번호 변경이 필요합니다.`, '초기화', () => { toast('임시 비밀번호를 발송했습니다.'); audit('비밀번호초기화', '임시 비밀번호 메일 발송', key, rowLabel(key, r)); });
   if (l === '마스터Token생성' || l === '암호화KEY생성') {
     const tk = l === '마스터Token생성';
-    return openConfirm(l, `<b>${esc(nm)}</b>의 ${tk ? 'masterToken' : '암호화KEY (AES-CBC-256 · masterKey / IvKey)'}을 새로 생성합니다.<div class="callout warn" style="margin-top:12px">${ic('alert')}<div>기존 ${tk ? '토큰' : 'KEY'}은 즉시 만료되어 거래처 연동에 영향을 줄 수 있습니다. 거래처 담당자와 일정 협의 후 진행하세요.</div></div>`, '생성', () => toast(`${l} 완료 — ${tk ? '발행토큰관리' : '암호화KEY관리'}에 이력이 기록됩니다.`));
+    return openConfirm(l, `<b>${esc(nm)}</b>의 ${tk ? 'masterToken' : '암호화KEY (AES-CBC-256 · masterKey / IvKey)'}을 새로 생성합니다.<div class="callout warn" style="margin-top:12px">${ic('alert')}<div>기존 ${tk ? '토큰' : 'KEY'}은 즉시 만료되어 거래처 연동에 영향을 줄 수 있습니다. 거래처 담당자와 일정 협의 후 진행하세요.</div></div>`, '생성', () => { toast(`${l} 완료 — ${tk ? '발행토큰관리' : '암호화KEY관리'}에 이력이 기록됩니다.`); audit(l, `기존 ${tk ? '토큰' : 'KEY'} 즉시 만료`, key, rowLabel(key, r)); });
   }
   if (l === '메모등록') {
     openModal(MH('메모등록', esc(nm)) + `<div class="m-b"><div class="fld"><label>메모<span class="req">*</span></label><textarea class="input" id="memo-t" placeholder="내부 공유용 메모 (거래처에는 노출되지 않습니다)"></textarea></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">등록</button></div>`);
-    MD.onConfirm = () => { const v = $('#memo-t').value.trim(); if (!v) return $('#memo-t').focus(); CFG['work/memo'].rows.unshift({ id:'m' + Date.now(), target:r.pid || r.uid || r.no, menu:crumbOf(key)[0], memo:v, who:ME.name, dt:fDT(new Date()).slice(0, 16) }); closeModal(); toast('메모를 등록했습니다 · 작업관리 > 자료메모관리에서 통합 조회'); };
+    MD.onConfirm = () => { const v = $('#memo-t').value.trim(); if (!v) return $('#memo-t').focus(); CFG['work/memo'].rows.unshift({ id:'m' + Date.now(), target:r.pid || r.uid || r.no, menu:crumbOf(key)[0], memo:v, who:ME.name, dt:fDT(new Date()).slice(0, 16) }); closeModal(); audit('메모등록', v.slice(0, 40), key, rowLabel(key, r)); toast('메모를 등록했습니다 · 작업관리 > 자료메모관리에서 통합 조회'); };
     return;
   }
   if (l === '아이디수정') {
     const f = r.pid !== undefined ? 'pid' : 'uid';
     openModal(MH('아이디수정', '변경 이력은 데이터수정LOG에 기록됩니다.') + `<div class="m-b"><div class="fgrid"><div class="fld"><label>현재 아이디</label><input class="input mono" value="${esc(r[f])}" disabled></div><div class="fld"><label>새 아이디<span class="req">*</span></label><input class="input mono" id="nid"></div></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">변경</button></div>`);
-    MD.onConfirm = () => { const v = $('#nid').value.trim(); if (!v) return $('#nid').focus(); CFG['work/datalog'].rows.unshift({ id:'d' + Date.now(), dt:fDT(new Date()).slice(0, 16), tbl:key.startsWith('kt') ? 'ProgUser' : 'Member', key:r[f], field:'UserID', before:r[f], after:v, who:ME.id }); r[f] = v; closeModal(); rerenderKeep(); toast('아이디를 변경했습니다.'); };
+    MD.onConfirm = () => { const v = $('#nid').value.trim(); if (!v) return $('#nid').focus(); CFG['work/datalog'].rows.unshift({ id:'d' + Date.now(), dt:fDT(new Date()).slice(0, 16), tbl:key.startsWith('kt') ? 'ProgUser' : 'Member', key:r[f], field:'UserID', before:r[f], after:v, who:ME.id }); audit('아이디수정', `${r[f]} → ${v}`, key, r[f]); r[f] = v; closeModal(); rerenderKeep(); toast('아이디를 변경했습니다.'); };
     return;
   }
   toast(`${nm} · 「${l}」 — 파일 업로드 화면은 개발 단계에서 연결됩니다.`);
@@ -1551,6 +1972,7 @@ function addFiles(cid, d, files) {
   if (big.length) toast(`50MB를 넘는 파일 ${big.length}개는 제외했습니다.`, true);
   else if (okf.length > room) toast(`서류당 최대 10개까지 등록됩니다. ${okf.length - room}개는 제외했습니다.`, true);
   else toast(`${d} · ${okf.length}개 파일 업로드 완료`);
+  if (okf.length) audit('서류 업로드', `${d} ${Math.min(okf.length, room)}건`, 'kt/docs', c.no);
 }
 document.body.insertAdjacentHTML('beforeend', '<input type="file" id="fpick" multiple hidden accept=".pdf,.jpg,.jpeg,.png,.json">');
 document.addEventListener('dragover', e => { const d = e.target.closest('[data-drop]'); if (!d) return; e.preventDefault(); $$('.doc.drag').forEach(x => x !== d && x.classList.remove('drag')); d.classList.add('drag'); });
@@ -1567,10 +1989,10 @@ function goOpen(key, id) { if (route() === key) openDrawer(key, id); else { S.pe
 function hl(s, q) { const i = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1; return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + q.length)) + '</mark>' + esc(s.slice(i + q.length)); }
 function cmdkSearch(q) {
   const ql = q.toLowerCase(), m = (...a) => a.some(x => String(x ?? '').toLowerCase().includes(ql)), out = [];
-  out.push(...MENU_FLAT.filter(([l, , , p]) => !q || m(l, p)).slice(0, q ? 6 : 10).map(([l, h, i, p]) => ({ g:'메뉴', i, l: p ? `${p} › ${l}` : l, sub:'', go:() => location.hash = h })));
+  out.push(...MENU_FLAT.filter(([l, h, , p]) => can(h.slice(2)) && (!q || m(l, p))).slice(0, q ? 6 : 10).map(([l, h, i, p]) => ({ g:'메뉴', i, l: p ? `${p} › ${l}` : l, sub:'', go:() => location.hash = h })));
   if (q) {
-    out.push(...TRANS.filter(t => m(t.no, t.name, t.pass)).slice(0, 4).map(t => ({ g:'인증내역', i:'shield', l:`${t.no} · ${t.name}`, sub:`${t.dt.slice(5, 16)} · ${t.status}`, go:() => goOpen('trans', t.id) })));
-    out.push(...CUSTOMERS.filter(c => m(c.no, c.name, c.pass)).slice(0, 4).map(c => ({ g:'KT 가입 고객', i:'passport', l:`${c.name} · ${c.no}`, sub:c.stage, go:() => goOpen('kt/docs', c.id) })));
+    out.push(...TRANS.filter(t => m(t.no, t.name, t.pass)).slice(0, 4).map(t => ({ g:'인증내역', i:'shield', l:`${t.no} · ${maskName(t.name)}`, sub:`${t.dt.slice(5, 16)} · ${t.status}`, go:() => goOpen('trans', t.id) })));
+    out.push(...CUSTOMERS.filter(c => m(c.no, c.name, c.pass)).slice(0, 4).map(c => ({ g:'KT 가입 고객', i:'passport', l:`${maskName(c.name)} · ${c.no}`, sub:c.stage, go:() => goOpen('kt/docs', c.id) })));
     out.push(...PARTNERS.filter(p => m(p.pid, p.name)).slice(0, 4).map(p => ({ g:'인증거래처', i:'building', l:`${p.name} · ${p.pid}`, sub:p.status, go:() => goOpen('partner/overview', p.id) })));
     out.push(...ACCOUNTS.filter(a => m(a.uid, a.org, a.man)).slice(0, 4).map(a => ({ g:'관리자 계정', i:'users', l:`${a.uid} · ${a.org}`, sub:TIERS[a.tier], go:() => goOpen('kt/overview', a.id) })));
   }
@@ -1598,7 +2020,36 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.dd-wrap') || (a && a.dataset.act !== 'dd')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open'));
   if (!a) { if (e.target.id === 'scrim') closeDrawer(); if (e.target.id === 'mscrim') closeModal(); if (e.target.id === 'cscrim') closeCmdk(); if (!e.target.closest('.sb') && !e.target.closest('.burger')) $('#sb')?.classList.remove('open'); return; }
   const act = a.dataset.act, key = curKey(), st = CFG[key] ? ls(key) : null;
+  { const gk = act === 'extra' ? a.dataset.l : GUARD[act], rk = a.dataset.k || (DR && ['edit-one', 'status-change', 'extra', 'unmask', 'upload', 'rmfile', 'inspect', 'merge', 'complete'].includes(act) ? DR.key : key);
+    if (gk && rk && PROG_BY[rk] && !can(rk, gk)) { e.preventDefault(); e.stopPropagation(); deny(rk, gk); return; } }
   switch (act) {
+    case 'preview': S.preview = a.dataset.r && a.dataset.r !== ME.roleId ? a.dataset.r : null; S.rd = null; location.hash = PROG_BY[route()] && !can(route()) ? '#/dashboard' : location.hash; render(); toast(S.preview ? `권한 미리보기: ${roleName(S.preview)}` : '미리보기를 끝냈습니다.'); break;
+    case 'split': st.split = !st.split; persist(key); render(); break;
+    case 'split-pop': if (DR) openDrawer(DR.key, DR.id, true); break;
+    case 'prole': { if (S.rd && !eqSet(S.rd.set, GRANT[S.rd.rid]) && a.dataset.r !== S.rd.rid) { toast('저장하지 않은 권한 변경이 있습니다. 저장하거나 되돌린 뒤 이동하세요.', true); break; } S.roleSel = a.dataset.r; render(); break; }
+    case 'pexp': { const o = roleDraft().open; o.has(a.dataset.r) ? o.delete(a.dataset.r) : o.add(a.dataset.r); render(); break; }
+    case 'prow': permAll([a.dataset.r]); render(); break;
+    case 'pgrp': permAll(PROG_LIST.filter(p => p.group === a.dataset.g).map(p => p.route)); render(); break;
+    case 'pcol': permAll(PROG_LIST.filter(p => progOf(p.route).acts.includes(a.dataset.a) && (!S.roleQ || (p.main + p.sub).includes(S.roleQ))).map(p => p.route), [a.dataset.a]); render(); break;
+    case 'prevert': S.rd = null; render(); toast('저장하기 전으로 되돌렸습니다.'); break;
+    case 'psave': { const D = roleDraft(), old = GRANT[D.rid], add = [...D.set].filter(x => !old.has(x)), rem = [...old].filter(x => !D.set.has(x));
+      const lbl = k => { const [r, a2] = k.split('|'); return `${(PROG_BY[r]?.sub !== '—' ? PROG_BY[r]?.sub : PROG_BY[r]?.main) || r} ${a2}`; };
+      GRANT[D.rid] = new Set(D.set); S.rd = null; audit('권한 변경', `+${add.length} −${rem.length}${add.length ? ' · 추가: ' + add.slice(0, 3).map(lbl).join(', ') + (add.length > 3 ? ' 외' : '') : ''}${rem.length ? ' · 해제: ' + rem.slice(0, 3).map(lbl).join(', ') + (rem.length > 3 ? ' 외' : '') : ''}`, 'work/role', roleName(D.rid));
+      render(); toast(`「${roleName(D.rid)}」 권한을 저장했습니다 (+${add.length} −${rem.length}) · 감사LOG 기록`); break; }
+    case 'prole-add': case 'prole-copy': case 'prole-edit': {
+      const R0 = ROLES_.find(r => r.id === S.roleSel), edit = act === 'prole-edit';
+      openModal(MH(edit ? '역할 이름 · 설명' : act === 'prole-copy' ? `「${R0.name}」 복사` : '역할 추가', edit ? '' : '권한은 아래 기준 역할에서 복사한 뒤 조정합니다.') + `<div class="m-b"><div class="fgrid"><div class="fld full"><label for="rnm">역할 이름<span class="req">*</span></label><input class="input" id="rnm" style="width:100%" value="${edit ? esc(R0.name) : act === 'prole-copy' ? esc(R0.name) + ' 복사본' : ''}" maxlength="20"></div><div class="fld full"><label for="rds">설명</label><input class="input" id="rds" style="width:100%" value="${edit || act === 'prole-copy' ? esc(R0.desc) : ''}"></div>
+        ${edit ? '' : `<div class="fld full"><label for="rbase">기준 역할 (권한 복사)</label><select class="select" id="rbase" style="width:100%"><option value="">없음 — 빈 권한</option>${ROLES_.map(r => `<option value="${r.id}" ${(act === 'prole-copy' ? R0.id : 'ro') === r.id ? 'selected' : ''}>${esc(r.name)}</option>`).join('')}</select></div>`}</div></div>
+        <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${edit ? '저장' : '추가'}</button></div>`);
+      MD.onConfirm = () => { const nm = $('#rnm').value.trim(); if (!nm) { $('#rnm').focus(); return; } if (ROLES_.some(r => r.name === nm && (!edit || r.id !== R0.id))) { toast('같은 이름의 역할이 있습니다.', true); return; }
+        if (edit) { const old = R0.name; CFG['work/staff'].rows.forEach(u => { if (u.role === old) u.role = nm; }); R0.name = nm; R0.desc = $('#rds').value.trim(); audit('권한 변경', `역할 이름 ${old} → ${nm}`, 'work/role', nm); }
+        else { const id = 'r' + Date.now().toString(36), base = $('#rbase').value; ROLES_.push({ id, name:nm, desc:$('#rds').value.trim() || '사용자 정의 역할' }); GRANT[id] = new Set(base ? GRANT[base] : []); S.roleSel = id; S.rd = null; audit('역할 추가', base ? `기준: ${roleName(base)}` : '빈 권한', 'work/role', nm); }
+        closeModal(); render(); toast(edit ? '저장했습니다.' : `「${nm}」 역할을 추가했습니다.`); };
+      break; }
+    case 'prole-del': { const R0 = ROLES_.find(r => r.id === S.roleSel), n = userCount(R0.id);
+      if (n) { toast(`이 역할을 쓰는 직원 ${n}명이 있습니다. 직원관리에서 역할을 바꾼 뒤 삭제하세요.`, true); break; }
+      openConfirm(`「${R0.name}」 역할 삭제`, '이 역할과 권한 설정이 삭제됩니다. 되돌릴 수 없으며 감사LOG에 남습니다.', '삭제', () => { ROLES_.splice(ROLES_.indexOf(R0), 1); delete GRANT[R0.id]; S.roleSel = 'ops'; S.rd = null; audit('역할 삭제', R0.desc, 'work/role', R0.name); render(); toast('역할을 삭제했습니다.'); }, true); break; }
+    case 'pgexp': { const o = (S.progOpen ||= new Set()); o.has(a.dataset.r) ? o.delete(a.dataset.r) : o.add(a.dataset.r); render(); break; }
     case 'nav-toggle':
       if (S.mini && innerWidth > 1024) { const m = MENU.find(x => x.id === a.dataset.id); location.hash = `#/${m.id}/${m.children[0][0]}`; break; }
       S.open[a.dataset.id] = !S.open[a.dataset.id]; a.parentElement.classList.toggle('open'); a.setAttribute('aria-expanded', S.open[a.dataset.id]); break;
@@ -1609,25 +2060,47 @@ document.addEventListener('click', e => {
     case 'ck-go': chooseCmdk(+a.dataset.ci); break;
     case 'sort': { const k = a.dataset.k, s = st.sort; st.sort = !s || s.k !== k ? { k, dir:1 } : s.dir === 1 ? { k, dir:-1 } : null; render(); break; }
     case 'page': st.pg = +a.dataset.p; render(); $('.tbl-wrap')?.closest('.card')?.scrollIntoView({ block:'nearest' }); break;
-    case 'chip-x': { const k = a.dataset.k; if (k === 'q') st.q = ''; else if (k === '_date') st.from = st.to = ''; else st.f[k] = ''; st.pg = 1; render(); break; }
-    case 'chips-clear': st.q = ''; st.f = {}; st.from = st.to = ''; st.pg = 1; render(); break;
+    case 'chip-x': { const k = a.dataset.k; if (k === 'q') st.q = ''; else if (k === '_date') st.from = st.to = ''; else st.f[k] = ''; st.pg = 1; st.draft = null; render(); break; }
+    case 'chips-clear': st.q = ''; st.qf = ''; st.f = {}; st.from = st.to = ''; st.pg = 1; st.draft = null; render(); break;
     case 'sel-clear': st.sel.clear(); render(); break;
     case 'theme': S.theme = S.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = S.theme; try { localStorage.setItem('sg_theme', S.theme); } catch (x) {} $$('.ibtn[data-act="theme"]').forEach(b => b.innerHTML = ic(S.theme === 'dark' ? 'sun' : 'moon')); break;
-    case 'logout': S.authed = false; S.step = 1; try { sessionStorage.removeItem('sg_auth'); } catch (x) {} location.hash = '#/login'; break;
+    case 'logout': doLogout('사용자 로그아웃'); break;
     case 'noti': toast('새 알림 3건 — 검수 대기 고객이 있습니다.'); break;
     case 'toast': e.stopPropagation(); toast(a.dataset.msg); break;
     case 'dash-range': S.dashRange = +a.dataset.n; render(); break;
     case 'chart-table': S.chartTable = !S.chartTable; render(); break;
     case 'go-trans': goOpen('trans', a.dataset.id); break;
     case 'search': st.q = $('[data-q]').value; st.sel.clear(); st.pg = 1; render(); break;
+    case 'q-apply': applyQ(key); break;
+    case 'q-reset': Object.assign(st, { q:'', qf:'', f:{}, from:'', to:'', pg:1 }); st.draft = null; st.sel.clear(); render(); setTimeout(() => $('#dq')?.focus()); break;
+    case 'q-toggle': { const d = draftOf(key); d.q = $('#dq')?.value ?? d.q; st.open = !st.open; persist(key); render(); break; }
+    case 'q-save': {
+      const d = draftOf(key); d.q = $('#dq')?.value ?? d.q;
+      openModal(MH('검색 조건 저장', esc(condText(key)) ) + `<div class="m-b"><div class="fld"><label for="qsn">조건 이름<span class="req">*</span></label><input class="input" id="qsn" style="width:100%" placeholder="예) 이번 달 실패 건" maxlength="30"></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">저장</button></div>`);
+      MD.onConfirm = () => { const n = $('#qsn').value.trim(); if (!n) { $('#qsn').focus(); return; } st.saved.push({ name:n, c:condOf(st) }); persist(key); closeModal(); render(); toast(`「${n}」 조건을 저장했습니다.`); };
+      break; }
+    case 'q-load': { const s = st.saved[+a.dataset.i]; Object.assign(st, JSON.parse(JSON.stringify(s.c)), { pg:1 }); st.draft = null; st.sel.clear(); render(); toast(`「${s.name}」 조건으로 검색했습니다.`); break; }
+    case 'q-del': { e.stopPropagation(); const s = st.saved.splice(+a.dataset.i, 1)[0]; persist(key); render(); toast(`「${s.name}」 조건을 지웠습니다.`); break; }
+    case 'dense': st.dense = !st.dense; persist(key); render(); break;
+    case 'report': openReport(key); break;
+    case 'rpt-print': printReport(MD.reportKey); break;
+    case 'unmask': openUnmask(a.dataset.k, a.dataset.id); break;
+    case 'remask': delete S.unmask[a.dataset.id]; rerenderKeep(); break;
+    case 'form-cancel': formCancel(); break;
+    case 'form-next': MD.next = true; $('#frm').requestSubmit(); break;
+    case 'sess-ext': sessExtend(); toast(`세션을 ${SESS.max / 60}분 연장했습니다.`); break;
+    case 'sess-out': doLogout('사용자 로그아웃'); break;
+    case 'help': openHelp(); break;
     case 'adv': st.adv = !st.adv; render(); break;
     case 'adv-apply': $$('[data-f]').forEach(s => st.f[s.dataset.f] = s.value); st.from = $('[data-from]')?.value || ''; st.to = $('[data-to]')?.value || ''; st.pg = 1; render(); break;
     case 'adv-reset': st.f = {}; st.from = st.to = ''; st.pg = 1; render(); break;
     case 'ck-all': { e.stopPropagation(); const d = listView(key).data; if (a.checked) d.forEach(r => st.sel.add(r.id)); else d.forEach(r => st.sel.delete(r.id)); render(); break; }
     case 'ck': e.stopPropagation(); a.checked ? st.sel.add(a.dataset.id) : st.sel.delete(a.dataset.id); render(); break;
-    case 'open': if (e.target.closest('.ck')) return; openDrawer(key, a.dataset.id); break;
+    case 'open': { if (e.target.closest('.ck')) return; openDrawer(key, a.dataset.id); break; }
+    case 'dr-step': drStep(+a.dataset.d); break;
+    case 'peek-close': st.peek = null; render(); $(`tr[data-id="${st.cur}"]`)?.focus?.(); break;
     case 'close-drawer': closeDrawer(); break;
-    case 'close-modal': closeModal(); break;
+    case 'close-modal': if (MD?.form) formCancel(); else closeModal(); break;
     case 'tab': switchTab(a.dataset.t); break;
     case 'create': openForm(key, null); break;
     case 'create-in': openForm(a.dataset.k, null); break;
@@ -1637,7 +2110,7 @@ document.addEventListener('click', e => {
     case 'excel': exportCSV(key); break;
     case 'extra': {
       const l = a.dataset.l;
-      if (l === '서류 PDF변환 통합 다운로드') { const ids = [...st.sel]; if (!ids.length) { toast('통합 다운로드할 고객을 선택하세요.', true); break; } toast(`${ids.length}명의 서류를 고객별 PDF로 변환해 ZIP으로 내려받습니다.`); break; }
+      if (l === '서류 PDF변환 통합 다운로드') { const ids = [...st.sel]; if (!ids.length) { toast('통합 다운로드할 고객을 선택하세요.', true); break; } audit(l, `${ids.length}명`, key); toast(`${ids.length}명의 서류를 고객별 PDF로 변환해 ZIP으로 내려받습니다.`); break; }
       if (l === '서류 다운로드') { toast(st.sel.size ? `${st.sel.size}명의 원본 서류를 내려받습니다.` : '다운로드할 고객을 선택하세요.', !st.sel.size); break; }
       if (ROW_SCOPED.includes(l)) {
         const k2 = DR ? DR.key : key, id = DR ? DR.id : (st && st.sel.size === 1 ? [...st.sel][0] : null);
@@ -1645,22 +2118,26 @@ document.addEventListener('click', e => {
         if (!r) { toast('목록에서 1건을 선택하세요.', true); break; }
         rowAction(k2, r, l); break;
       }
-      toast(`「${l}」 — 처리 화면은 개발 단계에서 연결됩니다.`); break;
+      audit(l, '처리 화면 열기', key); toast(`「${l}」 — 처리 화면은 개발 단계에서 연결됩니다.`); break;
     }
     case 'status-change': if (DR) openStatus(DR.key, CFG[DR.key].rows.find(r => r.id === DR.id)); break;
     case 'confirm-delete': case 'confirm-merge': case 'confirm-complete': case 'confirm-status': case 'confirm-generic': MD?.onConfirm?.(); break;
     case 'mv': { const i = +a.dataset.i, j = i + +a.dataset.dir; [MD.order[i], MD.order[j]] = [MD.order[j], MD.order[i]]; MD.redraw(); break; }
     case 'upload': UP = [a.dataset.c, a.dataset.d]; $('#fpick').value = ''; $('#fpick').click(); break;
-    case 'rmfile': { e.stopPropagation(); const c = CUSTOMERS.find(x => x.id === a.dataset.c), d = a.dataset.d; c.files[d].splice(+a.dataset.i, 1); if (docProgress(c)[0] < docProgress(c)[1]) { c.stage = '서류미비'; c.inspected = false; } rerenderKeep(); toast('파일을 삭제했습니다.'); break; }
-    case 'inspect': { const c = CUSTOMERS.find(x => x.id === a.dataset.c); c.inspected = true; c.stage = '검수완료'; rerenderKeep(); toast('검수 완료로 체크했습니다.'); break; }
+    case 'rmfile': { e.stopPropagation(); const c = CUSTOMERS.find(x => x.id === a.dataset.c), d = a.dataset.d; c.files[d].splice(+a.dataset.i, 1); if (docProgress(c)[0] < docProgress(c)[1]) { c.stage = '서류미비'; c.inspected = false; } audit('서류 삭제', d, 'kt/docs', c.no); rerenderKeep(); toast('파일을 삭제했습니다.'); break; }
+    case 'inspect': { const c = CUSTOMERS.find(x => x.id === a.dataset.c); c.inspected = true; c.stage = '검수완료'; audit('검수 완료', '', 'kt/docs', c.no); rerenderKeep(); toast('검수 완료로 체크했습니다.'); break; }
     case 'merge': openMerge(CUSTOMERS.find(x => x.id === a.dataset.c)); break;
     case 'complete': openComplete(CUSTOMERS.find(x => x.id === a.dataset.c)); break;
     case 'copy-tok': { const t = a.dataset.v; navigator.clipboard?.writeText(t).then(() => toast('복사했습니다.'), () => toast('복사할 수 없습니다.', true)); break; }
   }
 });
 document.addEventListener('change', e => {
-  const a = e.target.closest('[data-act="del-toggle"]'); if (a) { const st = ls(curKey()); st.del = a.checked; st.pg = 1; render(); }
-  if (e.target.matches('[data-size]')) { const st = ls(curKey()); st.size = +e.target.value; st.pg = 1; render(); }
+  if (e.target.matches('[data-pk]')) { permToggle(e.target.dataset.pk, e.target.checked); render(); return; }
+  if (e.target.matches('[data-poff]')) { const k = e.target.dataset.poff, on = e.target.checked, [r, a2] = k.split('|'); on ? PROG_OFF.delete(k) : PROG_OFF.add(k); audit('프로그램 변경', `${(PROG_BY[r]?.sub !== '—' ? PROG_BY[r]?.sub : PROG_BY[r]?.main) || r}${a2 ? ' · ' + a2 : ''} → ${on ? '사용' : '중지'}`, 'work/prog', PROG_BY[r] ? String(PROG_BY[r].mid).padStart(3, '0') : r); render(); toast(`${a2 || (PROG_BY[r]?.sub !== '—' ? PROG_BY[r]?.sub : PROG_BY[r]?.main)} ${on ? '사용' : '중지'} · 감사LOG 기록`); return; }
+  if (e.target.matches('[data-df]') || e.target.matches('[data-qf]')) { const k = curKey(), d = draftOf(k); d.q = $('#dq')?.value ?? d.q; if (e.target.matches('[data-qf]')) d.qf = e.target.value; else d.f[e.target.dataset.df] = e.target.value; render(); if (e.target.matches('[data-qf]')) setTimeout(() => $('#dq')?.focus()); return; }
+  if (e.target.matches('[data-colk]')) { const k = curKey(), st = ls(k); e.target.checked ? st.hidden.delete(e.target.dataset.colk) : st.hidden.add(e.target.dataset.colk); persist(k); render(); $('.colset-wrap')?.classList.add('open'); return; }
+  const a = e.target.closest('[data-act="del-toggle"]'); if (a && !can(curKey(), '삭제자료표시')) { a.checked = false; deny(curKey(), '삭제자료표시'); return; } if (a) { const st = ls(curKey()); st.del = a.checked; st.pg = 1; render(); }
+  if (e.target.matches('[data-size]')) { const k = curKey(), st = ls(k); st.size = +e.target.value; st.pg = 1; persist(k); render(); }
   if (e.target.id === 'fpick' && UP) { addFiles(UP[0], UP[1], [...e.target.files]); UP = null; }
 });
 document.addEventListener('keydown', e => {
@@ -1668,8 +2145,28 @@ document.addEventListener('keydown', e => {
   const typing = !!t?.matches('input, textarea, select');
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); $('#cmdk').classList.contains('on') ? closeCmdk() : openCmdk(); return; }
   if (e.key === '/' && !typing) { e.preventDefault(); openCmdk(); return; }
-  if (e.key === 'Escape') { if ($('#cmdk').classList.contains('on')) closeCmdk(); else if ($('.dd-wrap.open')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); else if (MD) closeModal(); else if (DR) closeDrawer(); }
+  if (e.key === '?' && !typing) { e.preventDefault(); openHelp(); return; }
+  const listKey = CFG[curKey()] && !MD && !typing && !$('#cmdk').classList.contains('on') && !$('.dd-wrap.open') && !$('#drawer.on') && !e.target.closest?.('#dpk-pop, #csel-pop, button, a') ? curKey() : null;
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && listKey) {
+    const st = ls(listKey), v = listView(listKey), i = v.all.findIndex(r => r.id === st.cur), j = i + (e.key === 'ArrowDown' ? 1 : -1);
+    if (j >= 0 && j < v.all.length) { e.preventDefault(); st.cur = v.all[j].id; st.pg = Math.floor(j / st.size) + 1; render(); $(`tr[data-id="${st.cur}"]`)?.scrollIntoView({ block:'nearest' }); } return; }
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && $('#drawer.on') && DR && !MD && !typing && !e.target.closest?.('#dpk-pop, #csel-pop')) { e.preventDefault(); drStep(e.key === 'ArrowDown' ? 1 : -1); return; }
+  if (e.key === 'Enter' && listKey && !e.ctrlKey) { const st = ls(listKey); if (st.cur) { e.preventDefault(); openDrawer(listKey, st.cur); } return; }
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && MD?.form) { e.preventDefault(); $('#frm')?.requestSubmit(); return; }
+  if (e.key === 'Enter' && t?.matches('[data-dq]')) { e.preventDefault(); applyQ(curKey()); setTimeout(() => { const q = $('#dq'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }); return; }
+  if (e.key === 'Enter' && MD?.onConfirm && t?.matches('#qsn')) { e.preventDefault(); MD.onConfirm(); return; }
+  if (e.key === 'Escape') { if ($('#sessWarn')) return; if ($('#cmdk').classList.contains('on')) closeCmdk(); else if ($('.dd-wrap.open')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); else if (MD) (MD.form ? formCancel() : closeModal()); else if ($('#drawer.on')) closeDrawer(); else if (CFG[curKey()] && ls(curKey()).peek) { ls(curKey()).peek = null; render(); } }
   if (e.key === 'Enter' && t?.matches('[data-q]')) { const st = ls(curKey()); st.q = e.target.value; st.pg = 1; render(); setTimeout(() => { const q = $('[data-q]'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }, 0); }
+});
+let qT = null;
+document.addEventListener('input', e => {
+  if (e.target.id === 'roleQ' || e.target.id === 'progQ') { const id = e.target.id, v = e.target.value; clearTimeout(qT); qT = setTimeout(() => { S[id] = v; render(); const el = $('#' + id); el?.focus(); el?.setSelectionRange(v.length, v.length); }, 200); return; }
+  if (!e.target.matches?.('[data-dq]')) return; const k = curKey(), d = draftOf(k); d.q = e.target.value;
+  const dirty = JSON.stringify(d) !== JSON.stringify(condOf(ls(k))); $('[data-act="q-apply"]')?.classList.toggle('dirty', dirty); const h = $('.dirty-t'); if (h) h.hidden = !dirty;
+});
+document.addEventListener('dblclick', e => {
+  const tr = e.target.closest('tr[data-act="open"]'); if (!tr || e.target.closest('.ck')) return; const k = curKey(), cfg = CFG[k];
+  if (!cfg || cfg.noEdit || cfg.noEditBtn) return; if (!can(k, '수정')) { deny(k, '수정'); return; } closeDrawer(); openForm(k, cfg.rows.find(r => r.id === tr.dataset.id));
 });
 const tip = $('#tip');
 document.addEventListener('mousemove', e => {
@@ -1678,6 +2175,174 @@ document.addEventListener('mousemove', e => {
   const w = tip.offsetWidth; tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + 'px'; tip.style.top = (e.clientY - 46) + 'px';
 });
 window.addEventListener('hashchange', render);
+
+/* @@DPK-START — 공용 날짜 선택기 (범위 · 단일 · 월). 모든 날짜 입력에 사용하며 YYYY-MM-DD 직접 입력도 함께 지원합니다. */
+const DPK = (() => {
+  const P = document.createElement('div'); P.className = 'dpop'; P.id = 'dpk-pop'; P.setAttribute('role', 'dialog'); P.setAttribute('aria-label', '날짜 선택'); document.body.appendChild(P);
+  const REG = {}, p2 = n => String(n).padStart(2, '0');
+  const ymd = d => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`, pd = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d || 1); };
+  const addD = (s, n) => { const d = pd(s); d.setDate(d.getDate() + n); return ymd(d); }, addM = (ym, n) => { const d = pd(ym + '-01'); d.setMonth(d.getMonth() + n); return ymd(d).slice(0, 7); }, diff = (a, b) => Math.round((pd(b) - pd(a)) / 864e5);
+  const SV = p => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
+  const CAL = SV('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'), CHEV = '<svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>', L = SV('<path d="M15 6l-6 6 6 6"/>'), R = SV('<path d="M9 6l6 6-6 6"/>');
+  const todayOf = c => c.today || (typeof TODAY !== 'undefined' ? TODAY : ymd(new Date()));
+  let cur = null;
+  const nM = () => cur && cur.c.mode === 'range' && innerWidth >= 760 ? 2 : 1;
+  function label(c) { const v = c.get(); if (c.mode === 'month') { const [y, m] = v.split('-'); return `${y}년 ${+m}월`; } if (c.mode === 'single') return v || c.empty || '날짜 선택'; return v && v[0] ? (v[0] === v[1] ? v[0] : `${v[0]} ~ ${v[1]}`) : (c.empty || '전체 기간'); }
+  function btn(id, aria) {
+    const c = REG[id]; if (!c) return ''; const v = c.get(), empty = c.mode === 'range' ? !(v && v[0]) : c.mode === 'single' ? !v : false, n = c.mode === 'range' && !empty ? diff(v[0], v[1]) + 1 : 0;
+    return `<button type="button" class="dp ${empty ? 'empty' : ''}" data-dpk="${id}" aria-haspopup="dialog" aria-expanded="false" aria-label="${aria || '날짜'} 선택: ${label(c)}">${CAL}<span>${label(c)}</span>${n ? `<span class="dn">${n}일</span>` : ''}${CHEV}</button>`;
+  }
+  function open(id, anchor) {
+    const c = REG[id]; if (!c) return; close(); const v = c.get(); cur = { c, anchor, hover:null, a:null, b:null };
+    if (c.mode === 'range') { if (v && v[0]) [cur.a, cur.b] = v; let base = cur.b || todayOf(c); if (base > c.max) base = c.max; cur.view = addM(base.slice(0, 7), nM() === 2 ? -1 : 0); }
+    else if (c.mode === 'single') { cur.a = v || null; cur.view = (v || todayOf(c)).slice(0, 7); }
+    else cur.view = v.slice(0, 4);
+    anchor.setAttribute('aria-expanded', 'true'); P.classList.add('on'); paint(); place();
+    setTimeout(() => (P.querySelector('.d[aria-pressed="true"]') || P.querySelector('.mgrid .on') || P.querySelector('.d.today:not(:disabled)') || P.querySelector('.d:not(:disabled)') || P.querySelector('button:not(:disabled)'))?.focus(), 0);
+  }
+  function close() { if (!cur) return null; const a = cur.anchor; a?.setAttribute('aria-expanded', 'false'); P.classList.remove('on'); cur = null; return a; }
+  function commit(v) { const c = cur.c; close(); c.set(v); setTimeout(() => document.querySelector(`[data-dpk="${c.id}"]`)?.focus(), 0); }
+  function place() {
+    if (!cur) return; if (!document.contains(cur.anchor)) { close(); return; }
+    const r = cur.anchor.getBoundingClientRect(), w = P.offsetWidth, h = P.offsetHeight;
+    let left = r.left; if (left + w > innerWidth - 12) left = Math.max(12, r.right - w);
+    let top = r.bottom + 6; if (top + h > innerHeight - 12 && r.top - h - 6 > 12) top = r.top - h - 6;
+    P.style.left = left + 'px'; P.style.top = Math.max(12, top) + 'px';
+  }
+  function cal(ym) {
+    const [y, m] = ym.split('-').map(Number), first = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate(), c = cur.c, td = todayOf(c);
+    let a = cur.a, b = c.mode === 'single' ? cur.a : cur.b; if (c.mode === 'range' && a && !b && cur.hover) [a, b] = cur.hover < a ? [cur.hover, a] : [a, cur.hover];
+    let h = ''; for (let i = 0; i < first; i++) h += '<span class="out"></span>';
+    for (let d = 1; d <= days; d++) {
+      const k = `${ym}-${p2(d)}`, dis = k < c.min || k > c.max, dow = (first + d - 1) % 7;
+      const cls = ['d', dow === 0 ? 'sun' : '', k === td ? 'today' : '', a && b && k > a && k < b ? 'in' : '', a && k === a ? 'rs' : '', (b && k === b) || (a && !b && k === a) ? 're' : ''].join(' ');
+      h += `<button type="button" class="${cls}" data-dpa="day" data-d="${k}" ${dis ? 'disabled' : ''} aria-label="${y}년 ${m}월 ${d}일${k === td ? ' (오늘)' : ''}" ${k === cur.a || k === cur.b ? 'aria-pressed="true"' : ''} tabindex="-1"><span>${d}</span></button>`;
+    }
+    return `<div class="cal"><div class="cal-t">${y}년 ${m}월</div><div class="cal-w">${'일월화수목금토'.split('').map(x => `<span>${x}</span>`).join('')}</div><div class="cal-g">${h}</div></div>`;
+  }
+  const months = () => { const a = [cur.view]; if (nM() === 2) a.push(addM(cur.view, 1)); return a; };
+  function paint() {
+    const c = cur.c;
+    if (c.mode === 'month') {
+      const y = +cur.view, v = c.get();
+      P.innerHTML = `<div class="dp-cals"><div class="dp-nav"><button type="button" data-dpa="nav" data-n="-1" ${y <= +c.min.slice(0, 4) ? 'disabled' : ''} aria-label="이전 해">${L}</button><button type="button" data-dpa="nav" data-n="1" ${y >= +c.max.slice(0, 4) ? 'disabled' : ''} aria-label="다음 해">${R}</button></div><div class="cal-t">${y}년</div>
+        <div class="mgrid">${Array.from({ length:12 }, (_, i) => { const k = `${y}-${p2(i + 1)}`; return `<button type="button" data-dpa="month" data-m="${k}" class="${k === v ? 'on' : ''}" ${k < c.min.slice(0, 7) || k > c.max.slice(0, 7) ? 'disabled' : ''}>${i + 1}월</button>`; }).join('')}</div></div>`;
+      return;
+    }
+    const ms = months();
+    const pre = c.mode === 'range' && c.presets ? `<div class="dp-pre"><div class="t">빠른 선택</div>${c.presets.map(([l, a, b]) => `<button type="button" data-dpa="pre" data-a="${a}" data-b="${b}" class="${cur.a === a && cur.b === b ? 'on' : ''}">${l}</button>`).join('')}</div>` : '';
+    const nav = `<div class="dp-nav"><button type="button" data-dpa="nav" data-n="-1" ${ms[0] <= c.min.slice(0, 7) ? 'disabled' : ''} aria-label="이전 달">${L}</button><button type="button" data-dpa="nav" data-n="1" ${ms[ms.length - 1] >= c.max.slice(0, 7) ? 'disabled' : ''} aria-label="다음 달">${R}</button></div>`;
+    const foot = c.mode === 'range'
+      ? `<input class="input" data-dpin="a" value="${cur.a || ''}" placeholder="YYYY-MM-DD" aria-label="시작일 직접 입력" maxlength="10"><span class="muted">~</span><input class="input" data-dpin="b" value="${cur.b || ''}" placeholder="YYYY-MM-DD" aria-label="종료일 직접 입력" maxlength="10">
+         <span class="hint">${cur.a && !cur.b ? '종료일을 선택하세요' : cur.a && cur.b ? `${diff(cur.a, cur.b) + 1}일` : ''}</span><span class="sp"></span>${c.allowEmpty ? '<button type="button" class="btn btn-sm btn-ghost" data-dpa="clear">기간 지우기</button>' : ''}<button type="button" class="btn btn-sm" data-dpa="cancel">취소</button><button type="button" class="btn btn-sm btn-p" data-dpa="apply" ${cur.a ? '' : 'disabled'}>적용</button>`
+      : `<input class="input" data-dpin="a" value="${cur.a || ''}" placeholder="YYYY-MM-DD" aria-label="날짜 직접 입력" maxlength="10"><span class="hint"></span><span class="sp"></span><button type="button" class="btn btn-sm btn-ghost" data-dpa="today">오늘</button>${c.allowEmpty ? '<button type="button" class="btn btn-sm btn-ghost" data-dpa="clear">지우기</button>' : ''}`;
+    P.innerHTML = `<div class="dp-body">${pre}<div class="dp-cals">${nav}<div class="dp-months">${ms.map(cal).join('')}</div></div></div><div class="dp-foot">${foot}</div>`;
+  }
+  function typed(el) {
+    const c = cur.c, v = el.value.trim(), ok = /^\d{4}-\d{2}-\d{2}$/.test(v) && ymd(pd(v)) === v && v >= c.min && v <= c.max;
+    if (!ok) { el.classList.add('err'); el.setAttribute('aria-invalid', 'true'); const h = P.querySelector('.hint'); if (h) h.textContent = `YYYY-MM-DD 형식, ${c.min} ~ ${c.max}`; return; }
+    if (c.mode === 'single') return commit(v);
+    if (el.dataset.dpin === 'a') cur.a = v; else cur.b = v; if (cur.a && cur.b && cur.a > cur.b) [cur.a, cur.b] = [cur.b, cur.a];
+    cur.view = addM((cur.b || cur.a).slice(0, 7), nM() === 2 ? -1 : 0); paint();
+  }
+  P.addEventListener('click', e => {
+    e.dpkInside = true; /* 다시 그려도 바깥 클릭으로 오인해 닫히지 않도록 표시 */
+    const t = e.target.closest('[data-dpa]'); if (!t || !cur) return; const c = cur.c, k = t.dataset.d;
+    switch (t.dataset.dpa) {
+      case 'day': if (c.mode === 'single') { commit(k); break; } if (!cur.a || cur.b) { cur.a = k; cur.b = null; } else if (k < cur.a) cur.a = k; else cur.b = k; cur.hover = null; paint(); P.querySelector(`.d[data-d="${k}"]`)?.focus(); break;
+      case 'pre': cur.a = t.dataset.a; cur.b = t.dataset.b; cur.view = addM(cur.b.slice(0, 7), nM() === 2 ? -1 : 0); paint(); break;
+      case 'nav': cur.view = c.mode === 'month' ? String(+cur.view + +t.dataset.n) : addM(cur.view, +t.dataset.n); paint(); break;
+      case 'apply': commit([cur.a, cur.b || cur.a]); break;
+      case 'cancel': close()?.focus(); break;
+      case 'clear': commit(c.mode === 'range' ? null : ''); break;
+      case 'today': commit(todayOf(c)); break;
+      case 'month': commit(t.dataset.m); break;
+    }
+  });
+  P.addEventListener('change', e => { if (e.target.matches('[data-dpin]')) typed(e.target); });
+  P.addEventListener('input', e => { if (e.target.matches('[data-dpin]')) { e.target.classList.remove('err'); e.target.removeAttribute('aria-invalid'); } });
+  P.addEventListener('mouseover', e => { const d = e.target.closest('.d'); if (d && cur && cur.c.mode === 'range' && cur.a && !cur.b && cur.hover !== d.dataset.d) { cur.hover = d.dataset.d; P.querySelector('.dp-months').innerHTML = months().map(cal).join(''); } });
+  document.addEventListener('click', e => { const t = e.target.closest('[data-dpk]'); if (t) { if (cur && cur.anchor === t) close(); else open(t.dataset.dpk, t); return; } if (cur && !e.dpkInside && !P.contains(e.target)) close(); });
+  document.addEventListener('keydown', e => {
+    if (!cur) return;
+    if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close()?.focus(); return; }
+    if (e.key === 'Enter' && e.target.matches?.('[data-dpin]')) { e.preventDefault(); e.stopImmediatePropagation(); typed(e.target); return; }
+    if (e.target.matches?.('#dpk-pop .d')) {
+      const mv = { ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7 }[e.key]; if (!mv) return; e.preventDefault();
+      const k = addD(e.target.dataset.d, mv), c = cur.c; if (k < c.min || k > c.max) return; const ms = months();
+      if (k.slice(0, 7) < ms[0]) cur.view = addM(cur.view, -1); else if (k.slice(0, 7) > ms[ms.length - 1]) cur.view = addM(cur.view, 1);
+      if (c.mode === 'range' && cur.a && !cur.b) cur.hover = k; paint(); P.querySelector(`.d[data-d="${k}"]`)?.focus();
+    }
+  }, true);
+  addEventListener('resize', () => { if (cur) { paint(); place(); } });
+  addEventListener('scroll', e => { if (cur && !P.contains(e.target)) place(); }, true);
+  return { reg:(id, cfg) => (REG[id] = Object.assign({ id, mode:'range', min:'2000-01-01', max:'2099-12-31' }, cfg)), btn, close, isOpen:() => !!cur, util:{ addD, addM, ymd } };
+})();
+/* @@DPK-END */
+
+/* @@CSELECT-START — 네이티브 select를 BI 스타일 드롭다운으로 바꿉니다 (원본 select는 숨겨 두고 값·change 이벤트를 그대로 사용) */
+(() => {
+  const CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>', CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const pop = document.createElement('div'); pop.className = 'csel-pop'; pop.setAttribute('role', 'listbox'); pop.id = 'csel-pop'; document.body.appendChild(pop);
+  let cur = null, typed = '', typedT = null;
+  const escH = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  function sync(sel, b) { const o = sel.options[sel.selectedIndex]; b.querySelector('.csel-v').textContent = o ? o.textContent : ''; b.classList.toggle('is-all', !!o && o.value === '' && sel.selectedIndex === 0); b.disabled = sel.disabled; }
+  function enhance(sel) {
+    if (sel.dataset.cs) return; sel.dataset.cs = '1';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'csel'; b.setAttribute('aria-haspopup', 'listbox'); b.setAttribute('aria-expanded', 'false');
+    if (sel.getAttribute('style')) b.setAttribute('style', sel.getAttribute('style'));
+    const lab = sel.getAttribute('aria-label') || (sel.id && document.querySelector(`label[for="${sel.id}"]`)?.textContent.trim()); if (lab) b.setAttribute('aria-label', lab);
+    b.innerHTML = `<span class="csel-v"></span>${CHEV}`; sel.after(b); sel.classList.add('csel-native'); sel.tabIndex = -1; sync(sel, b);
+    sel._csb = b; b._sel = sel;
+    sel.addEventListener('focus', () => b.focus());
+    b.addEventListener('click', e => { e.stopPropagation(); cur && cur.sel === sel ? close() : open(sel, b); });
+    b.addEventListener('keydown', e => { if (!cur && ['ArrowDown','ArrowUp','Enter',' '].includes(e.key)) { e.preventDefault(); open(sel, b); } });
+  }
+  function paint() {
+    const { sel, act } = cur; let h = '';
+    [...sel.options].forEach((o, i) => {
+      h += `<div class="csel-o ${o.disabled ? 'dis' : ''} ${i === sel.selectedIndex ? 'on' : ''} ${i === act ? 'act' : ''}" role="option" id="csel-o${i}" data-i="${i}" aria-selected="${i === sel.selectedIndex}" ${o.disabled ? 'aria-disabled="true"' : ''}>${CHECK}<span>${escH(o.textContent)}</span></div>`;
+      if (i === 0 && o.value === '' && sel.options.length > 2) h += '<div class="csel-sep" role="separator"></div>';
+    });
+    pop.innerHTML = h; cur.b.setAttribute('aria-activedescendant', 'csel-o' + act);
+    pop.querySelector('.act')?.scrollIntoView({ block:'nearest' });
+  }
+  function place() {
+    if (!cur) return; const r = cur.b.getBoundingClientRect();
+    pop.style.minWidth = Math.max(r.width, 160) + 'px'; const w = pop.offsetWidth, h = pop.offsetHeight;
+    let left = r.left; if (left + w > innerWidth - 8) left = Math.max(8, r.right - w);
+    let top = r.bottom + 6; if (top + h > innerHeight - 8 && r.top - h - 6 > 8) top = r.top - h - 6;
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  function open(sel, b) { close(); cur = { sel, b, act:Math.max(0, sel.selectedIndex) }; b.setAttribute('aria-expanded', 'true'); pop.classList.add('on'); paint(); place(); }
+  function close(focus) { if (!cur) return; const b = cur.b; b.setAttribute('aria-expanded', 'false'); b.removeAttribute('aria-activedescendant'); pop.classList.remove('on'); cur = null; if (focus && document.contains(b)) b.focus(); }
+  function choose(i) {
+    const { sel, b } = cur, o = sel.options[i]; if (!o || o.disabled) return;
+    close(true);
+    if (i !== sel.selectedIndex) { sel.selectedIndex = i; sync(sel, b); sel.dispatchEvent(new Event('change', { bubbles:true })); }
+  }
+  function move(d) { const n = cur.sel.options.length; let i = cur.act; for (let k = 0; k < n; k++) { i = (i + d + n) % n; if (!cur.sel.options[i].disabled) break; } cur.act = i; paint(); }
+  pop.addEventListener('mousedown', e => e.preventDefault());
+  pop.addEventListener('mousemove', e => { const o = e.target.closest('.csel-o'); if (o && cur && +o.dataset.i !== cur.act && !o.classList.contains('dis')) { cur.act = +o.dataset.i; pop.querySelectorAll('.csel-o.act').forEach(x => x.classList.remove('act')); o.classList.add('act'); } });
+  pop.addEventListener('click', e => { const o = e.target.closest('.csel-o'); if (o && cur) choose(+o.dataset.i); });
+  document.addEventListener('mousedown', e => { if (cur && !pop.contains(e.target) && !cur.b.contains(e.target)) close(); }, true);
+  document.addEventListener('keydown', e => {
+    if (!cur) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); move(e.key === 'ArrowDown' ? 1 : -1); }
+    else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); cur.act = e.key === 'Home' ? -1 : cur.sel.options.length; move(e.key === 'Home' ? 1 : -1); }
+    else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(cur.act); }
+    else if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close(true); }
+    else if (e.key === 'Tab') close();
+    else if (e.key.length === 1) { typed += e.key.toLowerCase(); clearTimeout(typedT); typedT = setTimeout(() => typed = '', 600);
+      const opts = [...cur.sel.options], i = opts.findIndex((o, k) => !o.disabled && o.textContent.trim().toLowerCase().startsWith(typed)); if (i > -1) { cur.act = i; paint(); } }
+  }, true);
+  addEventListener('resize', () => place());
+  addEventListener('scroll', e => { if (cur && !pop.contains(e.target)) place(); }, true);
+  const run = () => { document.querySelectorAll('select.select:not([data-cs])').forEach(enhance); if (cur && !document.contains(cur.b)) close(); };
+  new MutationObserver(run).observe(document.body, { childList:true, subtree:true });
+  run();
+})();
+/* @@CSELECT-END */
 
 /* ---------- Login ---------- */
 function Login() {
@@ -1715,7 +2380,7 @@ function bindLogin() {
   if (of) {
     const ins = $$('.otp input'); ins.forEach((inp, i) => { inp.oninput = () => { inp.value = inp.value.replace(/\D/g, ''); if (inp.value && ins[i + 1]) ins[i + 1].focus(); }; inp.onkeydown = e => { if (e.key === 'Backspace' && !inp.value && ins[i - 1]) ins[i - 1].focus(); }; });
     $('#back').onclick = () => { S.step = 1; render(); };
-    of.onsubmit = e => { e.preventDefault(); if (ins.some(x => !x.value)) { toast('인증번호 6자리를 입력하세요.', true); return; } S.authed = true; S.step = 1; try { sessionStorage.setItem('sg_auth', '1'); } catch (x) {} location.hash = '#/dashboard'; toast(`${ME.name} 님, 로그인되었습니다.`); };
+    of.onsubmit = e => { e.preventDefault(); if (ins.some(x => !x.value)) { toast('인증번호 6자리를 입력하세요.', true); return; } S.authed = true; S.step = 1; SESS.left = SESS.max; audit('로그인 성공', '아이디 · 비밀번호 + 메일 인증번호(2FA) 확인'); try { sessionStorage.setItem('sg_auth', '1'); } catch (x) {} location.hash = '#/dashboard'; toast(`${ME.name} 님, 로그인되었습니다.`); };
     let left = 299; clearInterval(otpTimer); otpTimer = setInterval(() => { left--; const t = $('#otpt'); if (!t || left < 0) return clearInterval(otpTimer); t.textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)}`; }, 1000);
   }
 }
@@ -1773,6 +2438,313 @@ function BI() {
 }</pre></div></section>`;
 }
 
+/* =====================================================================
+   권한 (RBAC) — 역할 × 메뉴 × 기능버튼
+   레거시: ProgList_(대메뉴 · 소메뉴 · 기능버튼) + ProgUser(사용자 × 프로그램ID 부여)
+   신규: 같은 프로그램ID 체계를 「역할」 단위로 부여하고, 사용자는 역할을 가짐
+   * 역할 구성은 로드시스템 확인 전 예시입니다.
+   ===================================================================== */
+const ACTS = ['조회', '등록', '수정', '삭제', '엑셀로', '리포트', '삭제자료표시'];
+const PII_ROUTES = ['trans', 'kt/docs'];
+const DRAWER_BTNS = { 'kt/docs':['서류 업로드', '검수 완료', '통합 PDF 발급', '개통 완료 처리'] };
+const PROG_LIST = (() => { const out = []; let mid = 1; MENU.forEach(m => { if (m.sec) return; (m.children ? m.children.map(([id, l]) => [`${m.id}/${id}`, l]) : [[m.id, m.label]]).forEach(([r, l]) => out.push({ mid:mid++, route:r, group:m.id, main:m.label, sub:m.children ? l : '—', icon:m.icon, isNew:!!(m.newKids || []).includes(r) })); }); return out; })();
+const PROG_BY = Object.fromEntries(PROG_LIST.map(p => [p.route, p]));
+function progOf(route) {
+  const cfg = CFG[route];
+  if (!cfg || route === 'work/role' || route === 'work/prog') return { acts:route === 'work/role' || route === 'work/prog' ? ['조회', '수정'] : ['조회'], btns:[] };
+  const acts = ['조회']; if (!cfg.noCreate && !cfg.noEdit) acts.push('등록'); if (!cfg.noEdit && !cfg.noEditBtn) acts.push('수정'); if (!cfg.noEdit) acts.push('삭제');
+  acts.push('엑셀로', '리포트', '삭제자료표시');
+  const btns = [...new Set([...(cfg.extra || []).map(x => x[1]), ...(DRAWER_BTNS[route] || [])])]; if (PII_ROUTES.includes(route)) btns.push('개인정보 보기');
+  return { acts, btns };
+}
+const ROLES_ = [
+  { id:'sys', name:'SysAdmin', desc:'모든 메뉴 · 버튼 · 권한 관리', sys:true },
+  { id:'ops', name:'운영 관리자', desc:'거래처 · KT · 수수료 · 고객센터 등록 · 수정' },
+  { id:'cs',  name:'상담원 (CS)', desc:'조회 중심 · 고객센터 처리 · 서류 업로드' },
+  { id:'dev', name:'연구소 개발자', desc:'토큰 · 암호화KEY · 메시지코드 · 코드 · LOG' },
+  { id:'ro',  name:'조회 전용', desc:'조회만 · 엑셀 · 출력 불가' },
+];
+const GRANT = {};
+(function seedGrants() {
+  ROLES_.forEach(r => GRANT[r.id] = new Set());
+  PROG_LIST.forEach(p => {
+    const { acts, btns } = progOf(p.route), k = a => `${p.route}|${a}`, g = p.group, add = (rid, list) => list.forEach(a => GRANT[rid].add(k(a)));
+    add('sys', [...acts, ...btns]);
+    if (!['work', 'token', 'crypto'].includes(g) || p.route === 'work/memo') { add('ops', acts.filter(a => a !== '삭제' || ['partner', 'kt', 'cs'].includes(g))); add('ops', btns.filter(b => !['마스터Token생성', '암호화KEY생성', '마스터Token발급', '암호화KEY발급'].includes(b))); }
+    else if (!['work/role', 'work/prog', 'work/staff'].includes(p.route)) add('ops', ['조회']);
+    if (['dashboard', 'partner/overview', 'kt/overview', 'kt/docs', 'trans'].includes(p.route) || g === 'cs') { add('cs', ['조회', '리포트']); if (g === 'cs') add('cs', acts.filter(a => ['등록', '수정'].includes(a))); if (p.route === 'kt/docs') add('cs', ['서류 업로드', '개인정보 보기']); if (p.route === 'trans') add('cs', ['개인정보 보기']); }
+    if (g !== 'work' || p.route === 'work/datalog') add('dev', ['조회', '엑셀로']);
+    if (['token', 'crypto', 'msg', 'pkd', 'code', 'log'].includes(g)) add('dev', [...acts, ...btns]);
+    if (g !== 'work') add('ro', ['조회']);
+  });
+})();
+const PROG_OFF = new Set();   // 프로그램관리에서 「중지」한 메뉴 · 버튼 (모든 역할에 적용)
+const roleName = id => ROLES_.find(r => r.id === id)?.name || id;
+const myRole = () => S.preview || ME.roleId;
+function can(route, act = '조회') {
+  if (route === 'bi' || route === 'login') return true;
+  if (PROG_OFF.has(route) || PROG_OFF.has(`${route}|${act}`)) return false;
+  const g = GRANT[myRole()]; if (!g) return false;
+  return g.has(`${route}|${act}`) && (act === '조회' || g.has(`${route}|조회`));
+}
+function deny(route, act) { toast(`「${act}」 권한이 없습니다 — 권한관리에서 역할 권한을 확인하세요.`, true); audit('권한 없음 시도', `「${act}」 실행 차단`, route); }
+/* 화면에 그려진 버튼 중 권한 없는 것은 제거 */
+const GUARD = { create:'등록', edit:'수정', 'edit-one':'수정', delete:'삭제', excel:'엑셀로', report:'리포트', 'rpt-print':'리포트', 'status-change':'등록상태변경', unmask:'개인정보 보기', upload:'서류 업로드', rmfile:'서류 업로드', inspect:'검수 완료', merge:'통합 PDF 발급', complete:'개통 완료 처리' };
+function permFilter(el, key) { if (!el) return; el.querySelectorAll('[data-act]').forEach(b => { const gk = b.dataset.act === 'extra' ? b.dataset.l : GUARD[b.dataset.act]; if (gk && !can(b.dataset.k || key, gk)) b.remove(); }); }
+
+/* ---------- 감사 LOG ---------- */
+const menuName = route => route === 'login' ? '로그인' : crumbOf(route).filter(Boolean).join(' › ');
+CFG['work/audit'] = {
+  title:'감사LOG', desc:'누가 · 언제 · 어느 메뉴에서 · 무엇을 했는지 기록합니다 (등록 · 수정 · 삭제 · 기능버튼 · 출력 · 개인정보 열람 · 권한 변경 · 권한 없는 시도). 기록은 고치거나 지울 수 없습니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[C('dt','일시','date',{main:1}), C('who','관리자','mono'), C('role','역할'), C('menu','메뉴'), C('act','행위','badge'), C('target','대상','mono'), C('detail','내용'), C('ip','IP','mono')],
+  rows: rows(['dt','who','role','menu','act','target','detail','ip'], [
+    ['2026-11-05 09:48:12','signion.admin','SysAdmin','인증거래처관리 › 종합관리','등록상태변경','WINDM','등록심사중 → 자료보완요청','211.170.12.44'],
+    ['2026-11-05 09:30:40','signion.admin','SysAdmin','암호화KEY관리','암호화KEY생성','KTMNS','기존 KEY 즉시 만료','211.170.12.44'],
+    ['2026-11-04 17:02:05','lab.kim','연구소 개발자','인증거래처관리 › 접속정보관리','수정','KTGLOBAL','허용 IP: 14.63.21.9 → 14.63.21.10','10.20.1.31'],
+    ['2026-11-04 16:10:51','cs.park','상담원 (CS)','KT통신가입관리 › 등록서류관리','삭제','KY2610283545225','사유: 중복 업로드 (가입신청서 2장)','10.20.1.45'],
+    ['2026-11-04 11:15:20','signion.admin','SysAdmin','작업관리 › 권한관리','권한 변경','상담원 (CS)','+0 −1 · 등록서류관리 삭제 해제','211.170.12.44'],
+    ['2026-11-04 10:02:33','cs.park','상담원 (CS)','인증수수료관리','권한 없음 시도','—','「엑셀로」 실행 차단','10.20.1.45'],
+    ['2026-11-03 18:40:09','biz.jang','조회 전용','인증내역관리','개인정보 열람','KY2611051087250','사유: 고객 문의 응대','10.20.1.52'],
+  ]),
+  opts:{ act:['등록','수정','삭제','등록상태변경','암호화KEY생성','마스터Token생성','비밀번호초기화','메모등록','아이디수정','엑셀 다운로드','리포트 출력','개인정보 열람','권한 변경','역할 추가','역할 삭제','프로그램 변경','권한 없음 시도','로그인 성공','로그아웃','세션 만료'], who:['signion.admin','lab.kim','cs.park','biz.jang','ops.choi'], role:ROLES_.map(r => r.name) },
+  filters:['act','who','role'],
+};
+Object.assign(TONE, { '등록':'ok', '수정':'info', '삭제':'bad', '권한 변경':'warn', '역할 추가':'warn', '역할 삭제':'bad', '프로그램 변경':'warn', '권한 없음 시도':'bad', '등록상태변경':'info', '암호화KEY생성':'warn', '마스터Token생성':'warn', '비밀번호초기화':'warn' });
+function audit(ev, detail = '', route = curKey(), target = '') {
+  const now = fDT(new Date()), A = CFG['work/audit'];
+  A.rows.unshift({ id:'au' + Date.now() + Math.random().toString(36).slice(2, 6), dt:now, who:ME.id, role:roleName(myRole()) + (S.preview ? ' (미리보기)' : ''), menu:menuName(route), act:ev, target:String(target || '—'), detail, ip:ME.ip });
+  if (!A.opts.act.includes(ev)) A.opts.act.push(ev);
+  if (['로그인 성공', '로그아웃', '세션 만료', '엑셀 다운로드', '리포트 출력', '개인정보 열람'].includes(ev)) CFG['log/server']?.rows.unshift({ id:'sv' + Date.now() + Math.random().toString(36).slice(2, 5), dt:now, lv:ev, who:ME.id, ref:'—', req:detail, code:'200', ms:0, ip:ME.ip });
+}
+const rowLabel = (key, r) => { const c = CFG[key]?.cols[0]; return r ? String(r.no || r.pid || r.uid || (c ? r[c.k] : '') || r.id) : '—'; };
+
+/* ---------- 권한관리 화면 ---------- */
+const eqSet = (a, b) => a.size === b.size && [...a].every(x => b.has(x));
+const userCount = rid => CFG['work/staff'].rows.filter(u => !u.stop && u.role === roleName(rid)).length;
+function roleDraft() { const rid = S.roleSel; if (!S.rd || S.rd.rid !== rid) S.rd = { rid, set:new Set(GRANT[rid]), open:new Set() }; return S.rd; }
+function RolePage() {
+  S.roleSel ||= 'ops'; const R = ROLES_.find(r => r.id === S.roleSel) || ROLES_[0]; S.roleSel = R.id;
+  const D = roleDraft(), set = D.set, locked = !!R.sys || !can('work/role', '수정'), dirty = !eqSet(set, GRANT[R.id]);
+  const added = [...set].filter(x => !GRANT[R.id].has(x)).length, removed = [...GRANT[R.id]].filter(x => !set.has(x)).length;
+  const q = (S.roleQ || '').trim();
+  const left = ROLES_.map(r => `<button class="role-i ${r.id === R.id ? 'on' : ''}" data-act="prole" data-r="${r.id}"><span class="nm">${esc(r.name)}${r.sys ? ' <span class="badge t-info">시스템</span>' : ''}</span><span class="ds">${esc(r.desc)}</span><span class="ct">${ic('users')}${userCount(r.id)}명 · ${GRANT[r.id].size}개 권한</span></button>`).join('');
+  const groups = MENU.filter(m => !m.sec).map(m => {
+    const ps = PROG_LIST.filter(p => p.group === m.id && (!q || (p.main + p.sub).includes(q))); if (!ps.length) return '';
+    const gAll = ps.flatMap(p => { const { acts, btns } = progOf(p.route); return [...acts, ...btns].map(a => `${p.route}|${a}`); });
+    const gOn = gAll.filter(x => set.has(x)).length;
+    const rowsH = ps.map(p => {
+      const { acts, btns } = progOf(p.route), k = a => `${p.route}|${a}`, off = PROG_OFF.has(p.route), bOn = btns.filter(b => set.has(k(b))).length, open = D.open.has(p.route);
+      const cells = ACTS.map(a => acts.includes(a) ? `<td class="pc"><input type="checkbox" class="cbox" data-pk="${k(a)}" ${set.has(k(a)) ? 'checked' : ''} ${locked ? 'disabled' : ''} aria-label="${esc(p.sub === '—' ? p.main : p.sub)} ${a}"></td>` : '<td class="pc na">—</td>').join('');
+      return `<tr class="${off ? 'off' : ''}"><td class="pm">${p.sub === '—' ? esc(p.main) : `<span class="muted">└</span> ${esc(p.sub)}`}${off ? ' <span class="badge">중지</span>' : ''}${p.isNew ? ' <span class="nav-new" style="margin:0">NEW</span>' : ''}</td>${cells}
+        <td class="pb">${btns.length ? `<button class="btn btn-sm btn-ghost" data-act="pexp" data-r="${p.route}" aria-expanded="${open}">${ic('more')}<b>${bOn}</b>/${btns.length} ${ic(open ? 'up' : 'down')}</button>` : '<span class="muted">—</span>'}</td>
+        <td class="pc">${locked ? '' : `<button class="linkbtn" data-act="prow" data-r="${p.route}">${[...acts, ...btns].every(a => set.has(k(a))) ? '모두 해제' : '모두'}</button>`}</td></tr>
+        ${open && btns.length ? `<tr class="pbtns"><td></td><td colspan="${ACTS.length + 2}"><div class="pchips">${btns.map(b => `<label class="pchip ${set.has(k(b)) ? 'on' : ''}"><input type="checkbox" class="cbox" data-pk="${k(b)}" ${set.has(k(b)) ? 'checked' : ''} ${locked ? 'disabled' : ''}>${esc(b)}</label>`).join('')}</div></td></tr>` : ''}`;
+    }).join('');
+    return `<tr class="pg"><td colspan="${ACTS.length + 3}"><span class="pg-t">${ic(m.icon)}${esc(m.label)}</span><span class="muted" style="font-size:12px;margin-left:8px">${gOn}/${gAll.length}</span>${locked ? '' : `<button class="linkbtn" data-act="pgrp" data-g="${m.id}" style="margin-left:8px">${gOn === gAll.length ? '그룹 모두 해제' : '그룹 모두 허용'}</button>`}</td></tr>${rowsH}`;
+  }).join('');
+  return PH('권한관리', '역할(권한 그룹)마다 메뉴별 조회 · 등록 · 수정 · 삭제 · 출력과 화면 기능버튼 사용 권한을 정합니다. 직원은 직원관리에서 역할을 지정합니다.',
+      `${can('work/role', '수정') ? `<button class="btn" data-act="prole-add">${ic('plus')}역할 추가</button>` : ''}`)
+    + `<div class="callout warn" style="margin-bottom:16px">${ic('alert')}<div><b>역할 구성은 로드시스템 확인 후 확정합니다.</b> 지금 5개 역할은 예시이며, 레거시 <span class="mono">ProgList_</span>(메뉴·버튼) + <span class="mono">ProgUser</span>(사용자별 부여) 구조를 역할 단위로 묶었습니다. 개별 사용자 예외 권한이 필요한지도 함께 확인이 필요합니다.</div></div>`
+    + `<div class="role-grid"><section class="card"><div class="card-h"><h3>역할</h3><span class="sub">${ROLES_.length}개</span></div><div class="role-list">${left}</div></section>
+      <section class="card" style="min-width:0"><div class="card-h"><h3>${esc(R.name)}</h3><span class="sub">${esc(R.desc)} · 사용자 ${userCount(R.id)}명</span>
+        <div class="r">${!R.sys && can('work/role', '수정') ? `<button class="btn btn-sm btn-ghost" data-act="prole-edit">${ic('edit')}이름 · 설명</button><button class="btn btn-sm btn-ghost" data-act="prole-copy">${ic('copy')}복사</button><button class="btn btn-sm btn-ghost btn-d" data-act="prole-del">${ic('trash')}삭제</button>` : ''}</div></div>
+        ${R.sys ? `<div class="callout info" style="margin:14px 20px 0">${ic('shieldl')}<div>SysAdmin은 모든 권한을 가지며 바꿀 수 없습니다. 권한관리 화면 잠김 방지용입니다.</div></div>` : ''}
+        <div class="tb2"><label class="sfield" style="width:240px">${ic('search')}<input id="roleQ" value="${esc(S.roleQ || '')}" placeholder="메뉴 이름으로 찾기"></label><span class="grow"></span>
+          ${dirty ? `<span class="dirty-t">${ic('alert')}저장하지 않은 변경 <b>+${added} −${removed}</b></span><button class="btn" data-act="prevert">되돌리기</button>` : ''}
+          ${locked ? '' : `<button class="btn btn-p ${dirty ? 'dirty' : ''}" data-act="psave" ${dirty ? '' : 'disabled'}>${ic('check')}권한 저장<span class="dirty-dot"></span></button>`}</div>
+        <div class="tbl-wrap scroll"><table class="tbl ptbl"><thead><tr><th>메뉴</th>${ACTS.map(a => `<th class="pc">${locked ? a : `<button class="linkbtn" data-act="pcol" data-a="${a}" title="${a} 열 전체 켜기/끄기">${a}</button>`}</th>`).join('')}<th>기능버튼</th><th></th></tr></thead><tbody>${groups || `<tr><td colspan="${ACTS.length + 3}"><div class="empty">${ic('search')}<div>「${esc(q)}」 메뉴가 없습니다.</div></div></td></tr>`}</tbody></table></div>
+        <div class="tf"><span class="muted" style="font-size:12.5px">조회를 끄면 그 메뉴의 다른 권한도 함께 꺼집니다 · 다른 권한을 켜면 조회가 함께 켜집니다 · 저장하면 감사LOG에 남습니다</span></div></section></div>`;
+}
+function permToggle(pk, on) {
+  const set = roleDraft().set, [route, act] = pk.split('|');
+  if (on) { set.add(pk); set.add(`${route}|조회`); }
+  else { set.delete(pk); if (act === '조회') [...set].filter(x => x.startsWith(route + '|')).forEach(x => set.delete(x)); }
+}
+function permAll(routes, acts) {
+  const set = roleDraft().set, keys = routes.flatMap(r => { const p = progOf(r); return (acts || [...p.acts, ...p.btns]).filter(a => p.acts.includes(a) || p.btns.includes(a)).map(a => `${r}|${a}`); });
+  const allOn = keys.length && keys.every(k => set.has(k)); keys.forEach(k => permToggle(k, !allOn));
+}
+
+/* ---------- 프로그램관리 (메뉴 · 기능버튼 사용 여부) ---------- */
+function ProgPage() {
+  const q = (S.progQ || '').trim(), edit = can('work/prog', '수정');
+  const rowsH = PROG_LIST.filter(p => !q || (p.main + p.sub + p.route).includes(q)).map(p => {
+    const { acts, btns } = progOf(p.route), all = [...acts, ...btns], open = (S.progOpen ||= new Set()).has(p.route), off = PROG_OFF.has(p.route);
+    const roles = ROLES_.filter(r => GRANT[r.id].has(`${p.route}|조회`)).map(r => r.name);
+    const sw = (k, on, lbl) => `<label class="switch"><input type="checkbox" data-poff="${k}" ${on ? 'checked' : ''} ${edit ? '' : 'disabled'} aria-label="${esc(lbl)} 사용">${on ? '사용' : '중지'}</label>`;
+    return `<tr class="${off ? 'off' : ''}"><td class="mono">${String(p.mid).padStart(3, '0')}</td><td class="strong">${esc(p.main)}</td><td>${esc(p.sub)}</td><td class="mono muted">#/${p.route}</td>
+      <td>${sw(p.route, !off, p.sub)}</td><td><button class="btn btn-sm btn-ghost" data-act="pgexp" data-r="${p.route}" aria-expanded="${open}">${all.length}개 ${ic(open ? 'up' : 'down')}</button></td><td>${roles.length ? roles.map(n => `<span class="chip">${esc(n)}</span>`).join(' ') : '<span class="muted">없음</span>'}</td></tr>
+      ${open ? all.map(a => `<tr class="psub ${PROG_OFF.has(`${p.route}|${a}`) || off ? 'off' : ''}"><td class="mono muted">${String(p.mid).padStart(3, '0')}-${String(all.indexOf(a) + 1).padStart(2, '0')}</td><td></td><td colspan="2"><span class="muted">└ 기능버튼</span> <b>${esc(a)}</b>${acts.includes(a) ? ' <span class="chip">기본</span>' : ''}</td><td>${a === '조회' ? '<span class="muted">메뉴와 같음</span>' : sw(`${p.route}|${a}`, !PROG_OFF.has(`${p.route}|${a}`), a)}</td><td></td><td>${ROLES_.filter(r => GRANT[r.id].has(`${p.route}|${a}`)).map(r => `<span class="chip">${esc(r.name)}</span>`).join(' ')}</td></tr>`).join('') : ''}`;
+  }).join('');
+  return PH('프로그램관리', '메뉴(대메뉴 · 소메뉴)와 화면별 기능버튼 목록 — 레거시 ProgList_ 구조. 「중지」하면 모든 역할에서 숨겨집니다 (SysAdmin 포함).')
+    + `<section class="card"><div class="tb2"><label class="sfield" style="width:260px">${ic('search')}<input id="progQ" value="${esc(q)}" placeholder="메뉴 · 경로 검색"></label><span class="grow"></span><span class="muted" style="font-size:12.5px">메뉴 ${PROG_LIST.length}개 · 기능버튼 ${PROG_LIST.reduce((n, p) => n + progOf(p.route).btns.length + progOf(p.route).acts.length - 1, 0)}개 · 중지 ${PROG_OFF.size}개</span></div>
+      <div class="tbl-wrap scroll"><table class="tbl"><thead><tr><th>프로그램ID</th><th>대메뉴</th><th>소메뉴</th><th>경로</th><th>사용</th><th>기능버튼</th><th>조회 가능 역할</th></tr></thead><tbody>${rowsH}</tbody></table></div></section>`;
+}
+
+/* ---------- 행 펼쳐 보기 — 목록 흐름을 유지한 채 바로 아래에 요약 · 작업 버튼, 깊은 작업은 「상세 전체 보기」 ---------- */
+function peekRow(key, r, span) {
+  const cfg = CFG[key], d = cfg.detail ? cfg.detail(r) : genericDetail(key, r);
+  const kv = cfg.cols.map(c => `<div class="pk"><span>${c.l}</span><b>${cell(c, r)}</b></div>`).join('');
+  return `<tr class="peek-tr"><td colspan="${span}"><div class="peek" data-id="${r.id}" role="region" aria-label="상세 요약">
+    <div class="peek-h"><div class="peek-t">${d.title}</div><div class="peek-s">${d.sub || ''}</div>
+      <div class="r">${PII_ROUTES.includes(key) ? unmaskBtn(key, r.id) : ''}<button class="btn btn-sm btn-soft" data-act="split-pop">${ic('eye')}상세 전체 보기</button><button class="ibtn" data-act="peek-close" aria-label="접기" title="접기 (Esc)">${ic('up')}</button></div></div>
+    <div class="peek-g">${kv}</div>${d.foot ? `<div class="peek-f">${d.foot}</div>` : ''}</div></td></tr>`;
+}
+/* ---------- (이전) 분할 보기 (목록 + 상세) — 레거시처럼 검색하면 첫 건의 상세가 바로 보임 ---------- */
+const splitOn = key => !!CFG[key] && ls(key).split && innerWidth >= 1200;
+function splitPanel(key, data) {
+  const st = ls(key), cfg = CFG[key];
+  if (!data.some(r => r.id === st.cur)) st.cur = data[0]?.id || null;
+  const r = cfg.rows.find(x => x.id === st.cur);
+  if (!r) return `<aside class="split-d"><div class="split-empty">${ic('table')}<div>조건에 맞는 자료가 없습니다.</div></div></aside>`;
+  const d = cfg.detail ? cfg.detail(r) : genericDetail(key, r);
+  return `<aside class="split-d" data-id="${r.id}" aria-label="상세"><div class="dr-h"><div style="min-width:0"><h2>${d.title}</h2><p>${d.sub || ''}</p></div><button class="ibtn" data-act="split-pop" aria-label="크게 보기" title="크게 보기">${ic('eye')}</button></div><div class="dr-b">${d.body}</div>${d.foot ? `<div class="dr-f">${d.foot}</div>` : ''}</aside>`;
+}
+
+Object.defineProperty(CFG['work/staff'].opts, 'role', { get:() => ROLES_.map(r => r.name), enumerable:true });
+/* =====================================================================
+   고객 요청사항 · 개발 정보 (개발 인수인계)
+   - 요청: 상단 「요청 남기기」 하나로 현재 화면(+선택한 항목)에 요청을 남김 → 요청사항 화면에서 상태 관리 · 내보내기/가져오기
+   - 개발 정보: 개발자 모드에서만 보임. 화면별 필드 · 검색조건 · 권한코드 · 버튼 · API 초안 → Markdown/JSON 내보내기
+   ===================================================================== */
+const REQ_TYPES = ['기능 추가', '수정 요청', '오류', '문구 · 디자인'];
+const REQ_ST = ['접수', '검토중', '반영완료', '보류'];
+const REQ_TONE = { 접수:'info', 검토중:'warn', 반영완료:'ok', 보류:'' };
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+let REQS = store.get('sg_req', []);
+const saveReqs = () => store.set('sg_req', REQS);
+S.dev = (() => { try { const q = new URLSearchParams(location.search).get('dev'); if (q !== null) localStorage.setItem('sg_dev', q === '0' ? '' : '1'); return !!localStorage.getItem('sg_dev'); } catch (e) { return false; } })();
+function dlText(name, text, type = 'text/plain') {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([(type.includes('csv') ? '﻿' : '') + text], { type:type + ';charset=utf-8' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const screenName = r => r === 'req' ? '요청사항' : r === 'spec' ? '개발 명세' : r === 'dashboard' ? '대시보드' : menuName(r);
+
+/* ---------- 화면 · 메뉴 연결 ---------- */
+const _crumbOf = crumbOf; crumbOf = r => r === 'req' ? ['요청사항'] : r === 'spec' ? ['개발 명세'] : _crumbOf(r);
+const _Page = Page; Page = r => r === 'req' ? ReqPage() : r === 'spec' ? SpecPage() : _Page(r);
+const _Shell = Shell;
+Shell = (r, body) => {
+  const open = REQS.filter(x => x.status === '접수' || x.status === '검토중').length;
+  return _Shell(r, body)
+    .replace('<button class="ibtn" data-act="help"', `<button class="btn btn-sm btn-soft req-btn" data-act="req-new" title="이 화면에 대한 요청 남기기">${ic('message')}<span>요청 남기기</span></button>${S.dev ? `<button class="btn btn-sm btn-ghost dev-btn" data-act="dev-info" title="이 화면의 개발 정보">${ic('db')}<span>개발 정보</span></button>` : ''}<button class="ibtn" data-act="help"`)
+    .replace('<a href="#/bi"', `<a href="#/req" class="${r === 'req' ? 'on' : ''}" title="요청사항">${ic('memo')}<span>요청사항</span>${open ? `<span class="req-n">${open}</span>` : ''}</a>${S.dev ? `<a href="#/spec" class="${r === 'spec' ? 'on' : ''}" title="개발 명세">${ic('db')}<span>개발 명세</span></a>` : ''}<a href="#/bi"`)
+    .replace('<div class="dd-sep"></div>\n          <button class="dd-i" data-act="logout">', `<div class="dd-sep"></div><button class="dd-i" data-act="dev-mode">${ic(S.dev ? 'check' : 'db')}개발자 모드 ${S.dev ? '끄기' : '켜기'}</button>
+          <div class="dd-sep"></div>
+          <button class="dd-i" data-act="logout">`);
+};
+
+/* ---------- 요청 남기기 ---------- */
+function openReq() {
+  const r = route(), rid = DR && DR.key === r ? DR.id : S.lastOpen?.key === r ? S.lastOpen.id : null, cfg = CFG[r], row = rid && cfg ? cfg.rows.find(x => x.id === rid) : null, mc = cfg?.cols.find(c => c.main) || cfg?.cols[0], rec = row ? String(row[mc.k] ?? rid) : null, who = store.get('sg_req_who', '');
+  openModal(MH('요청 남기기', `「${esc(screenName(r))}」 화면에 대한 요청을 남깁니다.`) + `<div class="m-b"><div class="fgrid">
+    <div class="fld"><label for="rqType">유형</label><select class="select" id="rqType" style="width:100%">${REQ_TYPES.map(t => `<option>${t}</option>`).join('')}</select></div>
+    <div class="fld"><label for="rqWho">요청자</label><input class="input" id="rqWho" style="width:100%" value="${esc(who)}" placeholder="이름 · 소속" maxlength="40"></div>
+    <div class="fld full"><label for="rqText">내용<span class="req">*</span></label><textarea class="input" id="rqText" rows="5" style="width:100%;height:auto;padding:10px 12px;resize:vertical" placeholder="예) 검색 조건에 「담당자」를 추가해 주세요. / 이 버튼 이름을 「승인」으로 바꿔 주세요."></textarea></div>
+    ${rec ? `<label class="fld full rq-rec"><span><input type="checkbox" id="rqRec" checked> 지금 보고 있는 항목 <b class="mono">${esc(rec)}</b> 함께 기록</span></label>` : ''}
+  </div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="req-save">등록<kbd>Ctrl Enter</kbd></button></div>`, { req:{ r, rec } });
+  setTimeout(() => $('#rqText')?.focus(), 80);
+}
+function saveReq() {
+  const t = $('#rqText').value.trim(); if (!t) { $('#rqText').focus(); toast('요청 내용을 입력하세요.', true); return; }
+  const { r, rec } = MD.req, who = $('#rqWho').value.trim();
+  store.set('sg_req_who', who);
+  REQS.unshift({ id:'RQ' + Date.now().toString(36).toUpperCase(), route:r, screen:screenName(r), rec:rec && $('#rqRec')?.checked ? rec : '', type:$('#rqType').value, text:t, who:who || ME.name, at:new Date().toISOString().slice(0, 16).replace('T', ' '), status:'접수', note:'' });
+  saveReqs(); closeModal(); render(); toast('요청이 등록되었습니다 · 왼쪽 아래 「요청사항」에서 확인');
+}
+function ReqPage() {
+  const f = S.reqF || '', list = REQS.filter(x => !f || x.status === f);
+  const tabs = ['', ...REQ_ST].map(s => `<button class="btn btn-sm ${f === s ? 'btn-soft' : 'btn-ghost'}" data-act="req-f" data-s="${s}">${s || '전체'} <span class="muted">${s ? REQS.filter(x => x.status === s).length : REQS.length}</span></button>`).join('');
+  const rowsH = list.map(x => `<tr><td class="mono muted">${esc(x.at)}</td><td><a href="#/${x.route}" class="strong">${esc(x.screen)}</a>${x.rec ? `<div class="mono muted">${esc(x.rec)}</div>` : ''}</td><td>${esc(x.type)}</td><td class="rq-text">${esc(x.text)}</td><td>${esc(x.who)}</td>
+    <td><select class="select" data-rq-st="${x.id}" aria-label="상태">${REQ_ST.map(s => `<option ${x.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td><input class="input" data-rq-note="${x.id}" value="${esc(x.note)}" placeholder="처리 메모" style="width:100%;min-width:140px"></td>
+    <td><button class="ibtn" data-act="req-del" data-id="${x.id}" aria-label="삭제" title="삭제">${ic('trash')}</button></td></tr>`).join('');
+  return PH('요청사항', '화면마다 「요청 남기기」로 남긴 요청과 처리 상태입니다. 이 브라우저에 저장되므로, 「내보내기」 파일을 개발팀에 보내면 「가져오기」로 합칠 수 있습니다.',
+      `<label class="btn">${ic('upload')}가져오기<input type="file" accept=".json" id="rqImport" hidden></label><button class="btn" data-act="req-csv">${ic('download')}엑셀로</button><button class="btn" data-act="req-export">${ic('download')}내보내기</button><button class="btn btn-p" data-act="req-new">${ic('plus')}요청 남기기</button>`)
+    + `<section class="card"><div class="tb2">${tabs}</div>${list.length ? `<div class="tbl-wrap scroll"><table class="tbl rq-tbl"><thead><tr><th>일시</th><th>화면</th><th>유형</th><th>내용</th><th>요청자</th><th>상태</th><th>처리 메모</th><th></th></tr></thead><tbody>${rowsH}</tbody></table></div>`
+      : `<div class="empty">${ic('memo', 'i')}<div>${REQS.length ? '이 상태의 요청이 없습니다.' : '아직 요청이 없습니다. 어느 화면에서든 위쪽 「요청 남기기」를 누르세요.'}</div></div>`}</section>`;
+}
+
+/* ---------- 개발 정보 ---------- */
+const TYPE_DEV = { mono:'string (코드)', strong:'string', nat:'string (ISO 국가코드)', badge:'enum', date:'date / datetime', num:'number', won:'number (원)', pname:'string · 개인정보(마스킹)', cust:'string · 개인정보(마스킹)', res:'array (모듈별 결과)', mods:'array', docs:'array (서류 진행)', ret:'computed', auth:'object', tier:'enum' };
+const API_SLUG = r => '/api/v1/' + r.replace('/', '-');
+function specOf(r) {
+  const cfg = CFG[r], p = PROG_BY[r], { acts, btns } = progOf(r);
+  const base = { route:r, programId:p ? String(p.mid).padStart(3, '0') : '—', screen:screenName(r), desc:cfg?.desc || '전용 화면', perms:[...acts, ...btns].map(a => `${r}|${a}`) };
+  if (!cfg) return { ...base, fields:[], filters:[], acts, btns, api:[] };
+  const fields = cfg.cols.map(c => ({ key:c.k, label:c.l, type:TYPE_DEV[c.t] || 'string', options:cfg.opts?.[c.k] || null, search:!!(cfg.filters || []).includes(c.k) || c.k === cfg.dateKey, readonly:!!c.ro, main:!!c.main, pii:['pname', 'cust'].includes(c.t) || c.k === 'pass' }));
+  const s = API_SLUG(r), api = [[`GET`, `${s}?from&to&q&qf&${(cfg.filters || []).join('&')}${cfg.filters?.length ? '&' : ''}del&page&size&sort`, '조회 (목록 · 건수 · 정렬 · 페이지)']];
+  api.push(['GET', `${s}/{id}`, '상세']);
+  if (acts.includes('등록')) api.push(['POST', s, '등록']);
+  if (acts.includes('수정')) api.push(['PUT', `${s}/{id}`, '수정 (변경 항목 → 데이터수정LOG)']);
+  if (acts.includes('삭제')) api.push(['DELETE', `${s}/{id}`, '삭제 — 사유 필수 · 논리삭제(삭제자료표시로 조회)']);
+  api.push(['GET', `${s}/export?(조회와 같은 조건)`, '엑셀로 (서버에서 마스킹 · 감사LOG)']);
+  btns.forEach(b => api.push(['POST', `${s}/{id}/actions/${encodeURIComponent(b)}`, `기능버튼 「${b}」`]));
+  return { ...base, dateKey:cfg.dateKey || null, filters:[cfg.dateKey, ...(cfg.filters || [])].filter(Boolean).map(k => ({ key:k, label:colLabel(cfg, k) })), fields, acts, btns, api };
+}
+function specMD(r) {
+  const s = specOf(r), L = [`## ${s.screen}  \`#/${s.route}\` · 프로그램ID ${s.programId}`, '', s.desc, ''];
+  if (s.fields.length) {
+    L.push('### 필드', '', '| key | 이름 | 타입 | 검색조건 | 비고 |', '|---|---|---|---|---|');
+    s.fields.forEach(f => L.push(`| \`${f.key}\` | ${f.label} | ${f.type}${f.options ? ` (${f.options.slice(0, 12).join(', ')}${f.options.length > 12 ? ' …' : ''})` : ''} | ${f.search ? '✓' : ''} | ${[f.main && '대표키', f.readonly && '읽기전용(시스템)', f.pii && '개인정보'].filter(Boolean).join(', ')} |`));
+    L.push('', '### API 초안', '', '| 메서드 | 경로 | 설명 |', '|---|---|---|'); s.api.forEach(a => L.push(`| ${a[0]} | \`${a[1]}\` | ${a[2]} |`));
+  }
+  L.push('', '### 권한 코드 (역할별로 부여)', '', s.perms.map(p => `\`${p}\``).join(' · '), '');
+  return L.join('\n');
+}
+const SPEC_HEAD = () => [`# SIGNION BackOffice 개발 명세 (프로토타입 기준)`, '', `생성일 ${TODAY} · 프로토타입에서 자동 생성됩니다. 화면이 바뀌면 「개발 명세 › Markdown 내보내기」로 다시 만드세요.`, '',
+  '## 공통 규칙', '',
+  '- **조회**: 모든 목록은 서버 검색 · 정렬 · 페이지. 공통 파라미터 `from, to`(기간) `q, qf`(검색어 · 대상 필드) `del`(삭제자료 포함) `page, size, sort`. 검색 버튼(Enter)을 누르면 바로 결과 표시.',
+  '- **권한**: 역할(Role) → 권한 코드 `route|기능` 집합. 기능 = 조회 · 등록 · 수정 · 삭제 · 엑셀로 · 리포트 · 삭제자료표시 + 화면별 기능버튼. 조회가 없으면 나머지도 무효. 프로그램관리에서 「중지」한 메뉴 · 버튼은 모든 역할에서 차단. **서버에서도 같은 코드로 검사**해야 합니다(화면 숨김만으로는 부족).',
+  '- **감사LOG**: 등록 · 수정(변경 전/후) · 삭제(사유) · 기능버튼 · 엑셀 · 리포트 · 개인정보 보기 · 권한/프로그램 변경 · 권한 없음 시도를 기록 (누가 · 역할 · 언제 · 메뉴 · 대상 · 내용 · IP). 수정/삭제 불가.',
+  '- **삭제**: 사유 필수 · 논리삭제. 「삭제자료표시」 권한이 있으면 조회 가능.',
+  '- **개인정보**: 성명 · 여권번호 등은 서버에서 마스킹해서 내려줌. 「개인정보 보기」는 사유 입력 후 1건씩 원문 조회 + 감사LOG.',
+  '- **보안**: 내부망/허용 IP 전용, 로그인 2단계 인증, 15분 미사용 시 자동 로그아웃, 검색엔진 차단. 세부 보안 기준은 확정 후 반영.', ''];
+function SpecPage() {
+  const rowsH = PROG_LIST.map(p => { const s = specOf(p.route); return `<tr><td class="mono muted">${s.programId}</td><td class="strong">${esc(s.screen)}</td><td class="mono muted">#/${p.route}</td><td class="num">${s.fields.length || '—'}</td><td>${s.filters?.map(f => esc(f.label)).join(', ') || '<span class="muted">—</span>'}</td><td>${[...s.acts, ...s.btns].map(a => `<span class="chip">${esc(a)}</span>`).join(' ')}</td><td><button class="btn btn-sm btn-ghost" data-act="dev-info" data-r="${p.route}">보기</button></td></tr>`; }).join('');
+  return PH('개발 명세', '화면별 필드 · 검색조건 · 기능버튼 · 권한 코드 · API 초안을 프로토타입에서 그대로 뽑았습니다. 화면을 고치면 명세도 같이 바뀝니다.',
+      `<button class="btn" data-act="spec-json">${ic('download')}JSON</button><button class="btn btn-p" data-act="spec-md">${ic('download')}Markdown 내보내기</button>`)
+    + `<div class="callout info" style="margin-bottom:14px">${ic('db')}<div>권한 코드 형식 <b class="mono">route|기능</b> (예: <span class="mono">partner/fee|삭제</span>). 서버에서도 같은 코드로 검사하세요. 공통 규칙(검색 파라미터 · 감사LOG · 논리삭제 · 마스킹)은 Markdown 맨 앞에 정리됩니다.</div></div>`
+    + `<section class="card"><div class="tbl-wrap scroll"><table class="tbl"><thead><tr><th>ID</th><th>화면</th><th>경로</th><th>필드</th><th>검색조건</th><th>기능 · 버튼</th><th></th></tr></thead><tbody>${rowsH}</tbody></table></div></section>`;
+}
+function openSpec(r) {
+  const s = specOf(r);
+  const fields = s.fields.length ? `<h4 class="sp-h">필드 <span class="muted">${s.fields.length}</span></h4><div class="tbl-wrap"><table class="tbl"><thead><tr><th>key</th><th>이름</th><th>타입</th><th>검색</th><th>비고</th></tr></thead><tbody>${s.fields.map(f => `<tr><td class="mono">${f.key}</td><td>${esc(f.label)}</td><td>${esc(f.type)}${f.options ? `<div class="muted" style="font-size:12px">${esc(f.options.slice(0, 10).join(' · '))}${f.options.length > 10 ? ' …' : ''}</div>` : ''}</td><td>${f.search ? ic('check') : ''}</td><td>${[f.main && '대표키', f.readonly && '읽기전용', f.pii && '개인정보'].filter(Boolean).map(x => `<span class="chip">${x}</span>`).join(' ')}</td></tr>`).join('')}</tbody></table></div>
+    <h4 class="sp-h">API 초안</h4><div class="tbl-wrap"><table class="tbl"><tbody>${s.api.map(a => `<tr><td class="mono strong">${a[0]}</td><td class="mono">${esc(a[1])}</td><td>${esc(a[2])}</td></tr>`).join('')}</tbody></table></div>` : `<div class="callout info">${ic('db')}<div>목록 화면이 아닌 전용 화면입니다. 화면 구성은 프로토타입을 기준으로 해 주세요.</div></div>`;
+  openModal(MH(`개발 정보 — ${esc(s.screen)}`, `#/${s.route} · 프로그램ID ${s.programId} · ${esc(s.desc)}`) + `<div class="m-b dev-spec">${fields}
+    <h4 class="sp-h">권한 코드</h4><div class="pchips">${s.perms.map(p => `<span class="chip mono">${esc(p)}</span>`).join(' ')}</div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">닫기</button><button class="btn" data-act="spec-copy" data-r="${r}">${ic('copy')}Markdown 복사</button></div>`, { xwide:true });
+}
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  switch (a.dataset.act) {
+    case 'req-new': openReq(); break;
+    case 'req-save': saveReq(); break;
+    case 'req-f': S.reqF = a.dataset.s; render(); break;
+    case 'req-del': { const x = REQS.find(x => x.id === a.dataset.id); if (x && confirm(`이 요청을 삭제할까요?\n\n${x.text.slice(0, 80)}`)) { REQS = REQS.filter(y => y !== x); saveReqs(); render(); toast('요청을 삭제했습니다.'); } break; }
+    case 'req-export': dlText(`SIGNION_요청사항_${TODAY}.json`, JSON.stringify(REQS, null, 2), 'application/json'); toast(`${REQS.length}건을 내보냈습니다 · 이 파일을 개발팀에 전달하세요`); break;
+    case 'req-csv': dlText(`SIGNION_요청사항_${TODAY}.csv`, [['일시', '화면', '경로', '항목', '유형', '내용', '요청자', '상태', '처리 메모'], ...REQS.map(x => [x.at, x.screen, '#/' + x.route, x.rec, x.type, x.text, x.who, x.status, x.note])].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n'), 'text/csv'); break;
+    case 'dev-mode': S.dev = !S.dev; try { localStorage.setItem('sg_dev', S.dev ? '1' : ''); } catch (e) {} if (!S.dev && route() === 'spec') location.hash = '#/dashboard'; render(); toast(S.dev ? '개발자 모드: 위쪽 「개발 정보」 · 왼쪽 아래 「개발 명세」' : '개발자 모드를 껐습니다.'); break;
+    case 'dev-info': openSpec(a.dataset.r || route()); break;
+    case 'spec-copy': navigator.clipboard?.writeText(specMD(a.dataset.r)).then(() => toast('Markdown을 복사했습니다.'), () => toast('복사하지 못했습니다.', true)); break;
+    case 'spec-md': dlText(`SIGNION_BackOffice_개발명세_${TODAY}.md`, [...SPEC_HEAD(), ...PROG_LIST.map(p => specMD(p.route))].join('\n'), 'text/markdown'); break;
+    case 'spec-json': dlText(`SIGNION_BackOffice_개발명세_${TODAY}.json`, JSON.stringify({ generated:TODAY, roles:ROLES_.map(r => ({ ...r, grants:[...GRANT[r.id]] })), screens:PROG_LIST.map(p => specOf(p.route)) }, null, 2), 'application/json'); break;
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.rqSt) { const x = REQS.find(x => x.id === t.dataset.rqSt); if (x) { x.status = t.value; saveReqs(); render(); toast(`상태: ${t.value}`); } }
+  else if (t.dataset.rqNote) { const x = REQS.find(x => x.id === t.dataset.rqNote); if (x) { x.note = t.value; saveReqs(); toast('처리 메모를 저장했습니다.'); } }
+  else if (t.id === 'rqImport' && t.files[0]) {
+    t.files[0].text().then(s => { const arr = JSON.parse(s); if (!Array.isArray(arr)) throw 0; let n = 0; arr.forEach(x => { if (x && x.id && x.text && !REQS.some(y => y.id === x.id)) { REQS.push(x); n++; } }); REQS.sort((a, b) => b.at.localeCompare(a.at)); saveReqs(); render(); toast(`${n}건을 가져왔습니다 (중복 ${arr.length - n}건 제외).`); })
+      .catch(() => toast('요청사항 내보내기(JSON) 파일이 아닙니다.', true));
+  }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && MD?.req) { e.preventDefault(); saveReq(); } }, true);
+
+Object.values(CFG).forEach(cfg => { if (cfg.dateKey) return; const c = cfg.cols.find(c => c.t === 'date' && cfg.rows.length && cfg.rows.every(r => /^\d{4}-\d{2}-\d{2}/.test(r[c.k] || ''))); if (c) cfg.dateKey = c.k; });
 render();
 </script>
 </body>
