@@ -746,6 +746,121 @@ button.gsearch span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:elli
 .dev-spec .sp-h{margin:18px 0 8px;font-size:14px;font-weight:700}
 .dev-spec .sp-h:first-child{margin-top:0}
 @media (max-width:1100px){.req-btn span,.dev-btn span{display:none}}
+/* ---------- 대시보드 차트 (계열색: 검증 통과 — light #FFFFFF / dark #111826) ---------- */
+:root{--s1:#0063FF;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#6250d6;--s-other:#A3ACB9}
+[data-theme="dark"]{--s1:#3D84FF;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#9085e9;--s-other:#5B6678}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:16px}
+@media (max-width:1280px){.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:820px){.g3{grid-template-columns:1fr}}
+.vc .card-b{min-height:120px}
+.kv-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.spark{width:42%;max-width:130px;height:34px;flex:none;margin-bottom:4px;overflow:visible}
+.spark polyline{fill:none;stroke:var(--s1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.spark .sa{fill:color-mix(in srgb,var(--s1) 10%,transparent)}
+.spark circle{fill:var(--s1);stroke:var(--surface);stroke-width:2;vector-effect:non-scaling-stroke}
+.vleg{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin:-2px 0 10px}
+.vleg span{display:inline-flex;align-items:center;gap:6px}
+.vleg i{width:10px;height:10px;border-radius:3px}
+.chart .s-ok{fill:var(--s1)} .chart .s-fail{fill:var(--bad)}
+.chart g.col.today .s-ok,.chart g.col.today .s-fail{opacity:.5}
+.chart g.col:hover .s-ok{fill:var(--brand-600)}
+.chart .xl{fill:var(--muted);font-size:11px}
+.chart .vl{fill:var(--ink);font-size:11.5px;font-weight:700}
+.chart text{font-family:inherit}
+.donut{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.donut svg{width:170px;height:170px;flex:none}
+.donut path{stroke:var(--surface);stroke-width:2;cursor:default;transition:opacity .12s}
+.donut svg:hover path{opacity:.55} .donut svg path:hover{opacity:1}
+.dn-v{font-size:24px;font-weight:700;fill:var(--ink);letter-spacing:-.02em}
+.dn-l{font-size:11.5px;fill:var(--muted)}
+.dn-leg{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:12.5px;min-width:150px;flex:1}
+.dn-leg li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:8px;align-items:center;color:var(--ink-2)}
+.dn-leg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dn-leg i{width:10px;height:10px;border-radius:3px}
+.dn-leg b{color:var(--ink);font-variant-numeric:tabular-nums}
+.vbars{display:grid;gap:4px}
+.vb{display:grid;grid-template-columns:minmax(92px,auto) minmax(0,1fr) 56px;align-items:center;gap:10px;font-size:12.5px;padding:5px 4px;border-radius:6px}
+.vb:hover{background:var(--surface-2)}
+.vb-l{white-space:nowrap;color:var(--ink-2)}
+.vb-t{height:10px;border-radius:0 4px 4px 0;overflow:hidden}
+.vb-t i{display:block;height:100%;background:var(--s1);border-radius:0 4px 4px 0;min-width:2px}
+.vb-v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.hm-leg{display:flex;align-items:center;gap:4px;justify-content:flex-end;font-size:11.5px;color:var(--muted);margin-top:8px}
+.hm-leg i{width:18px;height:10px;border-radius:2px}
+.hm-leg span{margin:0 4px}
+.chart svg rect[rx]{transition:stroke .1s} .chart svg rect[rx]:hover{stroke:var(--ink);stroke-width:1.5}
+.chart .ln1,.chart .ln2{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .ln1{stroke:var(--s1)} .chart .ln2{stroke:var(--s2)}
+.chart .sla{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1}
+.chart .sla-t{fill:var(--muted);font-size:11px}
+.chart .end{fill:var(--ink-2);font-size:11.5px;font-weight:600}
+.chart .xg .xh{stroke:var(--line);stroke-width:1;opacity:0}
+.chart .xg circle{opacity:0;stroke:var(--surface);stroke-width:2}
+.chart .xg .m1{fill:var(--s1)} .chart .xg .m2{fill:var(--s2)}
+.chart .xg:hover .xh,.chart .xg:hover circle{opacity:1}
+.dots{display:grid;gap:2px}
+.dt-ax,.dt{display:grid;grid-template-columns:96px minmax(0,1fr) 62px;gap:10px;align-items:center}
+.dt-sc{position:relative;height:16px;font-size:10.5px;color:var(--muted)}
+.dt-sc b{position:absolute;transform:translateX(-50%);font-weight:500}
+.dt{font-size:12.5px;padding:6px 0;border-radius:6px}
+.dt:hover{background:var(--surface-2)}
+.dt-l{color:var(--ink-2);white-space:nowrap}
+.dt-t{position:relative;height:16px}
+.dt-t::before{content:"";position:absolute;left:0;right:0;top:7px;height:2px;background:var(--line-2);border-radius:2px}
+.dt-t s,.dt-note s{position:absolute;top:1px;width:0;height:14px;border-left:1.5px dashed var(--muted)}
+.dt-t i{position:absolute;top:3px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--s1);box-shadow:0 0 0 2px var(--surface)}
+.dt-t i.bad{background:var(--bad)}
+.dt-v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;display:flex;gap:3px;justify-content:flex-end;align-items:center}
+.dt-v .i{width:13px;height:13px}
+.dt-note{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:8px;justify-content:flex-end}
+.dt-note s{position:static;height:12px}
+.dt-note .i{width:12px;height:12px;color:var(--bad)}
+.syl>div{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--line-2);font-size:13px}
+.syl>div:last-child{border-bottom:0}
+.syl b{font-weight:600}
+.dot2{width:8px;height:8px;border-radius:50%}
+.dot2.t-ok{background:var(--ok)} .dot2.t-warn{background:var(--warn)} .dot2.t-bad{background:var(--bad)}
+/* ---------- 차트 추가 (단계 순서색: 검증 통과) ---------- */
+:root{--o1:#86b6ef;--o2:#5598e7;--o3:#2a78d6;--o4:#1c5cab;--o5:#104281}
+[data-theme="dark"]{--o1:#cde2fb;--o2:#86b6ef;--o3:#3987e5;--o4:#256abf;--o5:#184f95}
+.s100{display:flex;gap:2px;height:18px;margin:4px 0 14px}
+.s100 i{display:block;min-width:3px;cursor:pointer;transition:opacity .12s}
+.s100 i:first-child{border-radius:4px 0 0 4px} .s100 i:last-child{border-radius:0 4px 4px 0} .s100 i:only-child{border-radius:4px}
+.s100:hover i{opacity:.55} .s100 i:hover{opacity:1}
+.s100-leg{list-style:none;margin:0;padding:0;display:grid;gap:2px;font-size:12.5px}
+.s100-leg li{display:grid;grid-template-columns:10px minmax(0,1fr) auto 38px;gap:8px;align-items:center;padding:5px 6px;border-radius:6px;color:var(--ink-2)}
+.s100-leg li.clk{cursor:pointer} .s100-leg li.clk:hover{background:var(--surface-2);color:var(--ink)}
+.s100-leg i{width:10px;height:10px;border-radius:3px}
+.s100-leg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s100-leg b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.s100-leg em{font-style:normal;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.s100-note{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-2);margin-top:12px;padding:8px 10px;border-radius:8px;background:var(--surface-2)}
+.s100-note .i{width:14px;height:14px;color:var(--warn)}
+.mult{display:grid;gap:2px}
+.mu{display:grid;grid-template-columns:minmax(110px,1fr) minmax(90px,1.4fr) 64px 70px;gap:12px;align-items:center;padding:8px 6px;border-radius:6px;font-size:12.5px;border-bottom:1px solid var(--line-2)}
+.mu:last-child{border-bottom:0} .mu:hover{background:var(--surface-2)}
+.mu-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
+.mu .spark{width:100%;max-width:none;height:28px;margin:0}
+.mu b{text-align:right} .mu-c{text-align:right;font-weight:600;font-size:12px}
+.chart .ln3{fill:none;stroke:var(--s-other);stroke-width:2;stroke-dasharray:5 4}
+.chart .xg .m3{fill:var(--s-other)}
+.chart .now{fill:var(--s1);stroke:var(--surface);stroke-width:2}
+button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;width:100%;cursor:pointer}
+.lc{border-bottom:1px solid var(--line-2);padding:10px 16px 14px;background:linear-gradient(180deg,var(--surface-2),var(--surface))}
+.lc.off{padding-bottom:10px}
+.lc-h{display:flex;align-items:center;gap:10px;font-size:13px}
+.lc-h b{display:inline-flex;align-items:center;gap:6px;font-weight:700} .lc-h b .i{width:15px;height:15px;color:var(--brand)}
+.lc-h .muted{font-size:12px} .lc-h .btn{margin-left:auto}
+.lc-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:10px}
+.lc-c{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.lc-t{font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;gap:6px;align-items:baseline} .lc-t span{font-weight:500;color:var(--muted);font-size:11.5px}
+.lc-c .vbars{gap:0} .lc-c .vb{padding:3px 4px} .lc-c .s100-leg li{padding:3px 6px}
+.mcol{display:flex;align-items:flex-end;gap:2px;height:104px}
+.mc{flex:1;height:100%;display:flex;align-items:flex-end;border:0;padding:0;background:none;cursor:pointer;min-width:0}
+.mc i{display:block;width:100%;background:var(--s1);border-radius:3px 3px 0 0;min-height:3px}
+.mc:hover i{background:var(--brand-600)}
+.mcol-x{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
+@media print{.lc{display:none}}
 </style>
 </head>
 <body>
@@ -1509,7 +1624,7 @@ function ListPage(key) {
   const sums = cols.map(c => NUMT.includes(c.t) ? sumOf(c, all) : null);
   const foot = all.length && sums.some(x => x) ? `<tfoot class="sum"><tr><td class="ck"></td>${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n num' : ''}">${sums[i] || (i === 0 ? `합계 <span class="muted" style="font-weight:500">(${fmt(all.filter(r => !r.stop).length)}건)</span>` : '')}</td>`).join('')}</tr></tfoot>` : '';
   return PH(cfg.title, cfg.desc, headerActions(cfg, st, key)) + logTabs + (cfg.kpis ? KPIS(cfg.kpis(all.filter(r => !r.stop))) : '')
-  + `<section class="card">${SearchPanel(key)}${chips}
+  + `<section class="card">${SearchPanel(key)}${chips}${listCharts(key, all)}
     <div class="tb2"><span class="res-n">조회 결과 <b>${fmt(all.length)}</b>건</span><span class="qtime" title="검색 · 정렬 처리 시간">${ms < 1 ? '1ms 미만' : ms.toFixed(1) + 'ms'}</span><span class="grow"></span>
       ${can(key, '삭제자료표시') ? `<label class="switch"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>삭제자료표시</label><span class="vsep"></span>` : ''}
       <div class="dd-wrap colset-wrap"><button class="btn btn-ghost" data-act="dd" aria-haspopup="true">${ic('table')}표시 항목${st.hidden.size ? ` <b>${cols.length}/${cfg.cols.length}</b>` : ''}</button><div class="dd colset"><div class="dd-h">표에 보일 항목 · 엑셀 · 리포트에도 적용</div>${cfg.cols.map(c => `<label><input type="checkbox" class="cbox" data-colk="${c.k}" ${c.main || !st.hidden.has(c.k) ? 'checked' : ''} ${c.main ? 'disabled' : ''}><span>${c.l}</span></label>`).join('')}</div></div>
@@ -2743,6 +2858,278 @@ document.addEventListener('change', e => {
   }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && MD?.req) { e.preventDefault(); saveReq(); } }, true);
+
+/* =====================================================================
+   대시보드 차트 — 색은 역할로만: 계열(--s1~s5 · 검증 완료), 크기(브랜드 단색 농도), 상태(ok/warn/bad + 아이콘·글자)
+   모든 차트: 마우스 올리면 값 · 「표」로 같은 데이터를 표로 보기
+   ===================================================================== */
+S.vt = new Set();
+const dvRng = seed => { let s = seed; return () => (s = (s * 48271) % 2147483647) / 2147483647; };
+const dvTip = s => s.replace(/"/g, '&quot;');
+const rtop = (x, y, w, h, r) => { r = Math.min(r, w / 2, h); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+const niceStep = (vmax, n = 4) => { const raw = vmax / n, p = 10 ** Math.floor(Math.log10(raw)); return [1, 2, 2.5, 5, 10].map(m => m * p).find(s => s >= raw); };
+const kfmt = t => t >= 1000 ? (t / 1000).toFixed(t % 1000 ? 1 : 0) + 'k' : String(t);
+
+function dashData(n) {
+  const r = dvRng(331), days = dailySeries(n).map(p => { const fail = Math.round(p.v * (0.022 + r() * 0.03)); return { ...p, ok:p.v - fail, fail, avg:+(6.6 + r() * 1.9).toFixed(1), p95:+(11.2 + r() * 3.4).toFixed(1) }; });
+  const tot = days.reduce((a, d) => a + d.v, 0);
+  const ps = PARTNERS.filter(p => p.status === '등록완료' && p.cnt).sort((a, b) => b.cnt - a.cnt), psum = ps.reduce((a, p) => a + p.cnt, 0);
+  const share = ps.slice(0, 4).map(p => ({ l:p.name, v:Math.round(tot * p.cnt / psum) })); share.push({ l:'기타', v:tot - share.reduce((a, x) => a + x.v, 0), other:true });
+  const natW = { VNM:22, IDN:17, NPL:13, UZB:11, MNG:9, KHM:8, MMR:7, LKA:5, BGD:4, PHL:3, THA:1 }, wsum = Object.values(natW).reduce((a, b) => a + b, 0);
+  const nats = Object.entries(natW).map(([k, w]) => ({ k, l:NAT[k], v:Math.round(tot * w / wsum) })).slice(0, 8);
+  const funnel = [['인증 요청', tot], ['AI-OCR 판독', Math.round(tot * .991)], ['여권 진위 확인', Math.round(tot * .978)], ['안면 · 라이브니스', Math.round(tot * .962)], ['인증 완료', Math.round(tot * .955)]];
+  const hourW = [2, 1, 1, 1, 1, 2, 5, 11, 22, 38, 46, 44, 30, 36, 45, 48, 42, 33, 24, 19, 15, 11, 7, 4];
+  const dayW = [1, .97, 1.02, .99, 1.08, .64, .52], hr = dvRng(77);
+  const heat = dayW.map(w => hourW.map(h => Math.round(h * w * (0.85 + hr() * 0.3) * 1.9)));
+  return { days, tot, share, nats, funnel, heat };
+}
+
+/* ---------- 차트 카드 + 표 보기 ---------- */
+function vcard(id, title, sub, body, table, right = '') {
+  const t = S.vt.has(id);
+  return `<section class="card vc" data-vc="${id}"><div class="card-h"><h3>${title}</h3>${sub ? `<span class="sub">${sub}</span>` : ''}<div class="r">${right}<button class="btn btn-sm btn-ghost" data-act="vt" data-id="${id}" aria-pressed="${t}" title="${t ? '차트로 보기' : '같은 데이터를 표로 보기'}">${ic(t ? 'chart' : 'table')}${t ? '차트' : '표'}</button></div></div>
+    <div class="card-b">${t ? vtable(table) : body}</div></section>`;
+}
+const vtable = ([head, rows]) => `<div class="tbl-wrap" style="max-height:300px;overflow:auto"><table class="tbl"><thead><tr>${head.map((h, i) => `<th class="${i ? 'n' : ''}">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td class="${i ? 'n num' : ''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const legend = items => `<div class="vleg">${items.map(([l, c, extra]) => `<span><i style="background:${c}"></i>${l}${extra ? ` <b>${extra}</b>` : ''}</span>`).join('')}</div>`;
+
+/* ---------- KPI + 스파크라인 ---------- */
+function spark(vals) {
+  const W = 120, H = 34, mn = Math.min(...vals), mx = Math.max(...vals), sx = W / (vals.length - 1), y = v => H - 3 - ((v - mn) / (mx - mn || 1)) * (H - 8);
+  const pts = vals.map((v, i) => `${(i * sx).toFixed(1)},${y(v).toFixed(1)}`);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path class="sa" d="M0,${H}L${pts.join('L')}L${W},${H}Z"/><polyline points="${pts.join(' ')}"/><circle cx="${W}" cy="${y(vals.at(-1))}" r="2.6"/></svg>`;
+}
+const KPIS2 = list => `<div class="kpis">${list.map(([l, v, u, d, icon, sp], i) => `<div class="card kpi ${i === 0 ? 'hero' : ''}"><div class="l">${ic(icon)}${l}</div><div class="kv-row"><div class="v">${v}<small>${u}</small></div>${spark(sp)}</div><div class="d">${d}</div></div>`).join('')}</div>`;
+
+/* ---------- 일별 인증: 성공 + 실패 누적 막대 ---------- */
+function stackCols(days) {
+  const W = 760, H = 236, L = 40, R = 6, T = 8, B = 26, pw = W - L - R, ph = H - T - B;
+  const st = niceStep(Math.max(...days.map(d => d.v))), max = Math.ceil(Math.max(...days.map(d => d.v)) / st) * st, y = v => T + ph - v / max * ph;
+  const step = pw / days.length, bw = Math.min(26, step * .62), every = days.length > 20 ? 5 : days.length > 10 ? 2 : 1;
+  const ticks = Array.from({ length:max / st + 1 }, (_, i) => i * st);
+  const cols = days.map((d, i) => {
+    const x = L + i * step + (step - bw) / 2, hO = d.ok / max * ph, hF = d.fail / max * ph, yO = T + ph - hO, yF = yO - 2 - hF;
+    const tipS = `<b>${fD(d.d)}</b>${d.today ? ' · 집계 중' : ''}<br>요청 ${fmt(d.v)}건<br>성공 ${fmt(d.ok)} · 실패 ${fmt(d.fail)}<br>성공률 ${(d.ok / d.v * 100).toFixed(1)}%`;
+    return `<g class="col ${d.today ? 'today' : ''}"><rect class="hit" x="${L + i * step}" y="${T}" width="${step}" height="${ph}" data-tip="${dvTip(tipS)}"/>
+      <path class="s-ok" d="${d.fail ? `M${x},${T + ph}V${yO}H${x + bw}V${T + ph}Z` : rtop(x, yO, bw, hO, 4)}"/>${d.fail ? `<path class="s-fail" d="${rtop(x, yF, bw, Math.max(hF, 2), 4)}"/>` : ''}
+      ${i % every === 0 || d.today ? `<text class="xl" x="${L + i * step + step / 2}" y="${H - 7}" text-anchor="middle">${d.today ? '오늘' : `${d.d.getMonth() + 1}/${d.d.getDate()}`}</text>` : ''}</g>`;
+  }).join('');
+  return legend([['성공', 'var(--s1)'], ['실패', 'var(--bad)']]) + `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="일별 인증 요청 (성공 · 실패) 누적 막대">
+    <g class="grid">${ticks.map(t => `<line x1="${L}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
+    <g class="axis">${ticks.map(t => `<text x="${L - 8}" y="${y(t) + 4}" text-anchor="end">${kfmt(t)}</text>`).join('')}${cols}</g></svg></div>`;
+}
+
+/* ---------- 거래처별 비중: 도넛 ---------- */
+function donut(items) {
+  const tot = items.reduce((a, x) => a + x.v, 0), cx = 90, cy = 90, r1 = 84, r0 = 58; let a = 0;
+  const p = (an, r) => `${(cx + r * Math.sin(an)).toFixed(2)},${(cy - r * Math.cos(an)).toFixed(2)}`;
+  const col = (x, i) => x.other ? 'var(--s-other)' : `var(--s${i + 1})`;
+  const arcs = items.map((x, i) => { const a0 = a, a1 = a += x.v / tot * Math.PI * 2, lg = a1 - a0 > Math.PI ? 1 : 0;
+    return `<path d="M${p(a0, r1)}A${r1},${r1} 0 ${lg} 1 ${p(a1, r1)}L${p(a1, r0)}A${r0},${r0} 0 ${lg} 0 ${p(a0, r0)}Z" fill="${col(x, i)}" data-tip="${dvTip(`<b>${esc(x.l)}</b><br>${fmt(x.v)}건 · ${(x.v / tot * 100).toFixed(1)}%`)}"/>`; }).join('');
+  return `<div class="donut"><svg viewBox="0 0 180 180" role="img" aria-label="거래처별 인증 비중 도넛">${arcs}<text x="90" y="86" text-anchor="middle" class="dn-v">${kfmt(tot)}</text><text x="90" y="106" text-anchor="middle" class="dn-l">전체 인증</text></svg>
+    <ul class="dn-leg">${items.map((x, i) => `<li><i style="background:${col(x, i)}"></i><span>${esc(x.l)}</span><b>${(x.v / tot * 100).toFixed(1)}%</b></li>`).join('')}</ul></div>`;
+}
+
+/* ---------- 가로 막대 (국가 TOP · 단계) ---------- */
+function hbars(items, opt = {}) {
+  const max = Math.max(...items.map(x => x.v));
+  return `<div class="vbars">${items.map((x, i) => `<div class="vb" data-tip="${dvTip(`<b>${esc(x.l)}</b><br>${fmt(x.v)}건${x.note ? '<br>' + x.note : ''}`)}"><span class="vb-l">${x.code ? `<span class="mono muted">${x.code}</span> ` : ''}${esc(x.l)}</span><span class="vb-t"><i style="width:${(x.v / max * 100).toFixed(1)}%;${opt.color ? `background:${opt.color}` : ''}"></i></span><span class="vb-v">${opt.fmt ? opt.fmt(x, i) : fmt(x.v)}</span></div>`).join('')}</div>`;
+}
+
+/* ---------- 요일 × 시간 히트맵 ---------- */
+function heatmap(grid) {
+  const days = ['월', '화', '수', '목', '금', '토', '일'], cw = 25, chh = 22, g = 2, L = 26, T = 4, W = L + 24 * cw, H = T + 7 * chh + 20;
+  const all = grid.flat().sort((a, b) => a - b), q = [.2, .4, .6, .8].map(f => all[Math.floor(all.length * f)]), lv = [12, 30, 50, 74, 100];
+  const lvl = v => q.filter(t => v > t).length;
+  const cells = grid.map((row, r) => row.map((v, h) => `<rect x="${L + h * cw}" y="${T + r * chh}" width="${cw - g}" height="${chh - g}" rx="3" fill="color-mix(in srgb,var(--s1) ${lv[lvl(v)]}%,var(--surface))" data-tip="${dvTip(`<b>${days[r]}요일 ${h}시</b><br>평균 ${fmt(v)}건`)}"/>`).join('')).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="요일·시간대별 인증 히트맵"><g class="axis">${days.map((d, r) => `<text x="${L - 8}" y="${T + r * chh + 15}" text-anchor="end">${d}</text>`).join('')}${[0, 3, 6, 9, 12, 15, 18, 21].map(h => `<text x="${L + h * cw + (cw - g) / 2}" y="${H - 4}" text-anchor="middle">${h}시</text>`).join('')}</g>${cells}</svg></div>
+    <div class="hm-leg"><span>적음</span>${lv.map(p => `<i style="background:color-mix(in srgb,var(--s1) ${p}%,var(--surface))"></i>`).join('')}<span>많음</span></div>`;
+}
+
+/* ---------- 처리시간 추이: 평균 · P95 (같은 단위 · 한 축) ---------- */
+function lines(days) {
+  const W = 560, H = 230, L = 30, R = 74, T = 10, B = 26, pw = W - L - R, ph = H - T - B, max = Math.ceil(Math.max(...days.map(d => d.p95)) / 5) * 5;
+  const x = i => L + (days.length === 1 ? pw / 2 : i * pw / (days.length - 1)), y = v => T + ph - v / max * ph, every = days.length > 20 ? 5 : days.length > 10 ? 2 : 1;
+  const path = k => days.map((d, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(d[k]).toFixed(1)}`).join('');
+  const ticks = Array.from({ length:max / 5 + 1 }, (_, i) => i * 5), last = days.at(-1), sw = pw / Math.max(1, days.length - 1);
+  const hov = days.map((d, i) => `<g class="xg"><rect class="hit" x="${x(i) - sw / 2}" y="${T}" width="${sw}" height="${ph}" data-tip="${dvTip(`<b>${fD(d.d)}</b><br>평균 ${d.avg.toFixed(1)}초<br>P95 ${d.p95.toFixed(1)}초`)}"/><line class="xh" x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${T + ph}"/><circle class="m1" cx="${x(i)}" cy="${y(d.avg)}" r="4.5"/><circle class="m2" cx="${x(i)}" cy="${y(d.p95)}" r="4.5"/></g>`).join('');
+  return legend([['평균', 'var(--s1)'], ['P95 (느린 5%)', 'var(--s2)']]) + `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="일별 평균 · P95 처리시간 선 차트">
+    <g class="grid">${ticks.map(t => `<line x1="${L}" x2="${L + pw}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
+    <g class="axis">${ticks.map(t => `<text x="${L - 8}" y="${y(t) + 4}" text-anchor="end">${t}</text>`).join('')}${days.map((d, i) => i % every === 0 || i === days.length - 1 ? `<text x="${x(i)}" y="${H - 7}" text-anchor="middle">${i === days.length - 1 ? '오늘' : `${d.d.getMonth() + 1}/${d.d.getDate()}`}</text>` : '').join('')}</g>
+    <line class="sla" x1="${L}" x2="${L + pw}" y1="${y(15)}" y2="${y(15)}"/><text class="sla-t" x="${L + 4}" y="${y(15) - 5}">목표 15초 이내</text>
+    <path class="ln1" d="${path('avg')}"/><path class="ln2" d="${path('p95')}"/>
+    <text class="end" x="${L + pw + 8}" y="${y(last.avg) + 4}">평균 ${last.avg.toFixed(1)}초</text><text class="end" x="${L + pw + 8}" y="${y(last.p95) + 4}">P95 ${last.p95.toFixed(1)}초</text>${hov}</svg></div>`;
+}
+
+/* ---------- 모듈별 성공률: 점 그래프 (90~100% 구간 · 목표 95%) ---------- */
+function dots(items) {
+  const lo = 90, pos = v => ((v - lo) / (100 - lo) * 100).toFixed(1);
+  return `<div class="dots"><div class="dt-ax"><span></span><span class="dt-sc">${[90, 92, 94, 96, 98, 100].map(t => `<b style="left:${pos(t)}%">${t}</b>`).join('')}</span><span></span></div>${items.map(([l, v]) => { const bad = v < 95;
+    return `<div class="dt" data-tip="${dvTip(`<b>${l}</b><br>성공률 ${v}%${bad ? '<br>목표 95% 미달' : ''}`)}"><span class="dt-l">${l}</span><span class="dt-t"><s style="left:${pos(95)}%"></s><i class="${bad ? 'bad' : ''}" style="left:${pos(v)}%"></i></span><span class="dt-v ${bad ? 'down' : ''}">${bad ? ic('alert') : ''}${v}%</span></div>`; }).join('')}
+    <div class="dt-note"><s></s>목표 95% · ${ic('alert')} 미달</div></div>`;
+}
+
+/* ---------- 월별 청구액 ---------- */
+function monthCols(ms) {
+  const W = 360, H = 210, L = 30, R = 4, T = 22, B = 24, pw = W - L - R, ph = H - T - B, max = 40, y = v => T + ph - v / max * ph, step = pw / ms.length, bw = Math.min(30, step * .55);
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="월별 청구액 막대"><g class="grid">${[0, 10, 20, 30, 40].map(t => `<line x1="${L}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
+    <g class="axis">${[0, 10, 20, 30, 40].map(t => `<text x="${L - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`).join('')}
+    ${ms.map((m, i) => { const x0 = L + i * step + (step - bw) / 2, h = m.v / max * ph, last = i === ms.length - 1;
+      return `<g class="col ${last ? 'today' : ''}"><rect class="hit" x="${L + i * step}" y="${T}" width="${step}" height="${ph}" data-tip="${dvTip(`<b>2026년 ${m.m}월</b>${last ? ' · 예상' : ''}<br>${fmt(Math.round(m.v * 1e6))}원`)}"/><path class="s-ok" d="${rtop(x0, y(m.v), bw, h, 4)}"/>
+        ${i >= ms.length - 2 ? `<text class="vl" x="${x0 + bw / 2}" y="${y(m.v) - 6}" text-anchor="middle">${m.v.toFixed(1)}</text>` : ''}<text x="${L + i * step + step / 2}" y="${H - 6}" text-anchor="middle">${m.m}월</text></g>`; }).join('')}</g></svg></div>`;
+}
+
+/* ---------- 대시보드 ---------- */
+Dashboard = function () {
+  const n = S.dashRange, D = dashData(n), d14 = dashData(14).days, fails = D.days.reduce((a, d) => a + d.fail, 0);
+  const todo = [
+    ['KT 서류 검수 대기', CUSTOMERS.filter(c => c.stage === '검수대기').length, '#/kt/docs', 'shield', 'warn'],
+    ['서류 미비 고객', CUSTOMERS.filter(c => c.stage === '서류미비').length, '#/kt/docs', 'file', 'bad'],
+    ['거래처 등록 심사', PARTNERS.filter(p => ['등록요청접수', '등록심사중', '자료보완요청'].includes(p.status)).length, '#/partner/overview', 'building', 'info'],
+    ['개인정보 보관만료 임박 (D-7)', CUSTOMERS.filter(c => { const r = retain(c); return r.left !== undefined && r.left <= 7; }).length + 3, '#/kt/docs', 'clock', 'warn'],
+    ['CSCA 인증서 만료임박', 2, '#/pkd', 'globe', 'warn'],
+  ];
+  const mods = [['AI-OCR', 98.1], ['안면인식', 95.6], ['라이브니스', 96.8], ['전자여권 NFC', 94.2], ['정부여권인증', 99.4], ['체류자격인증', 98.9]];
+  const months = [[6, 21.8], [7, 25.4], [8, 28.9], [9, 31.2], [10, 35.6], [11, 38.4]].map(([m, v]) => ({ m, v }));
+  const sys = [['WEB 서버', '정상', 'ok', '42ms'], ['API 서버', '정상', 'ok', '18ms'], ['DB 서버', '정상', 'ok', '6ms'], ['S3 스토리지', '정상', 'ok', '312GB'], ['AI 서버', '부하 높음', 'warn', 'GPU 82%'], ['VPN', '정상', 'ok', '34ms']];
+  const range = `<div class="seg" role="group" aria-label="기간">${[7, 14, 30].map(k => `<button class="${n === k ? 'on' : ''}" data-act="dash-range" data-n="${k}">${k}일</button>`).join('')}</div>`;
+  const per = `최근 ${n}일`;
+  return PH(`안녕하세요, ${ME.name} 님`, `${TODAY} (목) · 마지막 로그인 2026-11-04 18:22 · ${ME.ip}`,
+      `<span class="muted" style="font-size:12.5px">기간</span>${range}<span class="vsep"></span><a class="btn" href="#/trans">${ic('shield')}인증내역</a><a class="btn btn-p" href="#/kt/docs">${ic('file')}등록서류 검수</a>`)
+    + KPIS2([
+      ['오늘 인증 요청', fmt(1284), '건', `<span class="up">▲ 8.2%</span> 어제 같은 시간 대비`, 'scan', d14.map(d => d.v)],
+      ['인증 성공률', (D.days.reduce((a, d) => a + d.ok, 0) / D.tot * 100).toFixed(1), '%', `${per} 실패 ${fmt(fails)}건`, 'check', d14.map(d => d.ok / d.v)],
+      ['평균 처리시간', D.days.at(-1).avg.toFixed(1), '초', 'OCR → 안면인식 → 완료 기준', 'clock', d14.map(d => d.avg)],
+      ['11월 예상 청구액', fmt(3842), '만원', '인증료 + 관리자 사용료 (VAT 별도)', 'coins', [3.1, 6.4, 9.0, 12.2, 15.8, 18.1, 21.0, 24.6, 27.9, 30.2, 33.8, 35.9, 37.2, 38.4]],
+    ])
+    + `<div class="g2">${vcard('daily', '일별 인증 요청', `${per} · 합계 ${fmt(D.tot)}건`, stackCols(D.days), [['일자', '요청', '성공', '실패', '성공률'], D.days.slice().reverse().map(d => [fD(d.d) + (d.today ? ' (오늘)' : ''), fmt(d.v), fmt(d.ok), fmt(d.fail), (d.ok / d.v * 100).toFixed(1) + '%'])])}
+      <section class="card"><div class="card-h"><h3>처리 대기 업무</h3></div><div class="todo">${todo.map(([l, c, h, icn, t]) => `<a href="${h}"><span class="ic t-${t}">${ic(icn)}</span>${l}<span class="cnt">${c}</span>${ic('chev', 'muted')}</a>`).join('')}</div></section></div>
+    <div class="g3">
+      ${vcard('share', '거래처별 인증 비중', per, donut(D.share), [['거래처', '건수', '비중'], D.share.map(x => [esc(x.l), fmt(x.v), (x.v / D.tot * 100).toFixed(1) + '%'])])}
+      ${vcard('nat', '국가별 인증 TOP 8', per, hbars(D.nats.map(x => ({ ...x, code:x.k }))), [['국가', '건수'], D.nats.map(x => [`${x.k} ${x.l}`, fmt(x.v)])])}
+      ${vcard('funnel', '인증 단계별 통과', `${per} · 요청 대비`, hbars(D.funnel.map(([l, v], i) => ({ l, v, note:i ? `이전 단계 대비 ${(v / D.funnel[i - 1][1] * 100).toFixed(1)}%` : '' })), { fmt:x => `${(x.v / D.tot * 100).toFixed(1)}%` }), [['단계', '건수', '요청 대비'], D.funnel.map(([l, v]) => [l, fmt(v), (v / D.tot * 100).toFixed(1) + '%'])])}
+    </div>
+    <div class="g2e">
+      ${vcard('heat', '요일 · 시간대별 인증', '최근 4주 평균 · 몰리는 시간 확인', heatmap(D.heat), [['요일', ...Array.from({ length:24 }, (_, h) => h + '시')], D.heat.map((r, i) => ['월화수목금토일'[i], ...r.map(fmt)])])}
+      ${vcard('time', '처리시간 추이', `${per} · 초`, lines(D.days), [['일자', '평균(초)', 'P95(초)'], D.days.slice().reverse().map(d => [fD(d.d), d.avg.toFixed(1), d.p95.toFixed(1)])])}
+    </div>
+    ${dashMore(n, D)}
+    <div class="g3">
+      ${vcard('mods', '모듈별 성공률', '최근 7일', dots(mods), [['모듈', '성공률', '목표 95%'], mods.map(([l, v]) => [l, v + '%', v >= 95 ? '달성' : '미달'])])}
+      ${vcard('bill', '월별 청구액', '백만원 · VAT 별도', monthCols(months), [['월', '청구액(원)'], months.map(m => [`2026-${pad(m.m)}${m.m === 11 ? ' (예상)' : ''}`, fmt(Math.round(m.v * 1e6))])])}
+      <section class="card"><div class="card-h"><h3>시스템 상태</h3><span class="sub">AWS 싱가포르 · KT 목동 VPN</span><div class="r"><button class="ibtn" data-act="toast" data-msg="상태를 새로 고쳤습니다." aria-label="새로고침" title="새로고침">${ic('refresh')}</button></div></div>
+        <div class="syl">${sys.map(([nm, s, t, m]) => `<div><span class="dot2 t-${t}"></span><b>${nm}</b><span class="num muted">${m}</span>${badge(s, t)}</div>`).join('')}</div></section>
+    </div>
+    <section class="card"><div class="card-h"><h3>최근 인증 내역</h3><div class="r"><a class="btn btn-sm btn-ghost" href="#/trans">전체 보기 ${ic('chev')}</a></div></div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>승인번호</th><th>시각</th><th>거래처</th><th>인증 모듈</th><th>상태</th></tr></thead><tbody>
+      ${TRANS.slice(0, 6).map(t => `<tr data-act="go-trans" data-id="${t.id}"><td class="mono">${t.no}</td><td class="num">${t.dt.slice(11, 16)}</td><td>${esc(t.partner)}<span class="sub">${NAT[t.nat]}</span></td><td>${resChips(t.res)}</td><td>${badge(t.status)}</td></tr>`).join('')}
+      </tbody></table></div></section>`;
+};
+document.addEventListener('click', e => { const a = e.target.closest('[data-act="vt"]'); if (!a) return; const id = a.dataset.id; S.vt.has(id) ? S.vt.delete(id) : S.vt.add(id); render(); });
+
+/* =====================================================================
+   차트 추가 — 대시보드 5종 + 모든 목록 화면의 「검색 결과 차트」 (검색 조건을 따라 바뀌고, 누르면 그 조건으로 검색)
+   ===================================================================== */
+/* ---------- 100% 누적 막대 (단계 · 분포) ---------- */
+function stack100(items, opt = {}) {
+  const tot = items.reduce((a, x) => a + x.v, 0) || 1;
+  const act = x => opt.act ? opt.act(x) : '';
+  return `<div class="s100">${items.filter(x => x.v).map(x => `<i style="flex:${x.v};background:${x.c}" data-tip="${dvTip(`<b>${esc(x.l)}</b><br>${fmt(x.v)}건 · ${(x.v / tot * 100).toFixed(1)}%`)}" ${act(x)}></i>`).join('')}</div>
+    <ul class="s100-leg">${items.map(x => `<li ${act(x)} class="${opt.act ? 'clk' : ''}"><i style="background:${x.c}"></i><span>${esc(x.l)}</span><b>${fmt(x.v)}</b><em>${(x.v / tot * 100).toFixed(0)}%</em></li>`).join('')}</ul>`;
+}
+
+/* ---------- 작은 차트 여러 개: 거래처별 추이 ---------- */
+function multiples(list) {
+  return `<div class="mult">${list.map(p => { const up = p.chg >= 0;
+    return `<div class="mu" data-tip="${dvTip(`<b>${esc(p.l)}</b><br>최근 ${p.s.length}일 ${fmt(p.tot)}건<br>지난주 대비 ${up ? '+' : ''}${p.chg.toFixed(1)}%`)}"><span class="mu-l">${esc(p.l)}</span>${spark(p.s)}<b class="num">${fmt(p.tot)}</b><span class="mu-c ${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${Math.abs(p.chg).toFixed(1)}%</span></div>`; }).join('')}</div>`;
+}
+
+/* ---------- 오늘 vs 어제 누적 (시간대) ---------- */
+function cumChart(today, yest, nowH) {
+  const W = 560, H = 230, L = 38, R = 86, T = 10, B = 26, pw = W - L - R, ph = H - T - B, st = niceStep(yest.at(-1)), max = Math.ceil(yest.at(-1) / st) * st;
+  const x = h => L + h / 23 * pw, y = v => T + ph - v / max * ph, ticks = Array.from({ length:max / st + 1 }, (_, i) => i * st);
+  const path = arr => arr.map((v, h) => `${h ? 'L' : 'M'}${x(h).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const hov = yest.map((v, h) => `<g class="xg"><rect class="hit" x="${x(h) - pw / 46}" y="${T}" width="${pw / 23}" height="${ph}" data-tip="${dvTip(`<b>${h}시까지 누적</b><br>${h <= nowH ? `오늘 ${fmt(today[h])}건<br>` : ''}어제 ${fmt(v)}건`)}"/><line class="xh" x1="${x(h)}" x2="${x(h)}" y1="${T}" y2="${T + ph}"/>${h <= nowH ? `<circle class="m1" cx="${x(h)}" cy="${y(today[h])}" r="4.5"/>` : ''}<circle class="m3" cx="${x(h)}" cy="${y(v)}" r="4.5"/></g>`).join('');
+  return legend([['오늘', 'var(--s1)'], ['어제', 'var(--s-other)']]) + `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="오늘과 어제 시간대별 누적 인증 비교">
+    <g class="grid">${ticks.map(t => `<line x1="${L}" x2="${L + pw}" y1="${y(t)}" y2="${y(t)}"/>`).join('')}</g>
+    <g class="axis">${ticks.map(t => `<text x="${L - 8}" y="${y(t) + 4}" text-anchor="end">${kfmt(t)}</text>`).join('')}${[0, 6, 12, 18, 23].map(h => `<text x="${x(h)}" y="${H - 7}" text-anchor="middle">${h}시</text>`).join('')}</g>
+    <path class="ln3" d="${path(yest)}"/><path class="ln1" d="${path(today.slice(0, nowH + 1))}"/><circle class="now" cx="${x(nowH)}" cy="${y(today[nowH])}" r="4.5"/>
+    <text class="end" x="${x(nowH) + 10}" y="${y(today[nowH]) - 8}">지금 ${fmt(today[nowH])}</text><text class="end" x="${L + pw + 8}" y="${y(yest.at(-1)) + 4}">어제 ${fmt(yest.at(-1))}</text>${hov}</svg></div>`;
+}
+
+function dashMore(n, D) {
+  const r = dvRng(919), fails = D.days.reduce((a, d) => a + d.fail, 0);
+  const fr = [['OCR_001', '여권 촬영 불량', 31], ['LIV_003', '얼굴 확인 시간 초과', 22], ['NFC_001', 'NFC 미지원 기기', 17], ['7002', '정부 여권 조회 실패', 12], ['2009', '체류자격 불일치', 10], ['SYS_001', '시스템 오류', 8]];
+  const frs = fr.reduce((a, x) => a + x[2], 0), failItems = fr.map(([c, l, w]) => ({ l, code:c, v:Math.round(fails * w / frs) }));
+  const ch = [['WEB', 46], ['AOS APP', 28], ['iOS APP', 17], ['서버 API', 9]].map(([l, w]) => ({ l, v:Math.round(D.tot * w / 100) }));
+  const stg = STAGES.map((s, i) => ({ l:s, v:CUSTOMERS.filter(c => c.stage === s).length, c:`var(--o${i + 1})` }));
+  const hourW = [2, 1, 1, 1, 1, 2, 5, 11, 22, 38, 46, 44, 30, 36, 45, 48, 42, 33, 24, 19, 15, 11, 7, 4], hs = hourW.reduce((a, b) => a + b, 0), nowH = NOW.getHours();
+  const cum = (scale, k) => { let s = 0; return hourW.map(w => Math.round(s += w * scale * (k ? 0.92 + r() * 0.16 : 1))); };
+  const yRaw = cum(1, 1), yAt = yRaw[nowH], todayScale = 1284 / 1.082 / yAt;
+  const yest = yRaw.map(v => Math.round(v * todayScale)), tRaw = cum(1, 1), today = tRaw.map(v => Math.round(v * 1284 / tRaw[nowH]));
+  const ps = PARTNERS.filter(p => p.status === '등록완료' && p.cnt).sort((a, b) => b.cnt - a.cnt).slice(0, 5), psum = PARTNERS.filter(p => p.status === '등록완료').reduce((a, p) => a + p.cnt, 0);
+  const mult = ps.map(p => { const s = D.days.map(d => Math.round(d.v * p.cnt / psum * (0.8 + r() * 0.4))), h = Math.floor(s.length / 2), a = s.slice(0, h).reduce((x, y) => x + y, 0) || 1, b = s.slice(h).reduce((x, y) => x + y, 0);
+    return { l:p.name, s, tot:s.reduce((x, y) => x + y, 0), chg:(b / a - 1) * 100 }; });
+  const per = `최근 ${n}일`;
+  return `<div class="g3">
+      ${vcard('fail', '실패 사유 TOP 6', `${per} · 실패 ${fmt(fails)}건`, hbars(failItems.map(x => ({ ...x, code:x.code })), { color:'var(--bad)', fmt:x => fmt(x.v) }), [['오류코드', '사유', '건수'], failItems.map(x => [x.code, x.l, fmt(x.v)])])}
+      ${vcard('chan', '접속 채널', per, donut(ch), [['채널', '건수', '비중'], ch.map(x => [x.l, fmt(x.v), (x.v / D.tot * 100).toFixed(1) + '%'])])}
+      ${vcard('kt', 'KT 가입 진행 단계', `고객 ${CUSTOMERS.length}명`, stack100(stg, { act:x => `data-act="lc-go" data-r="kt/docs" data-k="stage" data-v="${esc(x.l)}"` }) + `<div class="s100-note">${ic('clock')}검수 대기 <b>${stg[1].v}명</b> 오늘 처리 필요 · 단계를 누르면 해당 고객 목록</div>`, [['단계', '고객 수'], stg.map(x => [x.l, fmt(x.v)])])}
+    </div>
+    <div class="g2e">
+      ${vcard('cum', '오늘 vs 어제', `시간대별 누적 · 지금 ${nowH}시 기준`, cumChart(today, yest, nowH), [['시각', '오늘 누적', '어제 누적'], yest.map((v, h) => [`${h}시`, h <= nowH ? fmt(today[h]) : '—', fmt(v)])])}
+      ${vcard('mult', '거래처별 인증 추이', `${per} · 상위 5곳 · 지난주 대비`, multiples(mult), [['거래처', '건수', '지난주 대비'], mult.map(p => [esc(p.l), fmt(p.tot), (p.chg >= 0 ? '+' : '') + p.chg.toFixed(1) + '%'])])}
+    </div>`;
+}
+
+/* ---------- 목록 화면: 검색 결과 차트 ---------- */
+const LC_OFF = new Set(store.get('sg_lc_off', []));
+function miniCols(days) {
+  const max = Math.max(...days.map(d => d[1]));
+  return `<div class="mcol">${days.map(([d, v]) => `<button type="button" class="mc" data-act="lc-d" data-d="${d}" data-tip="${dvTip(`<b>${d}</b><br>${fmt(v)}건<br><span style='opacity:.7'>누르면 이 날짜로 검색</span>`)}" aria-label="${d} ${v}건"><i style="height:${Math.max(4, v / max * 100)}%"></i></button>`).join('')}</div>
+    <div class="mcol-x"><span>${days[0][0].slice(5)}</span><span>${days.at(-1)[0].slice(5)}</span></div>`;
+}
+function listCharts(key, all) {
+  const cfg = CFG[key]; if (!cfg || cfg.noChart || !all.length) return '';
+  const rows = all.filter(r => !r.stop), parts = [], on = !LC_OFF.has(key), st = ls(key);
+  if (on) {
+    if (cfg.dateKey) {
+      const m = new Map(); rows.forEach(r => { const d = String(r[cfg.dateKey] || '').slice(0, 10); if (/^\d{4}-\d{2}-\d{2}$/.test(d)) m.set(d, (m.get(d) || 0) + 1); });
+      const days = [...m.entries()].sort((a, b) => a[0] < b[0] ? -1 : 1).slice(-31);
+      if (days.length > 1) parts.push([`${colLabel(cfg, cfg.dateKey)}별 건수`, `${days.length}일`, miniCols(days)]);
+    }
+    for (const k of (cfg.filters || [])) {
+      if (parts.length >= 3) break;
+      if (k === cfg.dateKey || st.f[k]) continue;
+      const m = new Map(); rows.forEach(r => { const v = r[k]; if (v !== undefined && v !== '' && v !== null && typeof v !== 'object') m.set(String(v), (m.get(String(v)) || 0) + 1); });
+      if (m.size < 2) continue;
+      const order = cfg.opts?.[k]?.map(String) || [];
+      const ent = [...m.entries()].sort((a, b) => order.length ? (order.indexOf(a[0]) + 1 || 99) - (order.indexOf(b[0]) + 1 || 99) || b[1] - a[1] : b[1] - a[1]);
+      const lbl = v => optLabel(k, v), title = `${colLabel(cfg, k)}별`, act = v => `data-act="lc-f" data-k="${esc(k)}" data-v="${esc(v)}"`;
+      if (ent.length <= 5) parts.push([title, `${ent.length}개`, stack100(ent.map(([v, c], i) => ({ l:lbl(v), v:c, c:`var(--s${(order.length ? order.indexOf(v) : i) % 5 + 1})`, raw:v })), { act:x => act(x.raw) })]);
+      else { const top = ent.sort((a, b) => b[1] - a[1]).slice(0, 6); parts.push([title + ' TOP 6', `${ent.length}개 중`, `<div class="vbars">${top.map(([v, c]) => `<button type="button" class="vb" ${act(v)} data-tip="${dvTip(`<b>${esc(lbl(v))}</b><br>${fmt(c)}건<br><span style='opacity:.7'>누르면 이 조건으로 검색</span>`)}"><span class="vb-l">${esc(lbl(v))}</span><span class="vb-t"><i style="width:${(c / top[0][1] * 100).toFixed(1)}%"></i></span><span class="vb-v">${fmt(c)}</span></button>`).join('')}</div>`]); }
+    }
+    const won = cfg.cols.find(c => c.t === 'won'), lc = cfg.cols.find(c => c.t === 'strong') || cfg.cols.find(c => c.main);
+    if (parts.length < 3 && won && lc) {
+      const m = new Map(); rows.forEach(r => m.set(String(r[lc.k]), (m.get(String(r[lc.k])) || 0) + (+r[won.k] || 0)));
+      const top = [...m.entries()].filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      if (top.length > 1) parts.push([`${lc.l}별 ${won.l}`, '상위 6', hbars(top.map(([l, v]) => ({ l, v })), { fmt:x => (x.v >= 1e6 ? (x.v / 1e6).toFixed(1) + '백만' : fmt(x.v)) })]);
+    }
+    if (!parts.length) return '';
+  }
+  return `<div class="lc ${on ? '' : 'off'}"><div class="lc-h"><b>${ic('chart')}검색 결과 차트</b><span class="muted">${on ? `${fmt(rows.length)}건 기준 · 막대를 누르면 그 조건으로 검색` : ''}</span><button class="btn btn-sm btn-ghost" data-act="lc-toggle" aria-expanded="${on}">${on ? '접기' : '차트 보기'} ${ic(on ? 'up' : 'down')}</button></div>
+    ${on ? `<div class="lc-g">${parts.map(([t, s, b]) => `<div class="lc-c"><div class="lc-t">${t}<span>${s}</span></div>${b}</div>`).join('')}</div>` : ''}</div>`;
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act^="lc-"]'); if (!a) return;
+  const key = curKey(), st = CFG[key] ? ls(key) : null;
+  switch (a.dataset.act) {
+    case 'lc-toggle': LC_OFF.has(key) ? LC_OFF.delete(key) : LC_OFF.add(key); store.set('sg_lc_off', [...LC_OFF]); render(); break;
+    case 'lc-f': if (!st) break; st.f[a.dataset.k] = a.dataset.v; st.pg = 1; st.draft = null; st.sel.clear(); render(); toast(`조건 추가: ${colLabel(CFG[key], a.dataset.k)} = ${optLabel(a.dataset.k, a.dataset.v)}`); break;
+    case 'lc-d': if (!st) break; st.from = st.to = a.dataset.d; st.pg = 1; st.draft = null; st.sel.clear(); render(); toast(`조건 추가: ${a.dataset.d}`); break;
+    case 'lc-go': { const r = a.dataset.r, s2 = ls(r); s2.f = { [a.dataset.k]:a.dataset.v }; s2.pg = 1; s2.draft = null; location.hash = '#/' + r; break; }
+  }
+});
 
 Object.values(CFG).forEach(cfg => { if (cfg.dateKey) return; const c = cfg.cols.find(c => c.t === 'date' && cfg.rows.length && cfg.rows.every(r => /^\d{4}-\d{2}-\d{2}/.test(r[c.k] || ''))); if (c) cfg.dateKey = c.k; });
 render();
