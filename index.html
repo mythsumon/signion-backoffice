@@ -58,7 +58,8 @@ svg.logo{display:block;height:auto}
 .sb-head{height:var(--top);display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid var(--line);flex:none}
 .sb-head .logo{width:118px}
 .sb-tag{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-top:2px}
-.nav{flex:1;overflow-y:auto;padding:10px 10px 16px;scrollbar-width:thin}
+.nav{flex:1;overflow-y:auto;padding:10px 10px 16px;scrollbar-width:none;-ms-overflow-style:none}
+.nav::-webkit-scrollbar{display:none;width:0;height:0}
 .nav-sec{font-size:11px;color:var(--muted);font-weight:600;padding:14px 12px 6px;letter-spacing:.04em}
 .nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:0;background:none;border-radius:8px;cursor:pointer;color:var(--ink-2);font-weight:500;text-align:left;font-size:14px}
 .nav-btn:hover{background:var(--surface-2);color:var(--ink)}
@@ -77,7 +78,7 @@ svg.logo{display:block;height:auto}
 .sb-foot{border-top:1px solid var(--line);padding:12px 14px;flex:none}
 .sb-foot a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--ink-2);font-weight:500}
 .sb-foot a:hover,.sb-foot a.on{background:var(--brand-50);color:var(--brand)}
-.sb-ver{font-size:11.5px;color:var(--muted);padding:6px 10px 0}
+.sb-ver{font-size:11px;line-height:1.45;color:var(--muted);padding:6px 10px 0;letter-spacing:-.01em;word-break:keep-all}
 
 .main{min-width:0;display:flex;flex-direction:column}
 .top{position:sticky;top:0;z-index:30;height:var(--top);display:flex;align-items:center;gap:10px;padding:0 24px;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -98,7 +99,7 @@ kbd{font-family:inherit;font-size:11px;color:var(--muted);border:1px solid var(-
 .av{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
 .me-t{line-height:1.25;font-size:13px;font-weight:600;white-space:nowrap} .me-t small{display:block;color:var(--muted);font-size:11.5px;font-weight:500}
 
-.content{padding:24px 28px 56px;width:100%;max-width:1680px}
+.content{padding:20px 24px 40px;width:100%;max-width:none}
 .ph{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
 .ph h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
 .ph p{margin:4px 0 0;color:var(--ink-2);font-size:13.5px}
@@ -647,11 +648,11 @@ button.gsearch span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:elli
 .peek-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px 10px 20px;border-top:1px solid var(--line-2);background:var(--surface-2)}
 .peek-f .sp{flex:1}
 .tbl tr.open>td{background:var(--brand-50)!important;border-bottom-color:transparent}
-.tbl tbody tr[data-act="open"]{scroll-margin-top:60px}
+.tbl tbody tr[data-act="open"]{scroll-margin-top:110px}
 /* ---------- 분할 보기 (목록 + 상세) — 사용 안 함 ---------- */
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,40%)}
 .split-l{min-width:0;border-right:1px solid var(--line-2)}
-.split-d{display:flex;flex-direction:column;min-width:0;max-height:calc(100vh - 150px);position:sticky;top:calc(var(--top) + 8px);align-self:start;background:var(--surface);border-radius:0 0 12px 0}
+.split-d{display:flex;flex-direction:column;min-width:0;max-height:calc(100vh - 150px);position:sticky;top:calc(var(--top) + var(--wtabs) + 8px);align-self:start;background:var(--surface);border-radius:0 0 12px 0}
 .split-d .dr-h{padding:16px 18px 12px} .split-d .dr-h h2{font-size:16px}
 .split-d .dr-b{padding:16px 18px 20px;overflow:auto;flex:1}
 .split-d .dr-f{padding:12px 18px;border-radius:0 0 12px 0}
@@ -861,6 +862,440 @@ button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;wi
 .mc:hover i{background:var(--brand-600)}
 .mcol-x{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
 @media print{.lc{display:none}}
+
+/* ---------- 인증거래처 종합관리 — 목록 + 상세 한 화면 (페이지 스크롤 없음) ---------- */
+.content:has(> .po){padding-bottom:16px}
+.po{display:flex;flex-direction:column;gap:10px;height:calc(100vh - var(--top) - var(--wtabs) - 40px);min-height:520px}
+.po-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.po-h h1{font-size:20px;margin:0;letter-spacing:-.02em}
+.po-h .muted{font-size:13px}
+.po-tb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.po-q{width:340px;max-width:100%}
+.po-adv{flex:none;max-height:42vh;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.po-adv .sp{border-bottom:0}
+.po-g{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,35%);gap:12px}
+.po-l,.po-d{display:flex;flex-direction:column;min-height:0;overflow:hidden;margin:0}
+.po-lh{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line-2);font-size:13px;flex:none}
+.po-lh .muted{font-size:12px}
+.po-tw{flex:1;min-height:0;overflow:auto}
+.po-tw .tbl thead th{position:sticky;top:0;z-index:2}
+.po-tw .tbl tbody tr.cur td{background:var(--brand-50)!important}
+.po-dh{display:flex;gap:10px;align-items:flex-start;padding:14px 16px 8px;flex:none}
+.po-dh h2{font-size:16px;margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.po-dh p{margin:4px 0 0;font-size:12.5px;color:var(--muted)}
+.po-dh .ibtn{margin-left:auto}
+.po-tabs{padding:0 16px;margin:0;flex:none;overflow-x:auto;flex-wrap:nowrap}
+.po-tabs .tab{white-space:nowrap;padding-left:8px;padding-right:8px;font-size:13px}
+.po-db .tbl-wrap + .kv{margin-top:14px}
+.po-l{container-type:inline-size}
+.po-fit{table-layout:fixed;width:100%}
+.po-fit th,.po-fit td{padding-left:8px;padding-right:8px}
+.po-fit th{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.po-fit col.w-ck{width:40px} .po-fit col.w-no{width:62px} .po-fit col.w-rg{width:96px} .po-fit col.w-loc{width:62px}
+.po-fit col.w-ceo{width:66px} .po-fit col.w-nat{width:62px} .po-fit col.w-st{width:136px} .po-fit col.w-cnt{width:64px}
+.po-fit th.ck,.po-fit td.ck{overflow:visible;text-overflow:clip;padding-right:0}
+.po-fit th .so{margin-left:2px;display:none}
+.po-fit th.sorted .so,.po-fit th:hover .so{display:inline-block}
+.po-fit .c-st .badge{padding-right:6px}
+.po-fit td{overflow:hidden}
+.po-ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.po-fit .c-name .strong{white-space:normal;word-break:break-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.po-sub{font-size:11.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.po-fit .c-st .badge{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+.po-db{flex:1;min-height:0;overflow:auto;padding:14px 16px 18px;position:relative}
+.po-l,.po-d{position:relative}
+.po-db .kv{grid-template-columns:120px minmax(0,1fr)}
+.po-df{display:flex;align-items:center;gap:6px;padding:10px 16px;border-top:1px solid var(--line-2);flex:none;flex-wrap:wrap}
+.po-df .grow,.po-lh .grow,.po-tb .grow,.po-h .grow{flex:1}
+.po-seg{margin-bottom:14px}
+.po-mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px 12px;margin-top:12px}
+.po-mods .switch{margin:0;font-size:13px}
+.po-mods .switch .muted{margin-left:auto;font-size:12px}
+@media(max-width:1100px){.po{height:auto;min-height:0}.po-g{grid-template-columns:1fr}.po-tw{max-height:50vh}.po-db{max-height:60vh}}
+
+.po-form{display:grid;gap:6px}
+.pf{display:grid;grid-template-columns:116px minmax(0,1fr) 62px;align-items:center;gap:4px 8px}
+.pf>label{font-size:12.5px;color:var(--ink-2);font-weight:600;white-space:nowrap;letter-spacing:-.01em}
+.pf>label .req{color:var(--bad);margin-left:2px}
+.pf-c{display:flex;align-items:center;gap:6px;min-width:0}
+.pf-c .input,.pf-c .csel{height:32px;font-size:13px}
+.pf-c>.input,.pf-c>.select,.pf-c>.csel{flex:1;min-width:0;width:auto}
+.pf-c .switch{margin:0;font-size:12.5px;white-space:nowrap}
+.pf-c .linkbtn{white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
+.pf-c .linkbtn .i{width:13px;height:13px}
+.pf-dates{flex-wrap:wrap}
+.pf-dates .dp{height:32px;font-size:12.5px;padding:0 8px}
+.pf-ts{flex-basis:100%;font-size:12px;color:var(--muted);padding:2px 2px 0}
+.pf-addr .input:first-child{flex:0 0 90px}
+.pf-addr .input:last-child{flex:1}
+.pf-find{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:30px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink-2);font:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s,color .12s}
+.pf-find .i{width:13px;height:13px;flex:none}
+.pf-find:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-50)}
+.pf-find:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.pf.chg .input,.pf.chg .csel,.pf.chg .dp{border-color:var(--warn);background:color-mix(in srgb,var(--warn-bg) 55%,var(--surface))}
+.pf .err-t{grid-column:2/4;font-size:12px;color:var(--bad);display:none}
+.pf.err .err-t{display:block}
+.pf.err .input,.pf.err .csel,.pf.err .dp{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+.pf-sep{height:1px;background:var(--line-2);margin:6px 0}
+.po-dirty{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--warn);font-weight:600}
+.po-dirty .i{width:14px;height:14px}
+.po-df kbd{margin-left:6px;font-size:10.5px;opacity:.75}
+.po-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warn);margin-left:6px;vertical-align:middle}
+.po-dot[hidden]{display:none}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.nw-tabs{padding:0 24px;margin:0}
+.nw-b{max-height:min(68vh,640px);background:var(--surface-2)}
+.nw-form{display:grid;gap:6px}
+.nwf{grid-template-columns:112px minmax(0,1fr) 0}
+.nw-chk{flex:none;height:30px;padding:0 10px;border:1px solid var(--brand-100);border-radius:7px;background:var(--brand-50);color:var(--brand);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.nw-chk:hover{border-color:var(--brand)}
+.nw-chk.ok{background:var(--ok-bg, #e8f7ee);border-color:transparent;color:var(--ok)}
+.nw-chk .i{width:13px;height:13px}
+.nwf .pf-c input[readonly]{background:var(--surface-2);color:var(--ink-2)}
+.nwf .pf-c .switch input[type=radio]{margin-right:4px}
+
+.po-form .pf .po-mods{grid-column:2/4;margin-top:0}
+.pf-memo{align-items:start}
+.pf-memo textarea{width:100%;min-height:150px;resize:vertical}
+.po-form .pf-c .switch input[type=radio]{margin-right:4px}
+.po-form .pf-c input[readonly]{background:var(--surface-2);color:var(--ink-2)}
+
+.ibtn.fold-top{margin-left:-6px}
+.app.mini .ibtn.fold-top .i{transform:scaleX(-1)}
+@media(max-width:1024px){.ibtn.fold-top{display:none}}
+.nav-fly{position:fixed;z-index:95;min-width:168px;max-width:260px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transform:translateX(-4px);transition:opacity .12s,transform .12s}
+.nav-fly.on{opacity:1;pointer-events:auto;transform:none}
+.nav-fly .nf-t{padding:7px 10px;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
+.nav-fly.grp .nf-t{border-bottom:1px solid var(--line-2);margin-bottom:4px;font-size:12px;color:var(--muted)}
+.nav-fly a{display:block;padding:7px 10px;border-radius:7px;font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.nav-fly a:hover{background:var(--surface-2);color:var(--ink)}
+.nav-fly a.on{background:var(--brand-50);color:var(--brand);font-weight:600}
+.app.mini .nav-btn.on{background:var(--brand-50);color:var(--brand)}
+
+.po-g{grid-template-columns:minmax(0,1fr) minmax(420px,38%)!important}
+@media (max-width:1366px){.po-g{grid-template-columns:minmax(0,1fr) minmax(400px,36%)!important}}
+.po-tw{overflow:hidden!important}
+.po-fit col.w-ck{width:36px} .po-fit col.w-c1{width:76px} .po-fit col.w-c2{width:102px} .po-fit col.w-c4{width:108px} .po-fit col.w-c5{width:118px} .po-fit col.w-c6{width:140px}
+.po-fit thead th.po-th2{vertical-align:middle;padding-top:6px;padding-bottom:6px;line-height:1.35}
+.po-sk{display:flex;align-items:center;gap:2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:max-content;max-width:100%}
+.po-sk+.po-sk{color:var(--muted);font-weight:500;font-size:11.5px}
+.po-sk:hover,.po-sk.on{color:var(--brand)}
+.po-sk .so{width:11px;height:11px;flex:none;opacity:1}
+.po-fit td.po-2{padding-top:6px;padding-bottom:6px;line-height:1.35}
+.po-2 .t1,.po-2 .t2{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.po-2 .t1{font-size:12.5px}
+.po-2 .t2{font-size:11.5px;color:var(--muted);margin-top:1px}
+.po-2 .t2 .badge{height:18px;font-size:11px;padding:0 6px}
+.po-2.c-st .t2{overflow:visible}
+.po-fit .c-name .t1{display:flex;align-items:center;gap:4px}
+.po-fit .c-name .t1 .strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.po-pg{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;margin-left:6px}
+.po-pg .ibtn{width:26px;height:26px}
+.po-pg .ibtn:disabled{opacity:.35}
+@container (max-width:640px){.po-fit col.w-c1{width:58px}.po-fit col.w-c2{width:98px}.po-fit col.w-c4{width:98px}.po-fit col.w-c5{width:104px}.po-fit col.w-c6{width:122px}.po-fit td.po-2,.po-fit th.po-th2{padding-left:6px;padding-right:6px}}
+
+.po-tw{overflow-x:auto!important;overflow-y:hidden!important}
+.po-flat{table-layout:auto!important;width:100%;min-width:max-content}
+.po-flat th,.po-flat td{white-space:nowrap;padding:8px 9px!important;overflow:visible;font-size:12.5px}
+.content:has(> .po){max-width:none}
+@media (min-width:1600px){.po-g{grid-template-columns:minmax(0,1fr) minmax(480px,34%)!important}}
+.po-flat th{overflow:visible;text-overflow:clip}
+.po-flat th .so{display:inline-block!important;opacity:.35}
+.po-flat th.sorted .so{opacity:1}
+.po-flat td.c-name{max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.po-flat td.c-name .strong{white-space:nowrap}
+.po-flat .badge{height:20px;font-size:11.5px}
+.po-flat th.ck,.po-flat td.ck{position:sticky;left:0;z-index:1;background:var(--surface)}
+.po-flat thead th.ck{z-index:3;background:var(--surface-2)}
+.po-flat tbody tr.sel td.ck,.po-flat tbody tr.cur td.ck{background:var(--brand-50)}
+.po-tw::-webkit-scrollbar{height:10px} .po-tw::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
+
+:root{--wtabs:40px}
+.wtabs{position:sticky;top:var(--top);z-index:29;height:var(--wtabs);display:flex;align-items:flex-end;gap:8px;padding:0 12px 0 16px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.wt-list{flex:1;min-width:0;height:100%;display:flex;align-items:flex-end;gap:2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.wt-list::-webkit-scrollbar{display:none}
+.wtab{position:relative;flex:none;display:flex;align-items:center;gap:6px;height:32px;max-width:260px;padding:0 6px 0 12px;border:1px solid transparent;border-bottom:0;border-radius:9px 9px 0 0;color:var(--ink-2);font-size:12.5px;font-weight:500;cursor:pointer;user-select:none;white-space:nowrap}
+.wtab>.i{width:14px;height:14px;flex:none;color:var(--muted)}
+.wtab span{overflow:hidden;text-overflow:ellipsis}
+.wtab:hover{background:color-mix(in srgb,var(--surface) 60%,transparent);color:var(--ink)}
+.wtab.on{background:var(--bg);border-color:var(--line);color:var(--ink);font-weight:700;margin-bottom:-1px;height:33px}
+.wtab.on>.i{color:var(--brand)}
+.wtab.on::before{content:"";position:absolute;left:10px;right:10px;top:-1px;height:2px;border-radius:2px;background:var(--brand)}
+.wtab:not(.on)+.wtab:not(.on)::after{content:"";position:absolute;left:-2px;top:9px;bottom:9px;width:1px;background:var(--line)}
+.wtab:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.wt-x{display:grid;place-items:center;width:20px;height:20px;border:0;border-radius:5px;background:none;color:var(--muted);cursor:pointer;padding:0;flex:none}
+.wt-x .i{width:12px;height:12px}
+.wt-x:hover{background:var(--line-2);color:var(--ink)}
+.wtab:not(.on):not(:hover) .wt-x{opacity:.45}
+.wt-all{flex:none;margin:0 0 7px;height:24px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink-2);font-size:12px;cursor:pointer;white-space:nowrap}
+.wt-all:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+
+.bd-sec{font-size:12px;font-weight:700;color:var(--ink-2);margin:16px 0 8px;padding:0 0 6px;border-bottom:1px solid var(--line-2);letter-spacing:-.01em}
+.po-form>.bd-sec:first-child,.nw-form>.bd-sec:first-child,.po-seg+.bd-sec{margin-top:0}
+.bd-list{display:grid;gap:0}
+.bd-ck{display:flex;align-items:center;gap:10px;padding:6px 4px;font-size:13px;border-bottom:1px dashed var(--line-2);cursor:pointer}
+.bd-ck:last-child{border-bottom:0}
+.bd-ck>span:first-child{flex:1}
+.bd-use{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.bd-block{border-radius:8px}
+.bd-block.chg .bd-list{background:color-mix(in srgb,var(--warn-bg) 45%,transparent);border-radius:8px}
+.bd-block .err-t{display:none;font-size:12px;color:var(--bad);margin-top:4px}
+.bd-block.err .err-t{display:block}
+.bd-radio{display:inline-flex;align-items:center;gap:6px;margin:0 18px 0 0;font-size:13px;cursor:pointer}
+.bd-radio input{width:16px;height:16px;margin:0;accent-color:var(--brand)}
+.bd-fee{width:100%;border-collapse:collapse;font-size:12.5px}
+.bd-fee th,.bd-fee td{padding:3px 4px;border-bottom:1px solid var(--line-2)}
+.bd-fee thead th{color:var(--brand);font-weight:700;text-align:center;font-size:12px;border-bottom:1px solid var(--line)}
+.bd-fee tbody th{text-align:left;font-weight:500;color:var(--ink-2);white-space:nowrap}
+.bd-fee td{width:28%} .bd-fee td:last-child{width:22%}
+.bd-fee .input{width:100%;height:30px;text-align:right;font-size:12.5px;padding:0 8px}
+.bd-fee tr.bd-min th{font-weight:700;color:var(--ink)}
+.bd-fee tr.bd-min th,.bd-fee tr.bd-min td{border-top:2px solid var(--line);padding-top:6px}
+.bd-fee td.chg .input{border-color:var(--warn);background:color-mix(in srgb,var(--warn-bg) 55%,var(--surface))}
+.bd-fee td.err .input{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+
+.po-dtb{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid var(--line-2);background:var(--surface-2);flex:none;flex-wrap:wrap}
+.po-dtb .grow{flex:1}
+.po-d-empty{display:flex;flex-direction:column}
+.po-d-empty .split-empty{flex:1}
+
+.dsec.view .input:disabled,.dsec.view textarea:disabled{background:transparent;border-color:transparent;color:var(--ink);opacity:1;cursor:default;box-shadow:none;-webkit-text-fill-color:var(--ink)}
+.dsec.view .input:disabled::placeholder,.dsec.view textarea:disabled::placeholder{color:transparent;-webkit-text-fill-color:transparent}
+.po-flat td.c-name{white-space:nowrap}
+.dsec.view .csel:disabled{background:transparent;border-color:transparent;color:var(--ink);opacity:1;cursor:default}
+.dsec.view .csel:disabled svg{display:none}
+.dsec.view textarea:disabled{resize:none}
+.dsec.view .pf{min-height:34px}
+.dsec.view .pf-sep{margin:4px 0}
+.dsec.view .nw-chk:disabled,.dsec.view .ibtn:disabled{display:none}
+.dsec.view input[type=checkbox]:disabled,.dsec.view input[type=radio]:disabled{opacity:1}
+.po-form.editing{animation:poEdit .25s ease}
+@keyframes poEdit{from{opacity:.6}to{opacity:1}}
+.po-editing{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-50);padding:3px 8px;border-radius:999px}
+.po-editing .i{width:12px;height:12px}
+.po-edit-on{color:var(--brand)!important;border-color:var(--brand)!important}
+
+/* ---------- 상세 · 등록 창 공통: 탭 · 섹션 카드 (목업 기준) ---------- */
+:root{--tab-on:#1f3b6e} :root[data-theme="dark"]{--tab-on:#3d63b0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--tab-on:#3d63b0}}
+.po-tabs,.nw-tabs{display:flex!important;gap:0;padding:4px!important;margin:4px 16px 0!important;border:1px solid var(--line)!important;border-radius:12px;background:var(--surface-2);overflow-x:auto;scrollbar-width:none;flex:none}
+.nw-tabs{margin:4px 24px 0!important}
+.po-tabs .tab,.nw-tabs .tab{flex:1 0 auto;position:relative;text-align:center;border:0!important;border-radius:9px;padding:8px 12px!important;margin:0!important;font-size:13px!important;font-weight:600;color:var(--ink-2);background:none;white-space:nowrap}
+.po-tabs .tab::after,.nw-tabs .tab::after,.po-tabs .tab::before,.nw-tabs .tab::before{display:none!important}
+.po-tabs .tab:not(.on)+.tab:not(.on),.nw-tabs .tab:not(.on)+.tab:not(.on){box-shadow:inset 1px 0 0 var(--line)}
+.po-tabs .tab:hover:not(.on),.nw-tabs .tab:hover:not(.on){color:var(--ink);background:color-mix(in srgb,var(--surface) 70%,transparent)}
+.po-tabs .tab.on,.nw-tabs .tab.on{background:var(--tab-on)!important;color:#fff!important;box-shadow:0 2px 8px color-mix(in srgb,var(--tab-on) 35%,transparent)}
+.po-seg{display:flex!important;gap:8px;padding:0!important;background:none!important;border:0!important;margin:0 0 12px!important}
+.po-seg button{height:36px!important;padding:0 18px!important;border-radius:10px!important;background:var(--surface-2)!important;color:var(--ink-2)!important;font-weight:600!important;font-size:13px!important;box-shadow:none!important}
+.po-seg button.on{background:var(--brand-50)!important;color:var(--brand)!important;box-shadow:inset 0 0 0 1px var(--brand-100)!important}
+.dsec{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:14px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.dsec:last-child{margin-bottom:0}
+.dsec-h{display:flex;align-items:center;gap:10px;padding:12px 14px 12px 16px;border-bottom:1px solid var(--line-2);background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}
+.dsec-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--brand-50);color:var(--brand);flex:none;border:1px solid var(--brand-100)}
+.dsec-ic .i{width:17px;height:17px}
+.dsec-h h4{margin:0;font-size:15px;font-weight:800;flex:1;letter-spacing:-.02em}
+.dsec-a{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.dsec-a .po-dirty{font-size:12px}
+.dsec-b{padding:12px 16px 14px;display:grid;gap:6px}
+.po-secbtn{border:1.5px solid var(--brand)!important;color:var(--brand)!important;background:var(--surface)!important;font-weight:700}
+.po-secbtn:hover:not(:disabled){background:var(--brand-50)!important}
+.po-secbtn:disabled{border-color:var(--line)!important;color:var(--muted)!important}
+.dsec.editing{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-50)}
+.dsec.editing .dsec-h{background:var(--brand-50)}
+.po-val{display:flex;align-items:center;min-height:32px;padding:0 12px;border-radius:8px;background:var(--surface-2);font-size:13px;color:var(--ink);flex:1;min-width:0}
+.dsec.view .input:disabled,.dsec.view textarea:disabled{background:var(--surface-2)!important;border-color:transparent!important}
+.dsec.view .csel:disabled{background:var(--surface-2)!important}
+.dsec.view .po-val+.pf-find{display:none}
+.pf-wide{grid-template-columns:1fr!important}
+.pf-wide textarea{min-height:180px}
+.bd-fee{border-collapse:separate!important;border-spacing:0 3px}
+.bd-fee thead th{background:var(--brand-50);color:var(--ink-2)!important;padding:10px 12px!important;font-size:13px!important;border:0!important}
+.bd-fee thead th:first-child{text-align:left!important;border-radius:9px 0 0 9px} .bd-fee thead th:last-child{border-radius:0 9px 9px 0}
+.bd-fee thead th:nth-child(2){color:var(--brand)!important} .bd-fee thead th:nth-child(3){color:#7a2f9e!important}
+.bd-fee tbody th,.bd-fee tbody td,.bd-fee tfoot th,.bd-fee tfoot td{border:0!important;padding:3px 8px!important}
+.bd-fee tbody tr:nth-child(even) th,.bd-fee tbody tr:nth-child(even) td{background:var(--surface-2)}
+.bd-fee tbody th{padding-left:12px!important;border-radius:8px 0 0 8px} .bd-fee tbody td:last-child{border-radius:0 8px 8px 0}
+.dsec.view .bd-fee .input:disabled{background:transparent!important;border-color:transparent!important;font-weight:700;font-size:14px;color:var(--brand);-webkit-text-fill-color:var(--brand)}
+.dsec.view .bd-fee td:nth-child(3) .input:disabled{color:#7a2f9e;-webkit-text-fill-color:#7a2f9e}
+.bd-fee tfoot th,.bd-fee tfoot td{background:var(--brand-50)!important;padding-top:8px!important;padding-bottom:8px!important;font-weight:800!important;color:var(--ink)}
+.bd-fee tfoot th{border-radius:9px 0 0 9px;padding-left:12px!important} .bd-fee tfoot td:last-child{border-radius:0 9px 9px 0}
+.bd-info{display:inline-grid;vertical-align:middle;color:var(--brand);cursor:help} .bd-info .i{width:16px;height:16px}
+.po-more .dd{min-width:220px}
+.po-more{margin-left:auto}
+.dd-i.po-danger{color:var(--bad)} .dd-i.po-danger .i{color:var(--bad)}
+.po-dh{align-items:center}
+.po-bulk{display:inline-flex;align-items:center;gap:8px;padding:3px 6px 3px 10px;border-radius:999px;background:var(--brand-50);font-size:12.5px} .po-bulk b{color:var(--brand)}
+.po-sw{margin:0 4px 0 0;font-size:13px}
+.po-d .po-tabs{margin-bottom:0!important}
+.po-db{padding-top:12px!important}
+
+.bd-fee{table-layout:fixed;width:100%}
+.bd-fee th:first-child{width:auto} .bd-fee thead th:nth-child(2),.bd-fee thead th:nth-child(3){width:26%}
+.bd-fee td{width:auto!important}
+.bd-fee tbody th,.bd-fee tfoot th{white-space:normal;line-height:1.35;word-break:keep-all}
+.bd-fee .input{min-width:0}
+.po-tabs .tab,.nw-tabs .tab{flex:1 1 auto!important;min-width:0;padding:8px 7px!important;font-size:12.5px!important}
+
+.po-hbtns{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px;flex:none}
+.po-hbtns .btn{height:30px;font-size:12.5px}
+.po-tabbar{display:flex;align-items:center;gap:10px;margin:10px 16px 0;padding:8px 8px 8px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);flex:none;flex-wrap:wrap}
+.po-tabbar-l{display:flex;align-items:center;gap:10px;flex:1;min-width:0;flex-wrap:wrap}
+.po-tabbar-t{font-weight:800;font-size:14px}
+.po-tabbar-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.po-tabbar.on{border-color:var(--brand);background:var(--brand-50);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 12%,transparent)}
+.po-regbtn{border:1.5px solid var(--brand)!important;color:var(--brand)!important;background:var(--surface)!important;font-weight:700}
+.po-regbtn:hover{background:var(--brand-50)!important}
+
+.po-inbtn{flex:none;white-space:nowrap}
+.po-inbtn:disabled{opacity:.45}
+
+.modal.cfm-modal{width:min(460px,calc(100vw - 32px))}
+.cfm-modal .m-h{padding:22px 22px 6px 26px}
+.cfm-modal .m-h h3{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.cfm-modal .m-h p{font-size:13px;color:var(--ink-2);margin-top:6px}
+.cfm-modal .m-b{padding:18px 26px 22px}
+.cfm-modal .m-f{padding:4px 22px 22px;border-top:0;background:none;gap:10px}
+.cfm-modal .m-f .btn{height:40px;min-width:100px;padding:0 18px;border-radius:10px;font-size:14px;font-weight:700;justify-content:center}
+.cfm-modal .m-f .btn:not(.btn-df){background:var(--surface);border:1px solid var(--line)}
+.cfm-modal .m-f .btn-df{background:var(--bad);border-color:var(--bad);color:#fff}
+.cfm-modal .m-f .btn:focus{outline:none}
+.cfm-modal .m-f .btn:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 25%,transparent)}
+.cfm-modal .m-f .btn-df:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--bad) 28%,transparent)}
+.cfm2-ic{width:44px;height:44px;border-radius:12px}
+.cfm2{display:flex;gap:14px;align-items:flex-start;padding:4px 0}
+.cfm2-ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--bad-bg);color:var(--bad)}
+.cfm2-ic .i{width:20px;height:20px}
+.cfm2 p{margin:2px 0 0;font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.5}
+.cfm2 .cfm2-s{margin-top:8px;font-size:12.5px;font-weight:400;color:var(--muted)}
+.cfm2-l{display:grid;gap:2px;margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--surface-2);font-size:12.5px;color:var(--ink-2)}
+
+.modal.cfm-modal{width:min(560px,calc(100vw - 32px));border-radius:22px}
+.cfm-modal .m-h{padding:26px 0 18px 6px!important;margin:0 26px;border-bottom:1px solid var(--line)}
+.cfm-modal .m-h h3{font-size:22px}
+.cfm-modal .m-h p{font-size:14px;margin-top:8px}
+.cfm-modal .m-b{padding:26px 32px 24px 40px}
+.cfm2{align-items:center;gap:0}
+.cfm2-ic{width:56px!important;height:56px!important;border-radius:50%!important;background:color-mix(in srgb,var(--bad) 10%,var(--surface))!important}
+.cfm2-ic .i{width:26px!important;height:26px!important}
+.cfm2>div{border-left:1px solid var(--line);margin-left:20px;padding-left:22px;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.cfm2 p{font-size:19px!important;font-weight:800!important;letter-spacing:-.02em;margin:0!important;word-break:keep-all}
+.cfm-modal .m-f{padding:0 26px 26px!important;gap:12px!important}
+.cfm-modal .m-f .btn{height:46px!important;min-width:132px!important;border-radius:12px!important;font-size:15px!important}
+
+/* 중지 확인창 — 크기 축소 */
+.modal.cfm-modal{width:min(420px,calc(100vw - 32px))!important;border-radius:16px!important}
+.cfm-modal .m-h{padding:18px 0 12px 4px!important;margin:0 20px!important}
+.cfm-modal .m-h h3{font-size:16px!important}
+.cfm-modal .m-h p{font-size:12.5px!important;margin-top:4px!important}
+.cfm-modal .m-b{padding:16px 22px 16px 26px!important}
+.cfm2-ic{width:40px!important;height:40px!important}
+.cfm2-ic .i{width:19px!important;height:19px!important}
+.cfm2>div{margin-left:14px!important;padding-left:16px!important;min-height:34px!important}
+.cfm2 p{font-size:15px!important}
+.cfm2-l{font-size:12px!important;padding:6px 9px!important}
+.cfm-modal .m-f{padding:0 20px 18px!important;gap:8px!important}
+.cfm-modal .m-f .btn{height:36px!important;min-width:96px!important;border-radius:9px!important;font-size:13.5px!important}
+
+/* 제휴사 접속정보 관리 — 세 번째 패널 */
+.po-g.conn-on{grid-template-columns:minmax(200px,.7fr) minmax(380px,1fr)!important}
+.po-conn-tg{gap:8px}
+.po-tgbox{width:16px;height:16px;border-radius:4px;border:1.5px solid currentColor;display:inline-grid;place-items:center;flex:none}
+.po-tgbox .i{width:12px;height:12px}
+.po-conn-tg.on{background:var(--brand)!important;color:#fff!important;border-color:var(--brand)!important}
+.po-cn .po-hbtns:empty{display:none}
+.po-cn{animation:pcIn .18s ease-out}
+@keyframes pcIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.pc-tbl{table-layout:fixed;width:100%}
+.pc-tbl th:nth-child(1){width:38%}
+.pc-tbl td{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.pc-tbl thead th{position:sticky;top:0;z-index:1}
+.pc-tbl tr.cur td{background:var(--brand-50)!important;font-weight:600}
+.pc-tbl tr.is-del td{color:var(--muted);text-decoration:line-through}
+.po-cn .pf .select{width:100%}
+
+/* 접속정보 패널: 도구 막대 + 왼쪽 상세 | 오른쪽 목록 (레거시 배치) */
+.po-cn{container-type:inline-size}
+.pc-tb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 16px;padding:7px 8px;border:1px solid var(--line);border-radius:12px;background:var(--surface);flex:none}
+.pc-tb.on{border-color:var(--brand);background:var(--brand-50);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 12%,transparent)}
+.pc-tb .grow{flex:1}
+.pc-tb .po-sw{font-size:12px}
+.pc-q{display:flex;gap:6px;align-items:center;margin:8px 16px 0;flex:none}
+.pc-q .sfield{flex:1;min-width:0}
+.pc-split{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding:10px 16px 14px}
+.pc-fcol{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}
+.pc-token{align-self:stretch;justify-content:center}
+.pc-seg{display:flex;width:100%}
+.pc-seg button{flex:1}
+.pc-fb.dsec{flex:1;min-height:0;overflow:auto;margin:0;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.pc-fb .pf{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-height:0!important}
+.pc-fb .pf > label{font-size:12px;color:var(--muted);font-weight:600}
+.pc-fb .pf .select,.pc-fb .pf .input{width:100%}
+.pc-fb textarea.input{min-height:64px;resize:vertical}
+.pc-fb .pf .err-t{grid-column:auto}
+.pc-fb .pf.err .err-t{display:block}
+.pc-authbtns{display:flex;gap:6px;margin-top:4px}
+.pc-authbtns .btn{flex:1;justify-content:center}
+.pc-lcol{display:flex;flex-direction:column;min-height:0;min-width:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.pc-lh{padding:9px 12px;font-size:12.5px;font-weight:700;border-bottom:1px solid var(--line-2);flex:none;background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}
+.pc-tw{flex:1;min-height:0;overflow:auto}
+.pc-tw .pc-tbl th:nth-child(1){width:36%}
+@container (max-width:470px){.pc-split{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:start;overflow:auto}.pc-lcol{order:-1;height:170px}.pc-fcol{min-height:auto}.pc-fb.dsec{flex:none;overflow:visible}}
+
+.pc-fb > *{flex:none}
+.po-tabbar-t{white-space:nowrap}
+.po-g.conn-on .po-tabs .tab{flex:1 0 auto!important;padding:8px 6px!important;font-size:12px!important}
+
+.pc-tb{gap:4px;padding:6px}
+.pc-tb .btn{padding-left:8px;padding-right:8px}
+.pc-tb .po-sw{gap:6px;white-space:nowrap}
+
+/* 접속정보 켜면: 도구 막대 줄이 둘로 나뉘고 오른쪽에 접속정보 칸이 따로 붙음 */
+.po-main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);gap:10px 12px}
+.po-main.conn-on{grid-template-columns:minmax(0,1fr) minmax(440px,42%)}
+.po-body{display:flex;flex-direction:column;gap:10px;min-height:0;min-width:0}
+.po-main .po-tb{min-width:0}
+.po-main.conn-on .po-tb{flex-wrap:wrap;align-content:center}
+.po-main.conn-on .po-q{flex:1 1 160px;width:auto;min-width:140px}
+.po-main.conn-on .po-tb .po-sw{white-space:nowrap}
+.po-main .pc-tb{margin:0;padding:10px 12px;gap:6px;flex-wrap:wrap;align-content:center;min-width:0;align-self:stretch}
+.po-main .pc-tb .btn{padding-left:10px;padding-right:10px}
+.po-cn{min-height:0}
+.po-cn .pc-q{margin-top:0}
+
+/* 머리: 왼쪽 「인증거래처 종합관리 ☑제휴사 접속정보 관리」 | 오른쪽 「제휴사 접속정보 관리」 제목 */
+.po-h{min-height:40px}
+.pc-h{display:flex;align-items:center;gap:10px;min-width:0;min-height:40px;padding:0 4px 0 14px;border-radius:12px;background:var(--brand-50);border:1px solid var(--brand-100)}
+.pc-h h1{font-size:17px;margin:0;letter-spacing:-.02em;white-space:nowrap;color:var(--brand)}
+.pc-hp{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pc-hp b{color:var(--ink);font-weight:700}
+.pc-h .grow{flex:1}
+.po-cn .pc-q{margin-top:12px}
+.po-cn .pc-split{padding-top:12px}
+
+/* 모든 확인창 = 중지 확인창과 같은 모양 */
+.cfm2.ok .cfm2-ic{background:var(--brand-50)!important;color:var(--brand)}
+.cfm2 .cfm2-s{margin-top:6px!important;font-size:12.5px!important;font-weight:400!important;color:var(--muted);line-height:1.55;word-break:keep-all}
+.cfm2-kv{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:var(--surface-2);grid-template-columns:96px minmax(0,1fr)!important;font-size:13px}
+
+.dd-copy{padding:8px 12px 4px;margin-top:4px;border-top:1px solid var(--line-2);font-size:11px;line-height:1.45;color:var(--muted);letter-spacing:-.01em;word-break:keep-all;white-space:normal}
+.dd .dd-i .req-n{margin-left:auto}
+
+/* 인증정보 — 레거시처럼 큰 값 칸 */
+.pc-fb .pf.pc-sec > label{display:flex;align-items:center;gap:8px}
+.pc-at{font-weight:400;font-size:11.5px;color:var(--muted)}
+.pc-copy{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
+.pc-copy .i{width:13px;height:13px}
+.pc-secret{width:100%;font-size:12px!important;line-height:1.5!important;word-break:break-all;white-space:pre-wrap;resize:none;background:var(--surface-2)!important;border-color:var(--line)!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;cursor:text}
+.pc-secret:focus{border-color:var(--brand)!important;background:var(--surface)!important}
+.pc-fb .pf.pc-grow{flex:1 1 auto!important;min-height:150px}
+.pc-fb .pf.pc-grow .pc-secret{flex:1;min-height:120px}
+.pc-none{padding:10px 12px;border:1px dashed var(--line);border-radius:10px;font-size:12.5px;color:var(--muted)}
+
+.pc-fb .pf.pc-sec > label{white-space:nowrap;min-width:0}
+.pc-at{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.pc-copy{flex:none}
 </style>
 </head>
 <body>
@@ -1105,6 +1540,9 @@ const MENU = [
   { id:'kt', label:'KT통신가입관리', icon:'sim', isNew:true, children:[['overview','종합관리'],['docs','등록서류관리'],['doctype','서류종류타입관리'],['ratetype','요금타입관리']] },
   { id:'trans', label:'인증내역관리', icon:'shield' },
   { id:'fee', label:'인증수수료관리', icon:'coins' },
+  { sec:'대리점 이용 · 과금' },
+  { id:'agency', label:'대리점 과금관리', icon:'chart', isNew:true, children:[['setting','계약 · 요금 설정'],['hist','설정 변경 이력'],['usage','사용량 조회'],['pack','확장팩 적용 이력'],['bill','월 정산 · 마감']], newKids:['agency/setting','agency/hist','agency/usage','agency/pack','agency/bill'] },
+  { id:'srv', label:'공통 서버 집계', icon:'server', isNew:true, children:[['doclog','문서 처리 이벤트'],['storage','보관 용량 증감'],['auth','여권인증 청구 집계'],['acctuse','유료 계정 최초 이용'],['limit','한도 이벤트'],['purge','개인정보 자동 삭제'],['backup','백업 · 복구']], newKids:['srv/doclog','srv/storage','srv/auth','srv/acctuse','srv/limit','srv/purge','srv/backup'] },
   { sec:'보안 · 연동' },
   { id:'pkd', label:'PKD관리', icon:'globe' },
   { id:'token', label:'발행토큰관리', icon:'key' },
@@ -1136,7 +1574,8 @@ const CFG = {};
 CFG['partner/overview'] = {
   title:'인증거래처 종합관리', desc:'SIGNION 인증 서비스를 이용하는 제휴사(거래처)의 등록·심사·접속 정보를 통합 관리합니다.',
   cols:[ C('pid','파트너ID','mono',{main:1}), C('name','거래처명','strong'), C('nat','국가','nat'), C('loc','소재지'), C('mode','서비스모드','badge'),
-         C('mods','인증 모듈','mods',{ro:1}), C('cnt','이번달 인증','num',{ro:1}), C('status','등록상태','badge'), C('rg','등록일','date',{ro:1}) ],
+         C('mods','인증 모듈','mods',{ro:1}), C('cnt','이번달 인증','num',{ro:1}), C('status','등록상태','badge'), C('rg','등록일','date',{ro:1}),
+         C('seq','전산코드','num',{ro:1}), C('code','거래ID','mono'), C('biz','사업자번호','mono'), C('ceo','대표자'), C('grade','거래처등급'), C('ptype','거래처종류') ],
   rows: PARTNERS, opts:{ status:['대기중','등록요청접수','등록심사중','자료보완요청','등록거부','등록완료'], mode:['운영','테스트'], loc:['국내','해외'], nat:Object.keys(NAT) },
   filters:['status','mode','loc','nat'], dateKey:'rg',
   extra:[['refresh','등록상태변경'],['upload','계약서류업로드'],['link','제휴사접속정보등록'],['lock','비밀번호초기화'],['memo','메모등록'],['edit','아이디수정'],['key','마스터Token생성'],['lock','암호화KEY생성']],
@@ -1191,7 +1630,7 @@ CFG['kt/doctype'] = { title:'서류종류타입관리', desc:'고객 구분(근�
     [8,'법정대리인 신분증','미성년자','필수',10,5,'사용'],[9,'법정대리인 동의서','미성년자','필수',10,6,'사용'],[10,'법정대리인 관계서','미성년자','필수',10,7,'사용'],[11,'가족관계증명서','미성년자','선택',10,8,'사용'] ]),
   opts:{ req:['필수','선택','자동생성'], use:['사용','미사용'] }, filters:['req','use'] };
 TONE['필수'] = 'info'; TONE['선택'] = ''; TONE['자동생성'] = '';
-CFG['kt/ratetype'] = { title:'요금타입관리', desc:'KT 해외 통신서비스 과금 체계 (VAT 별도) — 과금체계 시트 기준.',
+CFG['kt/ratetype'] = { title:'요금타입관리', desc:'KT 해외 통신서비스 과금 체계 (VAT 별도) — 과금체계 시트 기준. 신규 대리점 설정의 기본값 템플릿이며, 실제 청구는 「대리점 과금관리 › 계약 · 요금 설정」의 대리점별 값을 사용합니다.',
   cols:[C('code','코드','mono',{main:1}),C('name','요금 항목','strong'),C('price','단가','won'),C('unit','단위'),C('desc','산정 기준')],
   rows: rows(['code','name','price','unit','desc'],[
     ['RT-100','여권인증 사용료 (OCR + 안면인식)',1100,'건','월 최소사용 50만원(~454건), KT 감면 시 30만원(~272건)'],['RT-200','관리자 시스템 · 고객정보 위탁운영',500000,'월 정액','총괄 3 + 서브 9, 총 12계정 · 문서 1만회 · 보관 100GB · 전송 100GB'],
@@ -1316,6 +1755,272 @@ CFG['work/datalog'] = { title:'데이터수정LOG', desc:'관리자에 의한 �
   rows: rows(['dt','tbl','key','field','before','after','who'],[['2026-11-05 09:48','Member','WINDM','registStatus','2 등록심사중','3 자료보완요청','signion.admin'],['2026-11-05 09:30','cryptoInfo','KTMNS','masterKey','••••91ac','••••3e07','signion.admin'],['2026-11-04 17:02','MemberConnectInfo','KTGLOBAL','connectIP','14.63.21.9','14.63.21.10','lab.kim'],['2026-11-04 11:15','ProgUser','cs.park','funcBtn','삭제 권한 있음','삭제 권한 없음','signion.admin']]) };
 CFG['work/prog'].rows = (() => { const r = []; MENU.filter(m => m.label && m.id !== 'dashboard').forEach(m => (m.children || [[m.id, m.label]]).forEach(([, s]) => r.push({ id:'pg' + r.length, main:m.label, sub:s, fn:'검색 · 다중검색 · 등록 · 수정 · 삭제 · 엑셀로 · 삭제자료표시', use:'사용' }))); return r; })();
 
+
+/* =====================================================================
+   대리점 이용 · 과금 — KT 통합 Admin 정책 (내부 어드민 · 공통 서버)
+   · 계약 단위 = 대리점 ID. 소속 전 계정에 같은 계약조건 적용
+   · 금액 · 한도는 모두 대리점별 설정값에서 읽음 (고정 금액 구현 금지)
+   · 설정은 저장 즉시 고객사(파트너) 어드민에 읽기 전용으로 반영
+   ===================================================================== */
+const AG_OF = { HDI:'HDINFINITY', BND:'BOUNDARY', GDK:'GDKOREA' };
+const agOfUid = uid => AG_OF[String(uid).slice(0, 3)] || '';
+const CUR_M = TODAY.slice(0, 7);
+const MONTHS = ['2026-10', '2026-11'];
+const LVK = { 1:'master', 2:'general', 3:'sub' };
+const LVN = { master:'마스터', general:'총괄', sub:'서브' };
+ACCOUNTS.forEach(a => { a.ag = agOfUid(a.uid); a.paid = ['HDI-SBY', 'HDI-SBY-01'].includes(a.uid); });
+Object.assign(TONE, { '집계 중':'info', '마감 대기':'warn', '확정':'ok', '정정':'warn', '계약중':'ok', '만료 예정':'warn', '성공':'ok', '결과 미산출':'', '집계':'ok', '제외':'', '청구':'ok',
+  '증가':'info', '차감':'ok', '용량 경고':'warn', '용량 초과 차단':'bad', '처리 한도 도달':'bad', '확장팩 적용 · 해제':'ok', '정기 백업':'info', '복구':'warn', '당월 과금':'warn', '삭제됨':'', '업로드':'info', '재업로드':'info', '다운로드':'' });
+const nowM = () => fDT(new Date()).slice(0, 16);
+const agStatus = r => r.to < TODAY ? '만료' : DPK_addDays(TODAY, 60) >= r.to ? '만료 예정' : '계약중';
+function DPK_addDays(s, n) { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + n); return fD(d); }
+
+/* ---------- 내부 어드민 · 대리점별 설정 ---------- */
+CFG['agency/setting'] = {
+  title:'대리점별 계약 · 요금 설정', desc:'대리점 ID별 계약기간 · 월 기본료 · 여권인증 단가 · 월 최소 사용료 · 기본 계정 수 · 추가 계정 단가 · 문서/보관 한도 · 확장팩 조건을 설정합니다. 저장하면 변경 이력이 남고 고객사 어드민에 바로 반영됩니다 (고객사는 읽기 전용).',
+  cols:[ C('agid','대리점ID','mono',{main:1}), C('name','대리점명','strong'), C('from','계약 시작','date'), C('to','계약 종료','date'),
+    C('base','플랫폼 월 기본료','won'), C('unit','여권인증 건당 단가','won'), C('min','월 최소 사용료','won'),
+    C('bm','기본 마스터 수','num'), C('bg','기본 총괄 수','num'), C('bs','기본 서브 수','num'), C('xg','추가 총괄 단가(월)','won'), C('xs','추가 서브 단가(월)','won'),
+    C('docLim','문서 월 처리 한도(건)','num'), C('storGB','동시 보관 용량(GB)','num'),
+    C('packPrice','확장팩 단가','won'), C('packDocs','팩당 추가 문서(건)','num'), C('packGB','팩당 추가 용량(GB)','num'),
+    C('status','계약상태','badge',{ro:1}), C('upd','최종 변경','date',{ro:1}) ],
+  req:['agid','name','from','to','base','unit','min','bm','bg','bs','xg','xs','docLim','storGB','packPrice','packDocs','packGB'],
+  rows: rows(['agid','name','from','to','base','unit','min','bm','bg','bs','xg','xs','docLim','storGB','packPrice','packDocs','packGB','upd'], [
+    ['HDINFINITY','㈜현대인피니티','2026-10-19','2027-10-18',400000,1100,400000,1,1,2,100000,50000,3000,50,150000,1000,20,'2026-10-15 11:02'],
+    ['BOUNDARY','㈜바운더리','2026-10-19','2027-10-18',400000,1100,400000,1,2,2,100000,50000,2000,30,150000,1000,20,'2026-10-15 10:40'],
+    ['GDKOREA','㈜글로벌다이렉트코리아','2026-10-19','2026-12-31',300000,1200,300000,1,1,1,100000,50000,1000,20,120000,500,10,'2026-10-20 16:12'] ]),
+  opts:{ status:['계약중','만료 예정','만료'] }, filters:['status'], noSum:true, noChart:true,
+  kpis: rs => [['계약 대리점', rs.length, '개'], ['만료 예정 (60일)', rs.filter(r => r.status !== '계약중').length, '개'], ['월 기본료 합계', fmt(rs.reduce((a, r) => a + r.base, 0)), '원'], ['최근 변경', rs.map(r => r.upd).sort().at(-1)?.slice(5) || '—', '']],
+  validate: o => { const e = []; if (o.from && o.to && o.to <= o.from) e.push(['to', '계약 종료일은 시작일 이후여야 합니다.']); ['base','unit','packPrice','docLim','storGB','packDocs','packGB'].forEach(k => { if (!(o[k] > 0)) e.push([k, '0보다 큰 값을 입력하세요.']); }); return e; },
+  onSave: (row, ch, prev) => {
+    row.upd = nowM(); row.status = agStatus(row);
+    if (!prev) { USEB[row.agid] ||= Object.fromEntries(MONTHS.map(m => [m, { up:0, reup:0, dl:0, eg:0, auth:0 }])); STOR[row.agid] ??= 0; STOR_M[row.agid] ||= {};
+      CFG['agency/hist'].rows.unshift({ id:'h' + Date.now(), dt:row.upd, agid:row.agid, name:row.name, field:'신규 계약 등록', before:'—', after:`${row.from} ~ ${row.to}`, who:ME.id, apply:`${CUR_M} 정산부터`, sync:'반영 완료' }); }
+    else ch.forEach((c, i) => CFG['agency/hist'].rows.unshift({ id:'h' + Date.now() + i, dt:row.upd, agid:row.agid, name:row.name, field:c.l, before:String(prev[c.k] ?? ''), after:String(row[c.k] ?? ''), who:ME.id, apply:`${CUR_M} 정산부터 (확정월 불변)`, sync:'반영 완료' }));
+    refreshAgency();
+  },
+  detail: agencyDetail,
+};
+CFG['agency/setting'].rows.forEach(r => r.status = agStatus(r));
+const AGS = () => CFG['agency/setting'].rows.filter(r => !r.stop);
+const agRow = id => CFG['agency/setting'].rows.find(r => r.agid === id);
+
+CFG['agency/hist'] = { title:'설정 변경 이력', desc:'대리점별 계약 · 요금 · 계정 · 한도 · 확장팩 조건의 변경 전/후, 작업자, 적용 시점, 고객사 어드민 반영 결과를 남깁니다. 확정된 월 정산에는 소급하지 않습니다. 기록은 고치거나 지울 수 없습니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','변경 일시','date',{main:1}), C('agid','대리점ID','mono'), C('name','대리점','strong'), C('field','항목'), C('before','변경 전'), C('after','변경 후'), C('who','작업자','mono'), C('apply','적용 시점'), C('sync','고객사 반영','badge') ],
+  rows: rows(['dt','agid','name','field','before','after','who','apply','sync'], [
+    ['2026-10-20 16:12','GDKOREA','㈜글로벌다이렉트코리아','월 최소 사용료','400000','300000','signion.admin','2026-10 정산부터','반영 완료'],
+    ['2026-10-15 11:02','HDINFINITY','㈜현대인피니티','문서 월 처리 한도(건)','2000','3000','ops.choi','2026-10 정산부터','반영 완료'],
+    ['2026-10-15 10:40','BOUNDARY','㈜바운더리','신규 계약 등록','—','2026-10-19 ~ 2027-10-18','ops.choi','2026-10 정산부터','반영 완료'],
+    ['2026-10-15 10:31','HDINFINITY','㈜현대인피니티','신규 계약 등록','—','2026-10-19 ~ 2027-10-18','ops.choi','2026-10 정산부터','반영 완료'],
+    ['2026-10-15 10:20','GDKOREA','㈜글로벌다이렉트코리아','신규 계약 등록','—','2026-10-19 ~ 2026-12-31','ops.choi','2026-10 정산부터','반영 완료'] ]),
+  opts:{ agid:Object.values(AG_OF), sync:['반영 완료','반영 실패'] }, filters:['agid'] };
+TONE['반영 완료'] = 'ok'; TONE['반영 실패'] = 'bad';
+
+/* ---------- 이용 실적 (공통 서버 집계 결과) ---------- */
+const USEB = {
+  HDINFINITY:{ '2026-10':{ up:1688, reup:121, dl:1544, eg:41.8, auth:531 }, '2026-11':{ up:1412, reup:96, dl:1385, eg:12.6, auth:112 } },
+  BOUNDARY:{ '2026-10':{ up:902, reup:54, dl:811, eg:18.2, auth:286 }, '2026-11':{ up:388, reup:21, dl:350, eg:5.1, auth:64 } },
+  GDKOREA:{ '2026-10':{ up:402, reup:18, dl:377, eg:7.9, auth:155 }, '2026-11':{ up:212, reup:9, dl:198, eg:2.2, auth:38 } },
+};
+const STOR = { HDINFINITY:45.62, BOUNDARY:21.3, GDKOREA:6.84 };              /* 현재 동시 보관 용량(GB) */
+const STOR_M = { HDINFINITY:{ '2026-10':41.2 }, BOUNDARY:{ '2026-10':18.9 }, GDKOREA:{ '2026-10':7.3 } };  /* 지난 달 말일 기준 */
+const PACKS = rows(['dt','agid','qty','by','m'], [['2026-11-04 15:10','BOUNDARY',1,'BND-MASTER','2026-11'], ['2026-10-28 14:20','HDINFINITY',1,'HDI-MASTER','2026-10']]);
+/* 유료 추가 계정 최초 실제 이용 — 월별 · 계정 삭제 후에도 보존 */
+const USE_LOG = rows(['uid','agid','lv','m','at','what'], [
+  ['HDI-SBY','HDINFINITY','general','2026-11','2026-11-02 09:31','고객 상세 조회'],
+  ['HDI-SBY-01','HDINFINITY','sub','2026-10','2026-10-21 11:40','서류 업로드'],
+  ['HDI-SBY','HDINFINITY','general','2026-10','2026-10-20 09:14','고객 상세 조회'] ]);
+const packN = (ag, m) => PACKS.filter(p => p.agid === ag && p.m === m).reduce((a, p) => a + p.qty, 0);
+function limOf(ag, m = CUR_M) { const s = agRow(ag), n = packN(ag, m); return { docs:s.docLim + n * s.packDocs, gb:s.storGB + n * s.packGB, n }; }
+
+CFG['agency/usage'] = { title:'대리점별 사용량 조회', desc:'대리점별 · 월별 문서 업로드 · 재업로드 · 다운로드 건수, 동시 보관 용량, 외부 송신량, 계정 · 확장팩 수를 조회하고 내보냅니다. 외부 송신량(GB)은 내부 원가 참고용이며 과금 대상이 아닙니다.',
+  noCreate:true, noEdit:true, noChart:true,
+  cols:[ C('m','월','mono',{main:1}), C('agid','대리점ID','mono'), C('name','대리점','strong'), C('up','업로드','num'), C('reup','재업로드','num'), C('dl','다운로드','num'), C('docTot','문서 처리 합계','num'), C('docLim','처리 한도','num'),
+    C('stor','동시 보관(GB)','num'), C('storLim','보관 한도(GB)','num'), C('eg','외부 송신(GB) · 참고','num'), C('acct','계정 수','num'), C('paidAcct','유료 추가 계정','num'), C('packs','확장팩','num'), C('lstate','한도 상태','badge') ],
+  rows:[], opts:{ m:MONTHS, agid:Object.values(AG_OF), lstate:['정상','용량 경고','용량 초과 차단','처리 한도 도달'] }, filters:['m','agid','lstate'], noSum:true,
+  kpis: rs => { const c = rs.filter(r => r.m === CUR_M); return [[`${+CUR_M.slice(5)}월 문서 처리`, fmt(c.reduce((a, r) => a + r.docTot, 0)), '건'], ['동시 보관 (현재)', c.reduce((a, r) => a + r.stor, 0).toFixed(2), 'GB'], ['외부 송신 (참고)', c.reduce((a, r) => a + r.eg, 0).toFixed(1), 'GB', '과금 대상 아님'], ['한도 경고 · 초과', c.filter(r => r.lstate !== '정상').length, '곳']]; } };
+TONE['정상'] = 'ok';
+function refreshUsage() {
+  const out = [];
+  AGS().forEach(s => MONTHS.forEach(m => {
+    const u = USEB[s.agid]?.[m] || { up:0, reup:0, dl:0, eg:0, auth:0 }, L = limOf(s.agid, m), tot = u.up + u.reup + u.dl;
+    const stor = m === CUR_M ? STOR[s.agid] || 0 : STOR_M[s.agid]?.[m] ?? 0, accts = ACCOUNTS.filter(a => a.ag === s.agid);
+    const lstate = m !== CUR_M ? '정상' : stor >= L.gb ? '용량 초과 차단' : tot >= L.docs ? '처리 한도 도달' : (L.gb - stor) / L.gb <= .1 ? '용량 경고' : '정상';
+    out.push({ id:`us_${s.agid}_${m}`, m, agid:s.agid, name:s.name, up:u.up, reup:u.reup, dl:u.dl, docTot:tot, docLim:L.docs, stor:+stor.toFixed(2), storLim:L.gb, eg:u.eg, acct:accts.length, paidAcct:accts.filter(a => a.paid).length, packs:L.n, lstate });
+  }));
+  CFG['agency/usage'].rows.splice(0, Infinity, ...out.sort((a, b) => b.m.localeCompare(a.m) || a.agid.localeCompare(b.agid)));
+}
+
+CFG['agency/pack'] = { title:'확장팩 적용 이력', desc:'고객사 마스터가 신청해 즉시 적용된 확장팩의 수량 · 적용일 · 추가 한도 · 청구월을 조회합니다. 내부 승인 절차는 없으며 신청 월에 전액 과금됩니다 (일할계산 없음).',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','신청 · 적용 일시','date',{main:1}), C('agid','대리점ID','mono'), C('name','대리점','strong'), C('qty','수량','num'), C('addDocs','추가 문서(건)','num'), C('addGB','추가 용량(GB)','num'), C('price','적용 단가','won'), C('amt','청구 금액','won'), C('by','신청자(마스터)','mono'), C('m','청구월','mono'), C('how','처리') ],
+  rows: PACKS, opts:{ agid:Object.values(AG_OF), m:MONTHS }, filters:['agid','m'],
+  kpis: rs => [['신청 건', rs.length, '건'], ['적용 팩', rs.reduce((a, r) => a + r.qty, 0), '팩'], ['청구 금액', fmt(rs.reduce((a, r) => a + r.amt, 0)), '원']] };
+function refreshPacks() { PACKS.forEach(p => { const s = agRow(p.agid); if (p.price == null) { p.price = s.packPrice; p.addDocs = s.packDocs * p.qty; p.addGB = s.packGB * p.qty; } p.name = s.name; p.amt = p.price * p.qty; p.how = '마스터 직접 신청 · 즉시 적용'; }); }
+
+/* ---------- 월 정산 · 마감 ---------- */
+const BILL_ST = {
+  'HDINFINITY|2026-10':{ st:'확정', at:'2026-11-02 10:00', by:'signion.admin', fixes:[] },
+  'BOUNDARY|2026-10':{ st:'확정', at:'2026-11-02 10:02', by:'signion.admin', fixes:[] },
+  'GDKOREA|2026-10':{ st:'마감 대기', fixes:[] },
+};
+/* 정산서 산정 — 필수 2개(기본료 · 여권인증) 매월 / 선택(추가 총괄 · 추가 서브 · 확장팩)은 발생 시에만 */
+function calcStmt(ag, m) {
+  const s = agRow(ag), n = USEB[ag]?.[m]?.auth || 0, use = n * s.unit, minAp = use < s.min;
+  const ex = lv => USE_LOG.filter(u => u.agid === ag && u.m === m && u.lv === lv), pk = packN(ag, m);
+  const items = [
+    { g:'필수', n:'관리자 시스템 · 고객정보 위탁운영 기본료', q:1, u:s.base, amt:s.base, note:'월 정액 · 매월 표시' },
+    { g:'필수', n:'여권인증 사용료', q:n, u:s.unit, amt:Math.max(use, s.min), note:minAp ? `${fmt(n)}건 × ${fmt(s.unit)}원 = ${fmt(use)}원 → 월 최소료 ${fmt(s.min)}원 적용` : `${fmt(n)}건 × ${fmt(s.unit)}원 = ${fmt(use)}원 (실사용료)` } ];
+  if (ex('general').length) items.push({ g:'선택', n:'추가 총괄 관리자', q:ex('general').length, u:s.xg, amt:ex('general').length * s.xg, note:'최초 실제 이용 ' + ex('general').map(u => `${u.uid}(${u.at.slice(5)})`).join(', ') });
+  if (ex('sub').length) items.push({ g:'선택', n:'추가 서브 관리자', q:ex('sub').length, u:s.xs, amt:ex('sub').length * s.xs, note:'최초 실제 이용 ' + ex('sub').map(u => `${u.uid}(${u.at.slice(5)})`).join(', ') });
+  if (pk) items.push({ g:'선택', n:'이용량 확장팩', q:pk, u:s.packPrice, amt:pk * s.packPrice, note:'마스터 신청 ' + PACKS.filter(p => p.agid === ag && p.m === m).map(p => `${p.dt.slice(5)} ${p.qty}팩`).join(', ') });
+  return { items, n, minAp, cfg:{ base:s.base, unit:s.unit, min:s.min, xg:s.xg, xs:s.xs, packPrice:s.packPrice } };
+}
+function stmtOf(ag, m) {
+  const st = BILL_ST[`${ag}|${m}`] ||= { st:m >= CUR_M ? '집계 중' : '마감 대기', fixes:[] };
+  const base = st.snap || calcStmt(ag, m), items = [...base.items, ...st.fixes.map(f => ({ g:'정정', n:'정정 조정', q:1, u:f.amt, amt:f.amt, note:`${f.at.slice(5)} ${f.by} · ${f.reason}` }))];
+  const supply = items.reduce((a, r) => a + r.amt, 0), vat = Math.floor(supply * .1);
+  return { ...base, items, supply, vat, total:supply + vat, state:st };
+}
+CFG['agency/bill'] = { title:'월 정산 · 마감', desc:'대리점별 설정 단가와 확정된 이용 로그로 기본료 · 여권인증료 · 추가 계정료 · 확장팩료를 산정하고, 월 마감 확정 · 정정 · 정산서 다운로드를 합니다. 확정된 정산서는 그 시점 설정값으로 고정되어 이후 설정 변경의 영향을 받지 않습니다. (VAT 10% 별도 계산)',
+  noCreate:true, noEdit:true,
+  cols:[ C('m','정산월','mono',{main:1}), C('agid','대리점ID','mono'), C('name','대리점','strong'), C('authN','인증 건수','num'), C('base','기본료','won'), C('bill','여권인증 사용료','billcell'),
+    C('xg','추가 총괄','won'), C('xs','추가 서브','won'), C('pack','확장팩','won'), C('fix','정정 조정','won'), C('supply','공급가액','won'), C('vat','부가세','won'), C('total','총 청구금액','won'), C('status','상태','badge'), C('closed','확정 일시','date') ],
+  rows:[], opts:{ m:MONTHS, agid:Object.values(AG_OF), status:['집계 중','마감 대기','확정','정정'] }, filters:['m','agid','status'],
+  extra:[['check','월 마감 확정'],['edit','정정'],['download','정산서 다운로드']], detail: billDetail,
+  kpis: rs => [['정산 건', rs.length, '건'], ['마감 대기', rs.filter(r => r.status === '마감 대기').length, '건'], ['공급가액 합계', fmt(rs.reduce((a, r) => a + r.supply, 0)), '원'], ['총 청구금액', fmt(rs.reduce((a, r) => a + r.total, 0)), '원', 'VAT 포함']] };
+function refreshBills() {
+  const R = CFG['agency/bill'].rows;
+  AGS().forEach(s => MONTHS.forEach(m => {
+    const x = stmtOf(s.agid, m), amt = n => x.items.filter(i => i.n === n).reduce((a, i) => a + i.amt, 0), id = `bl_${s.agid}_${m}`;
+    const o = { id, m, agid:s.agid, name:s.name, authN:x.n, base:amt('관리자 시스템 · 고객정보 위탁운영 기본료'), bill:amt('여권인증 사용료'), minApplied:x.minAp, xg:amt('추가 총괄 관리자'), xs:amt('추가 서브 관리자'), pack:amt('이용량 확장팩'), fix:amt('정정 조정'), supply:x.supply, vat:x.vat, total:x.total, status:x.state.st, closed:x.state.at || '—' };
+    const cur = R.find(r => r.id === id); cur ? Object.assign(cur, o) : R.push(o);
+  }));
+  R.sort((a, b) => b.m.localeCompare(a.m) || a.agid.localeCompare(b.agid));
+}
+function refreshAgency() { CFG['agency/setting'].rows.forEach(r => r.status = agStatus(r)); refreshPacks(); refreshUsage(); refreshBills(); }
+
+function downloadText(name, rowsA) { const blob = new Blob(['﻿' + rowsA.map(r => r.map(x => `"${String(x ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n')], { type:'text/csv;charset=utf-8' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+/* 정산 기능버튼 (행 단위) */
+const AGENCY_ACT = {
+  '월 마감 확정': (key, r) => {
+    const x = stmtOf(r.agid, r.m);
+    if (r.m >= CUR_M) return toast(`${r.m}은 아직 집계 중입니다 — 월 말일 이후 마감할 수 있습니다.`, true);
+    if (x.state.st !== '마감 대기') return toast(`이미 ${x.state.st}된 정산입니다. 금액을 바꾸려면 「정정」을 사용하세요.`, true);
+    openConfirm('월 마감 확정', { sub:`${esc(r.name)} · ${r.m}`, icon:'lock', q:`${r.m} 정산을 확정하시겠습니까?`, note:'확정 시점의 설정값 · 이용 로그로 고정되고, 고객사 어드민 「월 이용료」에 확정 정산서로 표시됩니다.',
+      extra:`<dl class="kv cfm2-kv"><dt>공급가액</dt><dd class="num">${fmt(x.supply)}원</dd><dt>부가세</dt><dd class="num">${fmt(x.vat)}원</dd><dt>총 청구금액</dt><dd class="num"><b>${fmt(x.total)}원</b></dd></dl>` }, '확정', () => {
+      Object.assign(x.state, { st:'확정', at:nowM(), by:ME.id, snap:calcStmt(r.agid, r.m) }); refreshBills(); audit('월 마감 확정', `${r.m} · 총 ${fmt(x.total)}원`, key, `${r.agid}-${r.m}`); rerenderKeep(); toast(`${r.name} ${r.m} 정산을 확정했습니다.`); });
+  },
+  '정정': (key, r) => {
+    const x = stmtOf(r.agid, r.m);
+    if (!['확정', '정정'].includes(x.state.st)) return toast('확정된 정산만 정정할 수 있습니다. 집계 중 · 마감 대기 건은 설정 · 이용 로그를 고치면 자동 재산정됩니다.', true);
+    openModal(MH('정산 정정', `${esc(r.name)} · ${r.m} · 현재 공급가액 ${fmt(x.supply)}원`) + `<div class="m-b"><div class="fgrid"><div class="fld"><label for="fxa">조정 금액 (공급가액 기준, −는 감액)<span class="req">*</span></label><input class="input" id="fxa" inputmode="numeric" placeholder="예) -50000"></div>
+      <div class="fld full"><label for="fxr">정정 사유<span class="req">*</span></label><textarea class="input" id="fxr" placeholder="예) 결과 미산출 인증 3건 중복 집계 제외"></textarea></div></div><div class="hint">정정 내역은 정산서에 「정정 조정」 행으로 표시되고 감사LOG에 남습니다. 원 확정 금액은 보존됩니다.</div></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">정정 반영</button></div>`);
+    MD.onConfirm = () => { const v = Number(String($('#fxa').value).replace(/,/g, '')), rs = $('#fxr').value.trim(); if (!v || !rs) { toast('조정 금액과 사유를 입력하세요.', true); return; }
+      x.state.fixes.push({ at:nowM(), by:ME.id, amt:v, reason:rs }); x.state.st = '정정'; refreshBills(); audit('정산 정정', `${r.m} · ${v > 0 ? '+' : ''}${fmt(v)}원 · ${rs}`, key, `${r.agid}-${r.m}`); closeModal(); rerenderKeep(); toast('정정 내용을 반영했습니다.'); };
+  },
+  '정산서 다운로드': (key, r) => {
+    const x = stmtOf(r.agid, r.m);
+    downloadText(`월정산서_${r.agid}_${r.m}.csv`, [['대리점', r.name, r.agid], ['정산월', r.m, x.state.st + (x.state.at ? ' ' + x.state.at : '')], [], ['구분','정산 항목','수량','적용 단가','청구금액','적용 기준 및 비고'], ...x.items.map(i => [i.g, i.n, i.q, i.u, i.amt, i.note]), ['', '공급가액', '', '', x.supply, ''], ['', '부가세 (10%)', '', '', x.vat, ''], ['', '총 청구금액', '', '', x.total, '']]);
+    audit('정산서 다운로드', `${r.m} · ${fmt(x.total)}원`, key, `${r.agid}-${r.m}`); toast('정산서를 내려받았습니다.');
+  },
+};
+TONE['월 마감 확정'] = 'ok'; TONE['정산 정정'] = 'warn';
+
+function agencyDetail(r) {
+  const tab = (id, l, on) => `<button class="tab ${on ? 'on' : ''}" data-act="tab" data-t="${id}">${l}</button>`, won = n => fmt(n) + '원';
+  const accts = ACCOUNTS.filter(a => a.ag === r.agid), cnt = t => accts.filter(a => a.tier === t).length, L = limOf(r.agid), u = USEB[r.agid]?.[CUR_M] || { up:0, reup:0, dl:0, eg:0 }, used = u.up + u.reup + u.dl;
+  const hist = CFG['agency/hist'].rows.filter(h => h.agid === r.agid);
+  return { title:`${esc(r.name)} ${badge(r.status)}`, sub:`<span class="mono">${r.agid}</span> · 계약 ${r.from} ~ ${r.to} · 최종 변경 ${r.upd}`,
+    body:`<div class="tabs">${tab('a','계약 · 요금',1)}${tab('b','계정 · 한도 · 확장팩')}${tab('c','이번 달 사용')}${tab('d',`변경 이력 ${hist.length}`)}</div>
+    <div class="pane on" data-p="a"><dl class="kv"><dt>계약 기간</dt><dd class="num">${r.from} ~ ${r.to}</dd><dt>플랫폼 월 기본료</dt><dd class="num">${won(r.base)}</dd><dt>여권인증 건당 단가</dt><dd class="num">${won(r.unit)}</dd><dt>월 최소 사용료</dt><dd class="num">${won(r.min)}</dd><dt>인증료 산식</dt><dd>MAX(결과 산출 건수 × 단가, 월 최소 사용료)</dd></dl>
+      <div class="callout info" style="margin-top:16px">${ic('link')}<div>저장 즉시 고객사 어드민 「계약 · 요금」에 읽기 전용으로 반영됩니다. 집계 중인 월 정산은 새 값으로 재산정되고, 확정된 월은 바뀌지 않습니다.</div></div></div>
+    <div class="pane" data-p="b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>위계</th><th class="n">기본 제공</th><th class="n">현재</th><th class="n">유료 추가</th><th class="n">추가 단가(월)</th></tr></thead><tbody>
+      ${[[1,'bm',null],[2,'bg','xg'],[3,'bs','xs']].map(([t, b, x]) => `<tr><td>${TIERS[t]}</td><td class="n num">${r[b]}</td><td class="n num">${cnt(t)}</td><td class="n num">${Math.max(0, cnt(t) - r[b]) || '—'}</td><td class="n num">${x ? won(r[x]) : '—'}</td></tr>`).join('')}</tbody></table></div>
+      <dl class="kv" style="margin-top:16px"><dt>문서 월 처리 한도</dt><dd class="num">${fmt(r.docLim)}건</dd><dt>동시 보관 용량</dt><dd class="num">${r.storGB}GB</dd><dt>확장팩</dt><dd class="num">${won(r.packPrice)} / 팩 · +${fmt(r.packDocs)}건 · +${r.packGB}GB</dd></dl></div>
+    <div class="pane" data-p="c"><dl class="kv"><dt>문서 처리</dt><dd class="num">${fmt(used)} / ${fmt(L.docs)}건 (업로드 ${fmt(u.up)} · 재업로드 ${fmt(u.reup)} · 다운로드 ${fmt(u.dl)})</dd><dt>동시 보관</dt><dd class="num">${(STOR[r.agid] || 0).toFixed(2)} / ${L.gb}GB</dd><dt>확장팩</dt><dd class="num">${L.n}팩</dd><dt>외부 송신 (참고)</dt><dd class="num">${u.eg}GB · 과금 제외</dd><dt>여권인증 (청구 대상)</dt><dd class="num">${fmt(USEB[r.agid]?.[CUR_M]?.auth || 0)}건</dd></dl></div>
+    <div class="pane" data-p="d">${hist.length ? `<ul class="tl">${hist.map(h => `<li><span class="dot">${ic('edit')}</span><div class="t">${esc(h.field)} · ${esc(h.before)} → ${esc(h.after)}</div><div class="c">${h.dt} · ${esc(h.who)} · ${esc(h.apply)}</div></li>`).join('')}</ul>` : '<p class="muted">변경 이력이 없습니다.</p>'}</div>`,
+    foot:`<span class="sp"></span><button class="btn btn-p" data-act="edit-one">${ic('edit')}설정 변경</button>` };
+}
+function billDetail(r) {
+  const x = stmtOf(r.agid, r.m), st = x.state;
+  return { title:`${esc(r.name)} · ${r.m} ${badge(st.st)}`, sub:`<span class="mono">${r.agid}</span> · 월 정산서 · VAT 10%`,
+    body:`<div class="inv"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div style="width:120px">${logo('h')}</div><span class="muted mono">STMT-${r.m.replace('-', '')}-${r.agid}</span></div>
+      <h4 style="margin-top:22px">월 정 산 서</h4>
+      <div class="meta"><span>대리점 <b style="color:var(--ink)">${esc(r.name)}</b></span><span>정산월 ${r.m}</span><span>${st.at ? `확정 ${st.at}` : st.st}</span></div>
+      <table><thead><tr><th>구분</th><th>항목</th><th style="text-align:right">수량</th><th style="text-align:right">단가</th><th style="text-align:right">금액</th></tr></thead><tbody>
+      ${x.items.map(i => `<tr><td class="muted">${i.g}</td><td>${esc(i.n)}<div class="muted" style="font-size:12px">${esc(i.note)}</div></td><td class="num" style="text-align:right">${fmt(i.q)}</td><td class="num" style="text-align:right">${fmt(i.u)}</td><td class="num" style="text-align:right">${fmt(i.amt)}</td></tr>`).join('')}
+      <tr class="tot"><td></td><td>공급가액</td><td></td><td></td><td class="num" style="text-align:right">${fmt(x.supply)}원</td></tr>
+      <tr><td></td><td>부가세 (10%)</td><td></td><td></td><td class="num" style="text-align:right">${fmt(x.vat)}원</td></tr>
+      <tr class="tot"><td></td><td>총 청구금액</td><td></td><td></td><td class="num" style="text-align:right">${fmt(x.total)}원</td></tr></tbody></table></div>
+      <div class="sec-t">적용 설정값 ${st.snap ? '<span class="badge t-ok">확정 시점 고정</span>' : '<span class="badge t-info">현재 설정 · 자동 재산정</span>'}</div>
+      <dl class="kv"><dt>기본료 · 단가</dt><dd class="num">${fmt(x.cfg.base)}원 · ${fmt(x.cfg.unit)}원/건 · 최소 ${fmt(x.cfg.min)}원</dd><dt>추가 계정 단가</dt><dd class="num">총괄 ${fmt(x.cfg.xg)}원 · 서브 ${fmt(x.cfg.xs)}원</dd><dt>확장팩 단가</dt><dd class="num">${fmt(x.cfg.packPrice)}원</dd><dt>월 최소료</dt><dd>${x.minAp ? badge('적용', 'warn') : badge('미적용 · 실사용료', 'ok')}</dd></dl>
+      <div class="sec-t">마감 · 정정 이력</div>
+      <ul class="tl">${st.fixes.map(f => `<li><span class="dot">${ic('edit')}</span><div class="t">정정 ${f.amt > 0 ? '+' : ''}${fmt(f.amt)}원 · ${esc(f.reason)}</div><div class="c">${f.at} · ${f.by}</div></li>`).reverse().join('')}${st.at ? `<li><span class="dot">${ic('check')}</span><div class="t">월 마감 확정</div><div class="c">${st.at} · ${st.by}</div></li>` : `<li><span class="dot">${ic('clock')}</span><div class="t">${st.st}</div><div class="c">${r.m >= CUR_M ? '월 말일 이후 마감 가능' : '마감 확정 전'}</div></li>`}</ul>`,
+    foot:`<button class="btn" data-act="extra" data-l="정산서 다운로드">${ic('download')}정산서 다운로드</button><span class="sp"></span><button class="btn" data-act="extra" data-l="정정">${ic('edit')}정정</button><button class="btn btn-p" data-act="extra" data-l="월 마감 확정">${ic('check')}월 마감 확정</button>` };
+}
+
+/* ---------- 공통 서버 — 집계 · 이벤트 로그 (원본 문서 · 여권정보는 기록하지 않음) ---------- */
+const SRV_ACCTS = ACCOUNTS.filter(a => a.ag && a.tier >= 1 && a.status === '등록완료');
+const evT = (i, span = 5) => fDT(new Date(NOW.getTime() - (i * span * 3600000 / 4) - ri(0, 3000) * 1000)).slice(0, 16);
+CFG['srv/doclog'] = { title:'문서 처리 이벤트', desc:'성공한 업로드 · 재업로드 · 다운로드를 각 1건으로 집계합니다. 실패 작업은 집계에서 제외하고, 목록 조회는 처리 건수가 아닙니다 (미리보기 기능 없음). 다운로드 · 조회 시 실제 외부 송신 바이트를 함께 기록합니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','일시','date',{main:1}), C('agid','대리점ID','mono'), C('acct','계정ID','mono'), C('doc','문서ID','mono'), C('kind','처리','badge'), C('result','결과','badge'), C('mb','파일(MB)','num'), C('egMB','외부 송신(MB)','num'), C('counted','처리 건수 집계','badge') ],
+  rows: Array.from({ length:42 }, (_, i) => { const a = pick(SRV_ACCTS), kind = pick(['업로드','업로드','다운로드','다운로드','재업로드']), ok = rnd() < .92, mb = +(0.4 + rnd() * 3.2).toFixed(1);
+    return { id:'dl' + i, dt:evT(i, 3), agid:a.ag, acct:a.uid, doc:'DOC-' + (88000 + ri(100, 999)), kind, result:ok ? '성공' : '실패', mb, egMB:kind === '다운로드' && ok ? mb : 0, counted:ok ? '집계' : '제외' }; }),
+  opts:{ agid:Object.values(AG_OF), kind:['업로드','재업로드','다운로드'], result:['성공','실패'], counted:['집계','제외'] }, filters:['agid','kind','result','counted'],
+  kpis: rs => [['이벤트', rs.length, '건'], ['처리 건수 집계', rs.filter(r => r.counted === '집계').length, '건'], ['실패 · 제외', rs.filter(r => r.counted === '제외').length, '건'], ['외부 송신', rs.reduce((a, r) => a + r.egMB, 0).toFixed(1), 'MB', '내부 원가 참고용']] };
+CFG['srv/storage'] = { title:'보관 용량 증감', desc:'대리점 하위 전체 계정의 고객정보 · 제출 문서 · 여권인증 정보 실제 저장 바이트 합계와 증감 이력입니다. 삭제 · 만료 시 차감합니다. 월 업로드 누적량과는 별개입니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','일시','date',{main:1}), C('agid','대리점ID','mono'), C('kind','증감','badge'), C('reason','사유'), C('delta','변동(MB)','num'), C('after','변동 후(GB)','num') ],
+  rows: (() => { const cur = { ...STOR }, out = []; for (let i = 0; i < 26; i++) { const ag = pick(Object.values(AG_OF)), dec = rnd() < .3, d = dec ? -+(3 + rnd() * 9).toFixed(1) : +(0.5 + rnd() * 3).toFixed(1);
+      out.push({ id:'st' + i, dt:evT(i, 4), agid:ag, kind:dec ? '차감' : '증가', reason:dec ? pick(['개통 완료 · 즉시 삭제','미개통 2개월 경과 · 자동 삭제','서류 삭제']) : pick(['서류 업로드','서류 재업로드 (교체)','여권인증 결과 저장']), delta:d, after:+cur[ag].toFixed(2) }); cur[ag] -= d / 1024; } return out; })(),
+  opts:{ agid:Object.values(AG_OF), kind:['증가','차감'] }, filters:['agid','kind'], noSum:true };
+CFG['srv/auth'] = { title:'여권인증 청구 집계', desc:'정상적으로 인증 결과가 산출된 건은 성공 · 실패 모두 청구 대상 1건입니다. 중도 이탈 · 통신 오류처럼 결과가 산출되지 않은 요청은 제외합니다. 월 인증료 = MAX(결과 산출 건수 × 설정 단가, 설정 최소료).',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','일시','date',{main:1}), C('agid','대리점ID','mono'), C('no','승인번호','mono'), C('result','처리 결과','badge'), C('code','코드','mono'), C('bill','청구','badge') ],
+  rows: Array.from({ length:36 }, (_, i) => { const r = rnd(), res = r < .82 ? '성공' : r < .93 ? '실패' : '결과 미산출', code = res === '성공' ? '0' : res === '실패' ? pick(['OCR_001','LIV_003','FACE_008']) : pick(['USR_001','NET_001','SES_001']);
+    return { id:'au' + i, dt:evT(i, 3), agid:pick(Object.values(AG_OF)), no:'KY' + fD(NOW).slice(2).replace(/-/g, '') + ri(1000000, 9999999), result:res, code, bill:res === '결과 미산출' ? '제외' : '청구' }; }),
+  opts:{ agid:Object.values(AG_OF), result:['성공','실패','결과 미산출'], bill:['청구','제외'] }, filters:['agid','result','bill'],
+  kpis: rs => [['요청', rs.length, '건'], ['청구 대상', rs.filter(r => r.bill === '청구').length, '건', '성공 + 결과 산출 실패'], ['제외', rs.filter(r => r.bill === '제외').length, '건', '결과 미산출']] };
+CFG['srv/acctuse'] = { title:'유료 계정 최초 이용', desc:'유료 추가 계정이 그 달 처음 고객정보 · 문서를 조회 · 처리한 시점입니다 (생성 · 로그인만으로는 미과금). 사용 후 같은 달에 삭제 · 비활성화해도 과금은 유지되며, 이 기록은 계정 삭제 후에도 보존됩니다. 과금 근거 이력 — 접근 권한 분리.',
+  noCreate:true, noEdit:true, dateKey:'at',
+  cols:[ C('uid','계정ID','mono',{main:1}), C('agid','대리점ID','mono'), C('lvn','위계'), C('m','청구월','mono'), C('at','최초 실제 이용','date'), C('what','이용 내용'), C('now','현재 계정 상태','badge'), C('billed','과금','badge') ],
+  rows: USE_LOG, opts:{ agid:Object.values(AG_OF), m:MONTHS }, filters:['agid','m'] };
+USE_LOG.forEach(u => { u.lvn = LVN[u.lv]; u.billed = '당월 과금'; u.now = ACCOUNTS.find(a => a.uid === u.uid)?.status || '삭제됨'; });
+CFG['srv/limit'] = { title:'한도 이벤트', desc:'보관 용량 잔여 10% 경고, 보관 용량 초과 시 업로드 · 다운로드 차단, 문서 처리 월 한도 도달 시 추가 처리 제한, 확장팩 신청 즉시 한도 확대 · 차단 해제 이벤트입니다. 제한 기준은 대리점별 설정 한도입니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','일시','date',{main:1}), C('agid','대리점ID','mono'), C('ev','이벤트','badge'), C('detail','내용') ],
+  rows: rows(['dt','agid','ev','detail'], [
+    ['2026-11-05 09:40','HDINFINITY','용량 경고','잔여 8.8% (45.62 / 50GB) · 마스터 HDI-MASTER · 하위 관리자 안내'],
+    ['2026-11-04 15:10','BOUNDARY','확장팩 적용 · 해제','1팩 적용 · 한도 3,000건 · 50GB · 차단 해제'],
+    ['2026-11-04 14:52','BOUNDARY','용량 초과 차단','30.06 / 30GB · 업로드 · 다운로드 차단'],
+    ['2026-11-01 09:20','BOUNDARY','용량 경고','잔여 9.4% (27.18 / 30GB)'],
+    ['2026-10-28 14:20','HDINFINITY','확장팩 적용 · 해제','1팩 적용 · 한도 4,000건 · 70GB · 처리 제한 해제'],
+    ['2026-10-28 13:05','HDINFINITY','처리 한도 도달','3,000 / 3,000건 · 추가 처리 제한 · 확장팩 신청 안내'] ]),
+  opts:{ agid:Object.values(AG_OF), ev:['용량 경고','용량 초과 차단','처리 한도 도달','확장팩 적용 · 해제'] }, filters:['agid','ev'] };
+CFG['srv/purge'] = { title:'개인정보 자동 삭제', desc:'고객정보 · 여권인증 정보 · 제출 문서는 클라우드에만 저장합니다. 담당자가 「개통 완료」를 누르면 즉시 삭제하고, 미개통 고객정보는 최대 2개월 보관 후 자동 삭제하며 저장 용량에서 차감합니다. 실제 보관기간은 적용 정책 기준입니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','실행 일시','date',{main:1}), C('agid','대리점ID','mono'), C('target','대상 고객번호','mono'), C('reason','사유','badge'), C('items','삭제 항목'), C('freed','차감(MB)','num'), C('result','결과','badge') ],
+  rows: Array.from({ length:18 }, (_, i) => { const c = pick(CUSTOMERS), auto = rnd() < .35, n = ri(4, 9);
+    return { id:'pg' + i, dt:auto ? evT(i, 6).slice(0, 11) + '03:00' : evT(i, 6), agid:agOfUid(c.sub), target:c.no, reason:auto ? '미개통 2개월 경과' : '개통 완료', items:`고객정보 · 여권인증 정보 · 문서 ${n}건`, freed:+(n * 1.3 + 2).toFixed(1), result:rnd() < .95 ? '성공' : '실패' }; }),
+  opts:{ agid:Object.values(AG_OF), reason:['개통 완료','미개통 2개월 경과'], result:['성공','실패'] }, filters:['agid','reason','result'] };
+TONE['개통 완료'] = 'info'; TONE['미개통 2개월 경과'] = 'warn';
+CFG['srv/backup'] = { title:'백업 · 복구', desc:'클라우드 내 정기 백업과 장애 시 복구 수행 결과 · 오류 로그입니다. ※ 백업 주기 · 보관기간 및 개인정보 삭제 정책과의 정합성(삭제된 개인정보가 백업에서 되살아나지 않도록)은 기술팀이 설계 후 제안합니다.',
+  noCreate:true, noEdit:true, dateKey:'dt',
+  cols:[ C('dt','시작 일시','date',{main:1}), C('kind','구분','badge'), C('scope','대상'), C('size','크기(GB)','num'), C('dur','소요'), C('result','결과','badge'), C('note','비고 · 오류') ],
+  rows: rows(['dt','kind','scope','size','dur','result','note'], [
+    ['2026-11-05 02:00','정기 백업','DB 전체 · 문서 스토리지 증분',4.8,'12분','성공',''],['2026-11-04 02:00','정기 백업','DB 전체 · 문서 스토리지 증분',4.6,'11분','성공',''],
+    ['2026-11-03 02:00','정기 백업','DB 전체 · 문서 스토리지 증분',4.9,'—','실패','스냅샷 생성 타임아웃 → 02:40 재시도 성공'],['2026-11-03 02:40','정기 백업','DB 전체 · 문서 스토리지 증분',4.9,'14분','성공','재시도'],
+    ['2026-10-30 16:20','복구','HDINFINITY 문서 1건 (DOC-88412)',0.002,'3분','성공','오삭제 복구 요청 · 감사LOG 연결'],['2026-10-27 02:00','정기 백업','DB 전체 · 문서 스토리지 전체',71.3,'1시간 8분','성공','주간 전체 백업'] ]),
+  opts:{ kind:['정기 백업','복구'], result:['성공','실패'] }, filters:['kind','result'], noSum:true };
+refreshAgency();
+/* 확정월은 확정 시점 설정값으로 고정 */
+Object.entries(BILL_ST).forEach(([k, s]) => { if (s.st === '확정') { const [a, m] = k.split('|'); s.snap = calcStmt(a, m); } });
+refreshBills();
+
 /* =====================================================================
    STATE
    ===================================================================== */
@@ -1348,7 +2053,8 @@ function render() {
   clearInterval(otpTimer);
   const g = r.split('/')[0]; S.open[g] = true;
   root.innerHTML = Shell(r, Page(r));
-  const sp = $('.peek[data-id]'); if (sp) { DR = { key:r, id:sp.dataset.id, split:true }; permFilter(sp, r); }
+  const sp = $('.peek[data-id], .po-d[data-id]'); if (sp) { DR = { key:r, id:sp.dataset.id, split:true }; permFilter(sp, r); }
+  if (r === 'partner/overview') { permFilter($('.po-tb'), r); permFilter($('.po-h'), r); permFilter($('.po-d-empty'), r); poFit(); }
   if (r !== lastR) window.scrollTo(0, 0);
   lastR = r;
   if (S.pending && S.pending[0] === r) { const [k, id] = S.pending; S.pending = null; openDrawer(k, id); }
@@ -1363,6 +2069,7 @@ function rerenderKeep() {
 }
 function Page(r) {
   if (PROG_BY[r] && !can(r, '조회')) return Denied(r);
+  if (r === 'partner/overview') return PartnerOverview();
   if (r === 'work/role') return RolePage();
   if (r === 'work/prog') return ProgPage();
   if (r === 'dashboard') return Dashboard();
@@ -1396,17 +2103,15 @@ function Shell(r, body) {
   <aside class="sb" id="sb">
     <div class="sb-head"><a href="#/dashboard" aria-label="SIGNION 대시보드"><span class="lg-full">${logo('h')}</span><span class="lg-sym">${logo('sym')}</span></a><span class="sb-tag">BACKOFFICE</span></div>
     <nav class="nav">${nav}</nav>
-    <div class="sb-foot"><a href="#/bi" class="${r === 'bi' ? 'on' : ''}" title="디자인 가이드 · BI">${ic('palette')}<span>디자인 가이드 · BI</span></a>
-      <button class="sb-fold" data-act="mini" title="메뉴 접기/펼치기">${ic('fold')}<span>메뉴 접기</span></button><div class="sb-ver">Prototype v0.2 · 2026.11</div></div>
+    <div class="sb-foot">
+      <button class="sb-fold" data-act="mini" title="${S.mini ? '메뉴 펼치기' : '메뉴 접기'}">${ic('fold')}<span>${S.mini ? '메뉴 펼치기' : '메뉴 접기'}</span></button></div>
   </aside>
   <div class="main">
     <header class="top">
       <button class="ibtn burger" data-act="burger" aria-label="메뉴">${ic('menu')}</button>
+      <button class="ibtn fold-top" data-act="mini" aria-label="${S.mini ? '메뉴 펼치기' : '메뉴 접기'}" title="${S.mini ? '메뉴 펼치기' : '메뉴 접기'}">${ic('fold')}</button>
       <div class="crumb">${cr.map((c, i) => i === cr.length - 1 ? `<b>${c}</b>` : `<span>${c}</span>${ic('chev')}`).join('')}</div>
       <button class="gsearch" data-act="cmdk" aria-label="통합 검색 열기">${ic('search')}<span>메뉴 이동 · 승인번호 · 고객 · 거래처 검색</span><kbd>Ctrl K</kbd></button>
-      <span class="env">운영 · AWS 싱가포르</span>
-      <button class="sess" data-act="sess-ext" title="자동 로그아웃까지 남은 시간 — 누르면 연장">${ic('clock')}<span>${mmss(SESS.left)}</span></button>
-      <button class="ibtn" data-act="help" aria-label="단축키 · 도움말" title="단축키 · 도움말 (?)">${ic('help')}</button>
       <button class="ibtn" data-act="theme" aria-label="테마 전환" title="라이트/다크">${ic(S.theme === 'dark' ? 'sun' : 'moon')}</button>
       <div class="dd-wrap"><button class="ibtn" data-act="dd" aria-label="알림" aria-haspopup="true">${ic('bell')}<span class="dotn"></span></button>
         <div class="dd noti"><div class="dd-h">알림<span class="muted" style="margin-left:auto;font-weight:500">새 알림 4</span></div>
@@ -1419,10 +2124,12 @@ function Shell(r, body) {
           <a class="dd-i" href="#/log/server">${ic('history')}로그인 이력</a>
           <button class="dd-i" data-act="toast" data-msg="2단계 인증 이메일: s****n@signion.example">${ic('mail')}2단계 인증 설정</button>
           <button class="dd-i" data-act="theme">${ic('moon')}라이트 / 다크 전환</button>
+          <a class="dd-i" href="#/bi">${ic('palette')}디자인 가이드 · BI</a>
           <div class="dd-sep"></div><div class="dd-h">권한 미리보기 (프로토타입)</div>
           ${ROLES_.map(rl => `<button class="dd-i ${myRole() === rl.id ? 'on' : ''}" data-act="preview" data-r="${rl.id}">${ic(myRole() === rl.id ? 'check' : 'users')}${esc(rl.name)}</button>`).join('')}
           <div class="dd-sep"></div>
-          <button class="dd-i" data-act="logout">${ic('logout')}로그아웃</button></div></div>
+          <button class="dd-i" data-act="logout">${ic('logout')}로그아웃</button>
+          <div class="dd-copy" title="SIGNION BackOffice Prototype v0.2 · 2026.11">(R)(C)LORDMAN. 1997-2026. Allrights Reserved.</div></div></div>
     </header>
     <main class="content">${S.preview ? `<div class="callout warn preview-bar">${ic('eye')}<div><b>권한 미리보기 중 — ${esc(roleName(S.preview))}</b> · 이 역할에게 보이는 메뉴와 버튼만 표시됩니다. 실제 계정 권한은 ${esc(roleName(ME.roleId))}입니다.</div><button class="btn btn-sm" data-act="preview" data-r="">미리보기 끝내기</button></div>` : ''}${body}</main>
   </div></div>`;
@@ -1560,7 +2267,7 @@ function pager(p, n) {
   return s + b(p + 1, '›', p >= n, '다음');
 }
 /* 목록에서 1건을 선택해야 실행되는 기능 (메뉴구성도 기능버튼 중 행 단위 작업) */
-const ROW_SCOPED = ['제휴사접속정보등록','계약서류업로드','등록상태변경','비밀번호초기화','메모등록','아이디수정','마스터Token생성','암호화KEY생성'];
+const ROW_SCOPED = ['월 마감 확정','정정','정산서 다운로드','제휴사접속정보등록','계약서류업로드','등록상태변경','비밀번호초기화','메모등록','아이디수정','마스터Token생성','암호화KEY생성'];
 function headerActions(cfg, st, key) {
   const ex = (cfg.extra || []).filter(([, l]) => !key || can(key, l)), one = st.sel.size === 1;
   const dis = l => ROW_SCOPED.includes(l) && !one;
@@ -1622,7 +2329,7 @@ function ListPage(key) {
       ${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n num' : ''} ${c.main ? 'main-c' : ''}">${i === 0 && r.stop ? '<span class="del-tag">삭제</span>' : ''}${cell(c, r)}</td>`).join('')}</tr>`).join('')
     : `<tr><td colspan="${cols.length + 1}"><div class="empty">${ic('search')}<div>조건에 맞는 자료가 없습니다.<br><span style="font-size:12.5px">검색 조건을 바꾸거나 「초기화」를 눌러 보세요.</span></div></div></td></tr>`;
   const sums = cols.map(c => NUMT.includes(c.t) ? sumOf(c, all) : null);
-  const foot = all.length && sums.some(x => x) ? `<tfoot class="sum"><tr><td class="ck"></td>${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n num' : ''}">${sums[i] || (i === 0 ? `합계 <span class="muted" style="font-weight:500">(${fmt(all.filter(r => !r.stop).length)}건)</span>` : '')}</td>`).join('')}</tr></tfoot>` : '';
+  const foot = !cfg.noSum && all.length && sums.some(x => x) ? `<tfoot class="sum"><tr><td class="ck"></td>${cols.map((c, i) => `<td class="${NUMT.includes(c.t) ? 'n num' : ''}">${sums[i] || (i === 0 ? `합계 <span class="muted" style="font-weight:500">(${fmt(all.filter(r => !r.stop).length)}건)</span>` : '')}</td>`).join('')}</tr></tfoot>` : '';
   return PH(cfg.title, cfg.desc, headerActions(cfg, st, key)) + logTabs + (cfg.kpis ? KPIS(cfg.kpis(all.filter(r => !r.stop))) : '')
   + `<section class="card">${SearchPanel(key)}${chips}${listCharts(key, all)}
     <div class="tb2"><span class="res-n">조회 결과 <b>${fmt(all.length)}</b>건</span><span class="qtime" title="검색 · 정렬 처리 시간">${ms < 1 ? '1ms 미만' : ms.toFixed(1) + 'ms'}</span><span class="grow"></span>
@@ -1644,7 +2351,7 @@ function ListPage(key) {
 
 /* ---------- 입력 · 수정 폼 — 필수 항목 검사, 날짜 선택기, 변경 이력(데이터수정LOG) 기록 ---------- */
 const FORM_LONG = ['desc','memo','ret','txt','a','q','road','range'];
-const TBL = { 'partner/overview':'Member', 'partner/fee':'MemberServiceInfo', 'partner/conn':'MemberConnectInfo', 'partner/biz':'MemberTaxInfo', 'partner/ceo':'MemberCEO', 'kt/overview':'ProgUser', 'kt/docs':'common_file_info', 'kt/doctype':'_documentType', 'kt/ratetype':'_ratePlanType', 'pkd':'PKDinfo', 'msg':'_msgCode', 'code/nation':'National_', 'code/bank':'Bank_', 'code/cardco':'Card_', 'code/zip':'ZipCode', 'work/staff':'ProgUser', 'work/prog':'ProgList_' };
+const TBL = { 'partner/overview':'Member', 'partner/fee':'MemberServiceInfo', 'partner/conn':'MemberConnectInfo', 'partner/biz':'MemberTaxInfo', 'partner/ceo':'MemberCEO', 'kt/overview':'ProgUser', 'kt/docs':'common_file_info', 'kt/doctype':'_documentType', 'kt/ratetype':'_ratePlanType', 'pkd':'PKDinfo', 'msg':'_msgCode', 'code/nation':'National_', 'code/bank':'Bank_', 'code/cardco':'Card_', 'code/zip':'ZipCode', 'work/staff':'ProgUser', 'work/prog':'ProgList_', 'agency/setting':'AgencyContract', 'agency/hist':'AgencyContractHist', 'agency/usage':'AgencyUsageMonthly', 'agency/pack':'AgencyPack', 'agency/bill':'AgencySettlement', 'srv/doclog':'DocEventLog', 'srv/storage':'StorageLedger', 'srv/auth':'AuthBillingEvent', 'srv/acctuse':'PaidAccountFirstUse', 'srv/limit':'LimitEvent', 'srv/purge':'PiiPurgeLog', 'srv/backup':'BackupLog' };
 function openForm(key, row) {
   const cfg = CFG[key], fields = cfg.cols.filter(c => !c.ro && !['mods','res','auth','docs','ret','billcell','duecell'].includes(c.t));
   const isD = (c, v) => c.t === 'date' && (!v || /^\d{4}-\d{2}-\d{2}$/.test(v));
@@ -1675,6 +2382,7 @@ function openForm(key, row) {
       if (NUMT.includes(c.t) || c.t === 'tier') v = Number(v.replace(/,/g, '')) || 0;
       o[c.k] = v;
     });
+    if (cfg.validate) errs.push(...cfg.validate(o).filter(([k]) => !errs.some(x => x[0] === k)));
     $$('#frm .fld.err').forEach(x => x.classList.remove('err'));
     if (errs.length) {
       errs.forEach(([k, m]) => { const f = $(`#frm [data-fk="${k}"]`); f.classList.add('err'); f.querySelector('.err-t').textContent = m; });
@@ -1685,10 +2393,10 @@ function openForm(key, row) {
       const ch = fields.filter(c => String(row[c.k] ?? '') !== String(o[c.k] ?? ''));
       ch.forEach((c, i) => CFG['work/datalog'].rows.unshift({ id:'d' + Date.now() + i, dt:fDT(new Date()).slice(0, 16), tbl:TBL[key] || key, key:String(row[cfg.cols[0].k] ?? ''), field:c.l, before:String(row[c.k] ?? ''), after:String(o[c.k] ?? ''), who:ME.id }));
       if (ch.length) audit('수정', ch.map(c => `${c.l}: ${row[c.k] ?? ''} → ${o[c.k] ?? ''}`).join(' · '), key, rowLabel(key, row));
-      Object.assign(row, o); closeModal(); render(); if (DR) openDrawer(key, row.id);
+      const prev = { ...row }; Object.assign(row, o); if (ch.length) cfg.onSave?.(row, ch, prev); closeModal(); render(); if (DR && !DR.split) openDrawer(key, row.id);
       toast(ch.length ? `${ch.length}개 항목을 수정했습니다 · 데이터수정LOG에 기록` : '바뀐 항목이 없습니다.');
     } else {
-      cfg.rows.unshift(Object.assign({ id:'n' + Date.now(), rg:TODAY, mods:['OCR','FACE'], cnt:0, children:0, cust:0, last:'—', ip:'—' }, o));
+      cfg.rows.unshift(Object.assign({ id:'n' + Date.now(), rg:TODAY, mods:['OCR','FACE'], cnt:0, children:0, cust:0, last:'—', ip:'—' }, o)); cfg.onSave?.(cfg.rows[0], null, null);
       audit('등록', fields.filter(c => o[c.k] !== '' && o[c.k] !== 0).slice(0, 4).map(c => `${c.l}=${o[c.k]}`).join(' · '), key, rowLabel(key, cfg.rows[0]));
       closeModal(); render(); toast('등록되었습니다.'); if (next) openForm(key, null);
     }
@@ -2043,23 +2751,29 @@ function openStatus(key, r) {
   openModal(MH('등록상태변경', `현재 상태: ${r.status}`) + `<div class="m-b"><div class="fld"><label>변경할 상태</label><select class="select" id="nst">${opts.map(o => `<option ${o === r.status ? 'selected' : ''}>${o}</option>`).join('')}</select></div>
     <div class="fld" style="margin-top:14px"><label>처리 의견</label><textarea class="input" id="nmemo" placeholder="자료보완요청 · 등록거부 시 거래처에 안내 메일로 발송됩니다."></textarea></div></div>
     <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-status">변경</button></div>`);
-  MD.onConfirm = () => { const old = r.status; r.status = $('#nst').value; audit('등록상태변경', `${old} → ${r.status}${$('#nmemo').value.trim() ? ' · ' + $('#nmemo').value.trim() : ''}`, key, rowLabel(key, r)); closeModal(); render(); openDrawer(key, r.id); toast(`등록상태를 「${r.status}」(으)로 변경했습니다.`); };
+  MD.onConfirm = () => { const old = r.status; r.status = $('#nst').value; audit('등록상태변경', `${old} → ${r.status}${$('#nmemo').value.trim() ? ' · ' + $('#nmemo').value.trim() : ''}`, key, rowLabel(key, r)); closeModal(); render(); if (!DR?.split) openDrawer(key, r.id); toast(`등록상태를 「${r.status}」(으)로 변경했습니다.`); };
 }
 const curKey = () => route();
 
 /* ---------- 행 단위 기능 (메뉴구성도 기능버튼) ---------- */
 function openConfirm(t, body, ok, fn, danger) {
-  openModal(MH(t) + `<div class="m-b" style="font-size:13.5px;line-height:1.65">${body}</div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn ${danger ? 'btn-df' : 'btn-p'}" data-act="confirm-generic">${ok}</button></div>`);
-  MD.onConfirm = () => { closeModal(); fn(); };
+  const o = typeof body === 'string' ? { q:body } : body, icon = o.icon || (danger ? 'alert' : 'check');
+  openModal(MH(t, o.sub || '') + `<div class="m-b"><div class="cfm2 ${danger ? '' : 'ok'}" role="alertdialog" aria-describedby="cfmD"><span class="cfm2-ic" aria-hidden="true">${ic(icon)}</span><div>
+      <p id="cfmD">${o.q}</p>${o.note ? `<div class="cfm2-s">${o.note}</div>` : ''}</div></div>${o.extra || ''}</div>
+    <div class="m-f"><button type="button" class="btn" data-act="close-modal">아니요(N)</button><button type="button" class="btn ${danger ? 'btn-df' : 'btn-p'} cfm-y" data-act="confirm-generic" title="${esc(ok || '')}">예(Y)</button></div>`);
+  $('#modal').classList.add('cfm-modal'); MD.cfm = true;
+  MD.onConfirm = MD.onYes = () => { closeModal(); fn(); };
+  setTimeout(() => $('#modal .cfm-y')?.focus(), 120);
 }
 function rowAction(key, r, l) {
   const nm = r.name || r.org || r.pid || r.uid || '';
+  if (AGENCY_ACT[l]) return AGENCY_ACT[l](key, r);
   if (l === '등록상태변경') return openStatus(key, r);
   if (l === '제휴사접속정보등록') return openForm('partner/conn', null);
-  if (l === '비밀번호초기화') return openConfirm('비밀번호초기화', `<b>${esc(nm)}</b> 계정의 비밀번호를 초기화하고, 임시 비밀번호를 2단계 인증 이메일 <b>${esc(r.mail || '')}</b>(으)로 발송합니다.<br>다음 로그인 시 비밀번호 변경이 필요합니다.`, '초기화', () => { toast('임시 비밀번호를 발송했습니다.'); audit('비밀번호초기화', '임시 비밀번호 메일 발송', key, rowLabel(key, r)); });
+  if (l === '비밀번호초기화') return openConfirm('비밀번호초기화', { sub:esc(nm), icon:'lock', q:'비밀번호를 초기화 하시겠습니까?', note:`임시 비밀번호를 <b>${esc(r.mail || '')}</b>(으)로 보냅니다. 다음 로그인 때 비밀번호를 바꿔야 합니다.` }, '초기화', () => { toast('임시 비밀번호를 발송했습니다.'); audit('비밀번호초기화', '임시 비밀번호 메일 발송', key, rowLabel(key, r)); });
   if (l === '마스터Token생성' || l === '암호화KEY생성') {
     const tk = l === '마스터Token생성';
-    return openConfirm(l, `<b>${esc(nm)}</b>의 ${tk ? 'masterToken' : '암호화KEY (AES-CBC-256 · masterKey / IvKey)'}을 새로 생성합니다.<div class="callout warn" style="margin-top:12px">${ic('alert')}<div>기존 ${tk ? '토큰' : 'KEY'}은 즉시 만료되어 거래처 연동에 영향을 줄 수 있습니다. 거래처 담당자와 일정 협의 후 진행하세요.</div></div>`, '생성', () => { toast(`${l} 완료 — ${tk ? '발행토큰관리' : '암호화KEY관리'}에 이력이 기록됩니다.`); audit(l, `기존 ${tk ? '토큰' : 'KEY'} 즉시 만료`, key, rowLabel(key, r)); });
+    return openConfirm(l, { sub:esc(nm), icon:'key', q:`${tk ? 'masterToken' : '암호화 KEY'}을 새로 생성 하시겠습니까?`, note:`기존 ${tk ? '토큰' : 'KEY'}은 즉시 만료되어 거래처 연동에 영향을 줄 수 있습니다.` }, '생성', () => { toast(`${l} 완료 — ${tk ? '발행토큰관리' : '암호화KEY관리'}에 이력이 기록됩니다.`); audit(l, `기존 ${tk ? '토큰' : 'KEY'} 즉시 만료`, key, rowLabel(key, r)); });
   }
   if (l === '메모등록') {
     openModal(MH('메모등록', esc(nm)) + `<div class="m-b"><div class="fld"><label>메모<span class="req">*</span></label><textarea class="input" id="memo-t" placeholder="내부 공유용 메모 (거래처에는 노출되지 않습니다)"></textarea></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">등록</button></div>`);
@@ -2094,6 +2808,29 @@ document.addEventListener('dragover', e => { const d = e.target.closest('[data-d
 document.addEventListener('dragleave', e => { const d = e.target.closest('[data-drop]'); if (d && !d.contains(e.relatedTarget)) d.classList.remove('drag'); });
 document.addEventListener('drop', e => { const d = e.target.closest('[data-drop]'); if (!d) return; e.preventDefault(); d.classList.remove('drag'); const [cid, doc] = d.dataset.drop.split('|'); addFiles(cid, doc, [...e.dataTransfer.files]); });
 
+
+/* ---------- 접힌 사이드바 — 아이콘에 올리면 메뉴 이름 · 하위 메뉴 플라이아웃 ---------- */
+const NAV_FLY = document.createElement('div'); NAV_FLY.className = 'nav-fly'; NAV_FLY.setAttribute('role', 'menu'); document.body.appendChild(NAV_FLY);
+let navFlyT = null, navFlyFor = null;
+const navMini = () => S.mini && innerWidth > 1024;
+function navFlyHide(now) { clearTimeout(navFlyT); const go = () => { NAV_FLY.classList.remove('on'); navFlyFor = null; }; now ? go() : (navFlyT = setTimeout(go, 160)); }
+function navFlyShow(el) {
+  clearTimeout(navFlyT); if (navFlyFor === el && NAV_FLY.classList.contains('on')) return; navFlyFor = el;
+  const g = el.closest('.nav-g'), btn = g ? g.querySelector('.nav-btn') : el, label = btn.querySelector('span')?.textContent || btn.getAttribute('title') || '';
+  const kids = g ? [...g.querySelectorAll('.nav-sub a')] : [];
+  NAV_FLY.innerHTML = `<div class="nf-t">${esc(label)}</div>${kids.map(a => `<a href="${a.getAttribute('href')}" class="${a.classList.contains('on') ? 'on' : ''}" role="menuitem">${esc(a.textContent)}</a>`).join('')}`;
+  NAV_FLY.classList.toggle('grp', !!kids.length);
+  const r = btn.getBoundingClientRect(); NAV_FLY.classList.add('on');
+  const h = NAV_FLY.offsetHeight; NAV_FLY.style.left = (r.right + 8) + 'px'; NAV_FLY.style.top = Math.max(8, Math.min(r.top + (kids.length ? 0 : (r.height - h) / 2), innerHeight - h - 8)) + 'px';
+}
+const navTarget = e => navMini() && e.target.closest?.('.app.mini .sb .nav-btn, .app.mini .sb .nav-g, .app.mini .sb-foot a, .app.mini .sb-foot .sb-fold, .app.mini .sb-head a');
+let navSwT = null;   /* 열린 하위 메뉴로 대각선 이동 중 다른 아이콘을 스쳐도 바로 바뀌지 않게 잠깐 기다림 */
+document.addEventListener('mouseover', e => { if (e.target.closest?.('.nav-fly')) { clearTimeout(navFlyT); clearTimeout(navSwT); return; } const t = navTarget(e); clearTimeout(navSwT);
+  if (t) { const el = t.closest('.nav-g') || t; if (NAV_FLY.classList.contains('on') && NAV_FLY.classList.contains('grp') && navFlyFor && navFlyFor !== el) navSwT = setTimeout(() => navFlyShow(el), 140); else navFlyShow(el); }
+  else if (NAV_FLY.classList.contains('on')) navFlyHide(); });
+document.addEventListener('focusin', e => { const t = navTarget(e); if (t) navFlyShow(t.closest('.nav-g') || t); else if (!e.target.closest?.('.nav-fly')) navFlyHide(true); });
+NAV_FLY.addEventListener('click', e => { if (e.target.closest('a')) navFlyHide(true); });
+addEventListener('scroll', () => navFlyHide(true), true); addEventListener('hashchange', () => navFlyHide(true));
 /* ---------- 통합 검색 (Ctrl+K) ---------- */
 document.body.insertAdjacentHTML('beforeend', `<div class="scrim cscrim" id="cscrim"></div><div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="통합 검색"><div class="cmdk-in">${ic('search')}<input id="cq" placeholder="메뉴, 승인번호, 고객명, 여권번호, 거래처, 계정…" autocomplete="off" role="combobox" aria-controls="cr"><kbd>ESC</kbd></div><div class="cmdk-r" id="cr" role="listbox"></div><div class="cmdk-f"><span>↑↓ 이동</span><span>Enter 열기</span><span>Ctrl K 열기 · 닫기</span></div></div>`);
 const MENU_FLAT = [['대시보드', '#/dashboard', 'grid', ''],
@@ -2163,13 +2900,13 @@ document.addEventListener('click', e => {
       break; }
     case 'prole-del': { const R0 = ROLES_.find(r => r.id === S.roleSel), n = userCount(R0.id);
       if (n) { toast(`이 역할을 쓰는 직원 ${n}명이 있습니다. 직원관리에서 역할을 바꾼 뒤 삭제하세요.`, true); break; }
-      openConfirm(`「${R0.name}」 역할 삭제`, '이 역할과 권한 설정이 삭제됩니다. 되돌릴 수 없으며 감사LOG에 남습니다.', '삭제', () => { ROLES_.splice(ROLES_.indexOf(R0), 1); delete GRANT[R0.id]; S.roleSel = 'ops'; S.rd = null; audit('역할 삭제', R0.desc, 'work/role', R0.name); render(); toast('역할을 삭제했습니다.'); }, true); break; }
+      openConfirm('역할 삭제', { sub:esc(R0.name), icon:'trash', q:'이 역할을 삭제 하시겠습니까?', note:'역할과 권한 설정이 함께 삭제되며 되돌릴 수 없습니다. 감사LOG에 남습니다.' }, '삭제', () => { ROLES_.splice(ROLES_.indexOf(R0), 1); delete GRANT[R0.id]; S.roleSel = 'ops'; S.rd = null; audit('역할 삭제', R0.desc, 'work/role', R0.name); render(); toast('역할을 삭제했습니다.'); }, true); break; }
     case 'pgexp': { const o = (S.progOpen ||= new Set()); o.has(a.dataset.r) ? o.delete(a.dataset.r) : o.add(a.dataset.r); render(); break; }
     case 'nav-toggle':
       if (S.mini && innerWidth > 1024) { const m = MENU.find(x => x.id === a.dataset.id); location.hash = `#/${m.id}/${m.children[0][0]}`; break; }
       S.open[a.dataset.id] = !S.open[a.dataset.id]; a.parentElement.classList.toggle('open'); a.setAttribute('aria-expanded', S.open[a.dataset.id]); break;
     case 'burger': $('#sb').classList.toggle('open'); break;
-    case 'mini': S.mini = !S.mini; $('.app').classList.toggle('mini', S.mini); try { localStorage.setItem('sg_mini', S.mini ? '1' : '0'); } catch (x) {} break;
+    case 'mini': S.mini = !S.mini; $('.app').classList.toggle('mini', S.mini); navFlyHide(true); $$('[data-act="mini"]').forEach(b => { const t = S.mini ? '메뉴 펼치기' : '메뉴 접기'; b.title = t; b.setAttribute('aria-label', t); const sp = b.querySelector('span'); if (sp) sp.textContent = t; }); try { localStorage.setItem('sg_mini', S.mini ? '1' : '0'); } catch (x) {} break;
     case 'dd': { const w = a.closest('.dd-wrap'), was = w.classList.contains('open'); $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); if (!was) w.classList.add('open'); break; }
     case 'cmdk': openCmdk(); break;
     case 'ck-go': chooseCmdk(+a.dataset.ci); break;
@@ -2593,6 +3330,8 @@ const GRANT = {};
     if (g !== 'work') add('ro', ['조회']);
   });
 })();
+/* 과금 근거 이력 · 정산 — 접근권한 분리: SysAdmin · 운영 관리자만 */
+['agency/hist', 'agency/bill', 'srv/acctuse'].forEach(r => ['cs', 'dev', 'ro'].forEach(rid => [...GRANT[rid]].forEach(k => k.startsWith(r + '|') && GRANT[rid].delete(k))));
 const PROG_OFF = new Set();   // 프로그램관리에서 「중지」한 메뉴 · 버튼 (모든 역할에 적용)
 const roleName = id => ROLES_.find(r => r.id === id)?.name || id;
 const myRole = () => S.preview || ME.roleId;
@@ -2604,7 +3343,7 @@ function can(route, act = '조회') {
 }
 function deny(route, act) { toast(`「${act}」 권한이 없습니다 — 권한관리에서 역할 권한을 확인하세요.`, true); audit('권한 없음 시도', `「${act}」 실행 차단`, route); }
 /* 화면에 그려진 버튼 중 권한 없는 것은 제거 */
-const GUARD = { create:'등록', edit:'수정', 'edit-one':'수정', delete:'삭제', excel:'엑셀로', report:'리포트', 'rpt-print':'리포트', 'status-change':'등록상태변경', unmask:'개인정보 보기', upload:'서류 업로드', rmfile:'서류 업로드', inspect:'검수 완료', merge:'통합 PDF 발급', complete:'개통 완료 처리' };
+const GUARD = { 'pc-new':'제휴사접속정보등록', 'pc-edit':'제휴사접속정보등록', 'pc-save':'제휴사접속정보등록', 'pc-del':'제휴사접속정보등록', 'pc-token':'마스터Token생성', 'pc-key':'마스터Token생성', 'pc-authdel':'마스터Token생성', 'pc-xls':'엑셀로', 'po-stop':'삭제', 'po-conn-add':'제휴사접속정보등록', 'po-conn-del':'제휴사접속정보등록', 'po-auth-new':'마스터Token생성', 'po-auth-del':'마스터Token생성', create:'등록', edit:'수정', 'edit-one':'수정', delete:'삭제', excel:'엑셀로', report:'리포트', 'rpt-print':'리포트', 'status-change':'등록상태변경', unmask:'개인정보 보기', upload:'서류 업로드', rmfile:'서류 업로드', inspect:'검수 완료', merge:'통합 PDF 발급', complete:'개통 완료 처리' };
 function permFilter(el, key) { if (!el) return; el.querySelectorAll('[data-act]').forEach(b => { const gk = b.dataset.act === 'extra' ? b.dataset.l : GUARD[b.dataset.act]; if (gk && !can(b.dataset.k || key, gk)) b.remove(); }); }
 
 /* ---------- 감사 LOG ---------- */
@@ -2625,7 +3364,7 @@ CFG['work/audit'] = {
   opts:{ act:['등록','수정','삭제','등록상태변경','암호화KEY생성','마스터Token생성','비밀번호초기화','메모등록','아이디수정','엑셀 다운로드','리포트 출력','개인정보 열람','권한 변경','역할 추가','역할 삭제','프로그램 변경','권한 없음 시도','로그인 성공','로그아웃','세션 만료'], who:['signion.admin','lab.kim','cs.park','biz.jang','ops.choi'], role:ROLES_.map(r => r.name) },
   filters:['act','who','role'],
 };
-Object.assign(TONE, { '등록':'ok', '수정':'info', '삭제':'bad', '권한 변경':'warn', '역할 추가':'warn', '역할 삭제':'bad', '프로그램 변경':'warn', '권한 없음 시도':'bad', '등록상태변경':'info', '암호화KEY생성':'warn', '마스터Token생성':'warn', '비밀번호초기화':'warn' });
+Object.assign(TONE, { '중지':'bad', '등록':'ok', '수정':'info', '삭제':'bad', '권한 변경':'warn', '역할 추가':'warn', '역할 삭제':'bad', '프로그램 변경':'warn', '권한 없음 시도':'bad', '등록상태변경':'info', '암호화KEY생성':'warn', '마스터Token생성':'warn', '비밀번호초기화':'warn' });
 function audit(ev, detail = '', route = curKey(), target = '') {
   const now = fDT(new Date()), A = CFG['work/audit'];
   A.rows.unshift({ id:'au' + Date.now() + Math.random().toString(36).slice(2, 6), dt:now, who:ME.id, role:roleName(myRole()) + (S.preview ? ' (미리보기)' : ''), menu:menuName(route), act:ev, target:String(target || '—'), detail, ip:ME.ip });
@@ -2717,6 +3456,731 @@ function splitPanel(key, data) {
   return `<aside class="split-d" data-id="${r.id}" aria-label="상세"><div class="dr-h"><div style="min-width:0"><h2>${d.title}</h2><p>${d.sub || ''}</p></div><button class="ibtn" data-act="split-pop" aria-label="크게 보기" title="크게 보기">${ic('eye')}</button></div><div class="dr-b">${d.body}</div>${d.foot ? `<div class="dr-f">${d.foot}</div>` : ''}</aside>`;
 }
 
+
+/* =====================================================================
+   인증거래처관리 › 종합관리 — 목록 + 상세 한 화면 (레거시 MASTER관리자 화면 구조)
+   · 페이지 스크롤 없이 한 화면, 데이터가 많으면 목록 · 상세 영역 안에서만 스크롤
+   · 왼쪽 목록(최근 등록 순) / 오른쪽 선택한 파트너 상세 (페이지 이동 없음)
+   · 첫 진입 시 1행 자동 선택(체크) + 상세 표시
+   · 기능: 검색 · 다중검색 · 등록 · 수정 · 중지 · 제휴사 접속정보 관리
+   ===================================================================== */
+const PO_KEY = 'partner/overview';
+S.poTab = S.poTab || 'a'; S.poSub = S.poSub || 's';
+const poNo = p => String(p.id).replace(/\D/g, '');
+const poFee = p => CFG['partner/fee'].rows.find(r => r.pid === p.pid && !r.stop);
+const poConns = p => CFG['partner/conn'].rows.filter(r => r.pid === p.pid && !r.stop);
+const poBiz = p => CFG['partner/biz'].rows.find(r => r.pid === p.pid);
+function PartnerOverview() {
+  const st = ls(PO_KEY), first = !st.poOpen; st.poOpen = true;   /* 탭을 새로 열 때만 초기화 — 탭으로 돌아오면 보던 상태 유지 */
+  if (first) { st.sort = { k:'rg', dir:-1 }; st.pg = 1; }                          /* 최근 등록이 맨 위 */
+  const all = listView(PO_KEY).all;
+  if (first || !all.some(r => r.id === st.cur)) st.cur = all[0]?.id || null;        /* 첫 진입 · 결과 바뀜 → 1행 자동 선택 */
+  if (S.poEdit && S.poEdit !== st.cur) { delete S.poDrafts[S.poEdit]; S.poEdit = null; S.poEditSec = null; }
+  if (st.sel.size <= 1) st.sel = new Set(st.cur ? [st.cur] : []);                    /* 단일 선택은 현재 행을 따라감 (다중 체크는 유지) */
+  const p = PARTNERS.find(x => x.id === st.cur), sOn = !!st.poAdv;
+  /* 두 항목을 한 칸 위 · 아래로 — 머리글도 위 · 아래 각각 눌러 정렬 */
+  const sk = (k, l) => { const on = st.sort?.k === k; return `<span class="po-sk ${on ? 'on' : ''}" data-act="sort" data-k="${k}" role="button" tabindex="0" aria-sort="${on ? (st.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${l}${on ? ic(st.sort.dir > 0 ? 'up' : 'down', 'so') : ''}</span>`; };
+  const th1 = (k, l, cls = '') => { const on = st.sort?.k === k; return `<th class="sortable ${cls} ${on ? 'sorted' : ''}" data-act="sort" data-k="${k}" aria-sort="${on ? (st.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${l}${ic(on ? (st.sort.dir > 0 ? 'up' : 'down') : 'sortv', 'so')}</th>`; };
+  const th2 = (k1, l1, k2, l2, cls = '') => `<th class="po-th2 ${cls}">${sk(k1, l1)}${sk(k2, l2)}</th>`;
+  const two = (a, b, cls = '', tip = '') => `<td class="po-2 ${cls}" ${tip ? `title="${esc(tip)}"` : ''}><div class="t1">${a}</div><div class="t2">${b}</div></td>`;
+  const allSel = all.length && all.every(r => st.sel.has(r.id));
+  /* 세로 스크롤 없음: 목록 높이에 들어가는 행 수만큼 페이지 (poFit 이 실제 높이로 계산) */
+  const per = Math.max(3, st.poPer || 12), pages = Math.max(1, Math.ceil(all.length / per)), ci = Math.max(0, all.findIndex(r => r.id === st.cur));
+  st.poPg = Math.min(pages - 1, Math.floor(ci / per)); const rowsP = all.slice(st.poPg * per, st.poPg * per + per);
+  const td = (v, cls = '', tip = '') => `<td class="${cls}" ${tip ? `title="${esc(tip)}"` : ''}>${v}</td>`;
+  const body = rowsP.length ? rowsP.map(r => `<tr data-act="po-pick" data-id="${r.id}" class="${r.id === st.cur ? 'cur sel' : st.sel.has(r.id) ? 'sel' : ''} ${r.stop ? 'is-del' : ''}" ${r.stop ? `title="중지 사유: ${esc(r.stop.reason)}"` : ''}>
+      <td class="ck"><input type="checkbox" class="cbox" data-act="ck" data-id="${r.id}" ${st.sel.has(r.id) ? 'checked' : ''} aria-label="${esc(r.name)} 선택"></td>
+      ${td(r.seq, 'n num')}${td(r.rg, 'num')}${td(r.loc === '국내' ? '1=국내' : '2=해외')}
+      ${td(`${r.stop ? '<span class="del-tag">중지</span>' : ''}<span class="strong">${esc(r.name)}</span><i class="po-dot" title="저장하지 않은 변경" ${poDirty(r) ? '' : 'hidden'}></i>`, 'main-c c-name', r.name)}
+      ${td(esc(r.biz), 'mono')}${td(esc(r.ceo || ''))}${td(esc(r.pid), 'mono')}${td(esc(r.code ?? ''), 'mono')}${td(esc(r.grade || ''))}${td(esc(r.ptype || ''))}
+      ${td(`${esc(r.nat)}=${esc(NAT[r.nat] || '')}`)}${td(badge(r.status))}</tr>`).join('')
+    : `<tr><td colspan="13"><div class="empty">${ic('search')}<div>조건에 맞는 파트너가 없습니다.</div></div></td></tr>`;
+  const pager = pages > 1 ? `<span class="po-pg"><button class="ibtn" data-act="po-pg" data-d="-1" ${st.poPg ? '' : 'disabled'} aria-label="이전 페이지">${ic('chevl')}</button><b class="num">${st.poPg + 1}</b><span class="muted">/ ${pages}</span><button class="ibtn" data-act="po-pg" data-d="1" ${st.poPg < pages - 1 ? '' : 'disabled'} aria-label="다음 페이지">${ic('chev')}</button></span>` : '';
+  const n = st.sel.size, pc = S.pcOpen && p ? poConnPanel(p) : null;
+  return `<div class="po">
+    <div class="po-main ${S.pcOpen && p ? 'conn-on' : ''}">
+    <div class="po-h"><h1>인증거래처 종합관리</h1>
+      <button class="btn btn-soft po-conn-tg ${S.pcOpen ? 'on' : ''}" data-act="po-conn" aria-pressed="${!!S.pcOpen}" ${p ? '' : 'disabled'} title="선택한 거래처의 접속정보 · 인증정보를 상세 오른쪽 패널에서 관리합니다 (다시 누르면 닫힘)"><span class="po-tgbox">${S.pcOpen ? ic('check') : ''}</span>제휴사 접속정보 관리</button></div>
+    ${pc ? pc.head : ''}
+    <div class="po-tb">
+      <label class="sfield po-q">${ic('search')}<input id="poq" value="${esc(st.q)}" placeholder="거래처명 · 로그인ID · 사업자번호 검색 후 Enter" autocomplete="off"></label>
+      <button class="btn" data-act="po-search">${ic('search')}검색</button>
+      <button class="btn ${sOn ? 'btn-soft' : ''}" data-act="po-adv" aria-pressed="${sOn}" title="여러 조건으로 찾기">${ic('filter')}다중검색</button>
+      <span class="grow"></span>
+      ${can(PO_KEY, '삭제자료표시') ? `<label class="switch po-sw"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>중지된 거래처도 보기</label>` : ''}
+      ${can(PO_KEY, '엑셀로') ? `<button class="btn" data-act="excel" title="목록 엑셀 내려받기">${ic('download')}${pc ? '엑셀' : '엑셀 내려받기'}</button>` : ''}
+    </div>
+    ${pc ? pc.bar : ''}
+    <div class="po-body">
+    ${sOn ? `<div class="po-adv">${SearchPanel(PO_KEY)}</div>` : ''}
+    <div class="po-g ${S.pcOpen && p ? 'conn-on' : ''}">
+      <section class="po-l card"><div class="po-lh"><span>조회 <b class="num">${fmt(all.length)}</b>건</span>${st.q ? `<button class="fchip" data-act="po-qclear" aria-label="검색 조건 해제">${st.qf ? esc((PO_F.find(f => f[0] === st.qf)?.[1]) || ({ pid:'아이디', id:'전산코드' })[st.qf] || st.qf) + ': ' : ''}${esc(st.q)}${ic('x')}</button>` : ''}${n > 1 ? `<span class="po-bulk"><b>${n}건 선택됨</b><button class="btn btn-sm btn-d" data-act="po-stop">${ic('lock')}선택 중지</button><button class="linkbtn" data-act="po-one">선택 해제</button></span>` : ''}<span class="grow"></span><span class="muted">${all.length ? `${st.poPg * per + 1}–${Math.min(all.length, st.poPg * per + per)}` : '0'} / ${fmt(all.length)} · ↑↓ 이동</span>${pager}</div>
+        <div class="po-tw"><table class="tbl compact po-fit po-flat">
+          <thead><tr><th class="ck"><input type="checkbox" class="cbox" data-act="ck-all" ${allSel ? 'checked' : ''} aria-label="전체 선택"></th>
+          ${th1('seq', '전산코드', 'n')}${th1('rg', '등록날짜')}${th1('loc', '사업자위치')}${th1('name', '거래처명')}${th1('biz', '사업자번호')}${th1('ceo', '대표자')}${th1('pid', '로그인ID')}${th1('code', '거래ID')}${th1('grade', '거래처등급')}${th1('ptype', '거래처종류')}${th1('nat', '국가코드')}${th1('status', '등록상태')}</tr></thead>
+          <tbody>${body}</tbody></table></div></section>
+      ${p ? poDetail(p) : `<aside class="po-d card po-d-empty"><div class="split-empty">${ic('table')}<div>선택한 파트너가 없습니다.</div></div></aside>`}
+    </div></div>
+    ${pc ? pc.body : ''}
+    </div></div>`;
+}
+const PO_DOCS = ['서비스 이용계약서','사업자등록증','개인정보 처리위탁 계약서','통장사본','기타'];
+PARTNERS.forEach(p => { if (!p.docs) { p.docs = {}; PO_DOCS.slice(0, 4).forEach((d, i) => { if (i < 3 || p.status === '등록완료') p.docs[d] = { file:`${p.pid}_${d.replace(/\s/g, '')}.pdf`, at:p.rg + ' 10:00', by:'signion.admin' }; }); }
+  p.etcMemo ??= p.status === '자료보완요청' ? '사업자등록증 사본 해상도 불량 — 재제출 요청 (2026-11-04)' : p.status === '등록거부' ? '현지 법인 확인 불가' : ''; p.etcHist ??= []; });
+function poDocReg(p) {
+  if (!p) return toast('목록에서 거래처를 선택하세요.', true);
+  openModal(MH('서류 등록', `${esc(p.name)} · <span class="mono">${p.pid}</span>`) + `<div class="m-b"><div class="fgrid">
+    <div class="fld full"><label for="dcT">서류 종류<span class="req">*</span></label><select class="select" id="dcT" style="width:100%">${PO_DOCS.map(d => `<option value="${d}">${d}${(p.docs || {})[d] ? ' (등록됨 · 교체)' : ''}</option>`).join('')}</select></div>
+    <div class="fld full"><label for="dcF">파일<span class="req">*</span></label><input type="file" class="input" id="dcF" accept=".pdf,.jpg,.jpeg,.png" style="width:100%;padding-top:6px"><div class="hint">PDF · JPG · PNG, 50MB 이하. 이미 등록된 서류를 고르면 교체됩니다.</div></div>
+    <div class="fld full"><label for="dcM">메모</label><input class="input" id="dcM" style="width:100%" placeholder="예) 원본 대조 완료"></div></div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('upload')}서류 등록</button></div>`);
+  MD.onConfirm = () => { const t = $('#dcT').value, f = $('#dcF').files[0];
+    if (!f) { toast('파일을 선택하세요.', true); $('#dcF').focus(); return; } if (f.size > 50 * 1024 * 1024) { toast('50MB 이하 파일만 등록할 수 있습니다.', true); return; }
+    const had = !!(p.docs ||= {})[t]; p.docs[t] = { file:f.name, at:nowM(), by:ME.id, memo:$('#dcM').value.trim() };
+    audit('계약서류업로드', `${t} · ${f.name}${had ? ' (교체)' : ''}`, PO_KEY, p.pid); closeModal(); S.poTab = 'd'; render(); toast(`${t} ${had ? '교체' : '등록'} 완료`); };
+}
+function poEtcReg(p) {
+  if (!p) return toast('목록에서 거래처를 선택하세요.', true);
+  openModal(MH('기타정보 등록', `${esc(p.name)} · <span class="mono">${p.pid}</span>`) + `<div class="m-b"><div class="fgrid">
+    <div class="fld full"><label for="etR">변경사유<span class="req">*</span></label><input class="input" id="etR" style="width:100%" placeholder="예) 담당자 변경 · 계약 갱신"></div>
+    <div class="fld full"><label for="etM">비고</label><textarea class="input" id="etM" rows="5" style="width:100%">${esc(p.etcMemo || '')}</textarea></div></div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('check')}기타정보 등록</button></div>`);
+  MD.onConfirm = () => { const r = $('#etR').value.trim(), m = $('#etM').value.trim(); if (!r) { toast('변경사유를 입력하세요.', true); $('#etR').focus(); return; }
+    const at = nowM(); CFG['work/datalog'].rows.unshift({ id:'d' + Date.now(), dt:at, tbl:'Member', key:p.pid, field:'비고', before:p.etcMemo || '', after:m, who:ME.id });
+    Object.assign(p, { etcMemo:m, chgReason:r, chgAt:at, chgBy:ME.id }); p.etcHist.unshift({ at, by:ME.id, reason:r, memo:m });
+    audit('수정', `기타정보 · ${r}`, PO_KEY, p.pid); closeModal(); S.poTab = 'e'; render(); toast('기타정보를 등록했습니다.'); };
+}
+/* 계약서비스중지 — 레거시 확인창 (예(Y) / 아니요(N)) */
+function poStopConfirm(ids) {
+  const list = ids.map(id => PARTNERS.find(x => x.id === id)).filter(Boolean), one = list.length === 1;
+  openModal(MH('계약서비스중지', one ? `${esc(list[0].name)} · <span class="mono">${esc(list[0].pid)}</span>` : `선택한 제휴사 ${list.length}곳`)
+    + `<div class="m-b"><div class="cfm2" role="alertdialog" aria-describedby="cfmD"><span class="cfm2-ic" aria-hidden="true">${ic('alert')}</span><div>
+        <p id="cfmD">${one ? '제휴사 계약을 중지 하시겠습니까?' : `제휴사 ${list.length}곳의 계약을 중지 하시겠습니까?`}</p>
+        ${one ? '' : `<div class="cfm2-l">${list.slice(0, 5).map(x => `<span>${esc(x.name)} <span class="mono">${esc(x.pid)}</span></span>`).join('')}${list.length > 5 ? `<span>외 ${list.length - 5}곳</span>` : ''}</div>`}
+</div></div></div>
+      <div class="m-f"><button type="button" class="btn" data-act="close-modal">아니요(N)</button><button type="button" class="btn btn-df cfm-y" data-act="cfm-yes">예(Y)</button></div>`);
+  $('#modal').classList.add('cfm-modal'); MD.cfm = true;
+  MD.onYes = () => { const at = fDT(new Date()).slice(0, 16);
+    list.forEach(r => { r.stop = { date:TODAY, reason:'계약서비스중지', by:ME.id }; CFG['work/datalog'].rows.unshift({ id:'d' + Date.now() + r.id, dt:at, tbl:'Member', key:r.pid, field:'StopChk', before:'0', after:'1 (계약서비스중지)', who:ME.id }); audit('중지', '계약서비스중지', PO_KEY, r.pid); });
+    const st = ls(PO_KEY); st.sel.clear(); closeModal(); render(); toast(one ? `${list[0].name} 계약을 중지했습니다.` : `${list.length}곳의 계약을 중지했습니다.`); };
+  setTimeout(() => $('#modal .cfm-y')?.focus(), 120);
+}
+document.addEventListener('click', e => { if (e.target.closest?.('[data-act="cfm-yes"]')) MD?.onYes?.(); });
+document.addEventListener('keydown', e => { if (!MD?.cfm) return; const k = e.key.toLowerCase();
+  if (k === 'y' || (k === 'enter' && !e.target.closest?.('[data-act="close-modal"]'))) { e.preventDefault(); e.stopImmediatePropagation(); MD.onYes(); }
+  else if (k === 'n' || k === 'escape') { e.preventDefault(); e.stopImmediatePropagation(); closeModal(); } }, true);
+/* 상세 위 기능 버튼 (레거시: 탭 위 등록 · 수정 · 중지) */
+const PO_REG = { a:['거래처 등록', '새 거래처를 등록합니다 (기본정보부터)'], b:['사업자정보 등록', '등록 창의 사업자정보를 엽니다'], c:['거래정보 등록', '등록 창의 거래정보를 엽니다'],
+  d:['서류 등록', '선택한 거래처의 등록서류를 올립니다'], e:['기타정보 등록', '선택한 거래처의 비고 · 변경사유를 등록합니다'], f:['메모 등록', '선택한 거래처의 자료메모를 등록합니다'] };
+function poDetailBar(p) {
+  const n = ls(PO_KEY).sel.size, T = p ? S.poTab : 'a', [rl, rt] = PO_REG[T] || PO_REG.a, needP = ['d', 'e', 'f'].includes(T);
+  return `<div class="po-dtb">
+    <button class="btn btn-sm btn-p" data-act="po-new" data-t="${T}" title="${rt}" ${needP && (!p || p.stop) ? 'disabled' : ''}>${ic('plus')}${rl}</button>
+    <button class="btn btn-sm ${p && S.poEdit === p.id ? 'btn-soft po-edit-on' : ''}" data-act="po-edit" ${p && !p.stop ? '' : 'disabled'} aria-pressed="${!!p && S.poEdit === p.id}" title="${p && S.poEdit === p.id ? '편집 중 — 하단 저장 · 취소' : '상세를 편집 모드로 엽니다'}">${ic('edit')}${p && S.poEdit === p.id ? '수정 중' : '수정'}</button>
+    <button class="btn btn-sm btn-d" data-act="po-stop" ${n ? '' : 'disabled'} title="${n > 1 ? `체크한 ${n}건 중지` : '선택한 거래처 중지'}">${ic('lock')}중지${n > 1 ? ' ' + n : ''}</button>
+</div>`;
+}
+const PO_TABN = { a:'기본정보', b:'사업자정보', c:'거래정보', d:'등록서류관리', e:'기타정보', f:'자료관리' };
+function poTabBar(p, T) {
+  const ro = !can(PO_KEY, '수정') || !!p.stop, editable = ['a', 'b', 'c'].includes(T), on = S.poEdit === p.id && S.poEditTab === T;
+  const [rl, rt] = PO_REG[T] || PO_REG.a, canReg = can(PO_KEY, '등록') && !(['d', 'e', 'f'].includes(T) && p.stop);
+  const left = on ? `<span class="po-editing">${ic('edit')}${PO_TABN[T]} 편집 중</span><span class="po-dirty" ${poDirty(p) ? '' : 'hidden'}>${ic('alert')}저장하지 않은 변경</span>`
+    : `<span class="po-tabbar-t">${PO_TABN[T]}</span>`;
+  const right = on ? `<button type="button" class="btn btn-sm" data-act="po-cancel">${ic('x')}취소</button><button type="button" class="btn btn-sm btn-p po-save" data-act="po-save" ${poDirty(p) ? '' : 'disabled'}>${ic('check')}저장<kbd>Ctrl Enter</kbd></button>`
+    : `${canReg ? `<button type="button" class="btn btn-sm po-regbtn" data-act="po-new" data-t="${T}" title="${rt}">${ic('plus')}${rl}</button>` : ''}${editable && !ro ? `<button type="button" class="btn btn-sm btn-p" data-act="po-edit">${ic('edit')}수정</button>` : ''}${p.stop ? '' : `<button type="button" class="btn btn-sm btn-d" data-act="po-stop-one" title="이 거래처를 중지합니다 (사유 입력)">${ic('alert')}중지</button>`}`;
+  return `<div class="po-tabbar ${on ? 'on' : ''}"><div class="po-tabbar-l">${left}</div><div class="po-tabbar-r">${right}</div></div>`;
+}
+/* 상세 — 기본정보 · 사업자정보 · 거래정보(사용서비스 · 거래수수료 · 기타) · 등록서류관리 · 기타정보 · 자료관리 */
+function poDetail(p) {
+  const T = S.poTab, fee = poFee(p), biz = poBiz(p), unit = fee?.unit ?? 0;
+  const tab = (id, l) => `<button class="tab ${T === id ? 'on' : ''}" data-act="po-tab" data-t="${id}">${l}</button>`;
+  const sub = (id, l) => `<button class="${S.poSub === id ? 'on' : ''}" data-act="po-sub" data-t="${id}">${l}</button>`;
+  const kv = list => `<dl class="kv">${list.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
+  const panes = {
+    a: poBasicForm(p),
+    b: poMoreForm(p, 'b'),
+    c: poMoreForm(p, 'c'),
+    d: dsec('docs', '등록서류', 'file', `<div class="docs">${PO_DOCS.map(d => { const f = (p.docs || {})[d]; return `<div class="doc"><span class="st ${f ? 'ok' : 'miss'}">${ic(f ? 'check' : 'x')}</span><span class="nm">${d}${f ? `<span class="muted mono" style="display:block;font-size:11.5px;font-weight:400">${esc(f.file)}</span>` : ''}</span><span class="ct">${f ? `${esc(f.at.slice(0, 10))} 등록` : '미등록'}</span><span></span></div>`; }).join('')}</div>`, '', 'view'),
+    e: dsec('etc', '기타정보', 'memo', kv([['비고', esc(p.etcMemo || '—')], ['변경일자', `<span class="num">${esc(p.chgAt || p.rg)}</span>`], ['변경사유', esc(p.chgReason || '최초 등록')], ['담당자', esc(p.chgBy || 'signion.admin')]])
+      + (p.etcHist?.length ? `<div class="sec-t">등록 이력</div><ul class="tl">${p.etcHist.map(h => `<li><span class="dot grp">${ic('memo')}</span><div class="t">${esc(h.reason)}${h.memo ? ' · ' + esc(h.memo) : ''}</div><div class="c">${esc(h.by)} · ${h.at}</div></li>`).join('')}</ul>` : ''), '', 'view'),
+    f: dsec('data', '자료메모', 'memo', `<ul class="tl">${CFG['work/memo'].rows.filter(m => m.target === p.pid).map(m => `<li><span class="dot grp">${ic('memo')}</span><div class="t">${esc(m.memo)}</div><div class="c">${esc(m.who)} · ${m.dt}</div></li>`).join('') || `<li><span class="dot grp">${ic('memo')}</span><div class="t">${p.rg} 등록</div><div class="c">signion.admin</div></li>`}</ul>`, '', 'view'),
+  };
+  return `<aside class="po-d card" data-id="${p.id}" aria-label="파트너 상세"><div class="po-dh"><div style="min-width:0"><h2>${esc(p.name)} ${badge(p.status)}</h2><p><span class="mono">${p.pid}</span> · 전산코드 ${poNo(p)} · ${NAT[p.nat]} · 등록 ${p.rg}${p.stop ? ` · ${badge('중지', 'bad')}` : ''}</p></div></div>
+    <div class="po-hbtns">
+      <button type="button" class="btn btn-sm" data-act="status-change" ${p.stop ? 'disabled' : ''}>${ic('refresh')}등록상태 변경</button>
+      <button type="button" class="btn btn-sm" data-act="po-new" data-t="d" ${p.stop ? 'disabled' : ''} title="계약서류(서비스 이용계약서 · 사업자등록증 등)를 올립니다">${ic('upload')}계약서류업로드</button></div>
+    <div class="tabs po-tabs">${tab('a','기본정보')}${tab('b','사업자정보')}${tab('c','거래정보')}${tab('d','등록서류관리')}${tab('e','기타정보')}${tab('f','자료관리')}</div>
+    ${poTabBar(p, T)}
+    <div class="po-db">${panes[T] || panes.a}</div>
+    </aside>`;
+}
+/* 제휴사 접속정보 관리 — 상세 오른쪽에 붙는 세 번째 패널 (레거시: 체크하면 오른쪽 도킹) */
+const PC_CT = ['1=AOS APP 접속 ID', '2=IOS APP 접속 ID', '3=WEB 접속 URL', '4=서버 접속 IP'];
+const pcCode = t => PC_CT.find(c => c.endsWith('=' + t)) || t;
+CFG['partner/conn'].rows.forEach(r => { r.memo ??= ''; });
+function pcRows(p) { return CFG['partner/conn'].rows.filter(r => r.pid === p.pid && (S.pcDel || !r.stop)); }
+function poConnPanel(p) {
+  if (S.pcPid !== p.id) { S.pcPid = p.id; S.pcSel = null; S.pcEdit = null; }
+  const T = S.pcTab || 'conn', q = (S.pcQ || '').toLowerCase(), live = poConns(p);
+  const rows = pcRows(p).filter(r => !q || [pcCode(r.ctype), r.info, r.resp, r.ip, r.memo].some(x => String(x || '').toLowerCase().includes(q)));
+  const canC = can(PO_KEY, '제휴사접속정보등록') && !p.stop, canK = can(PO_KEY, '마스터Token생성') && !p.stop;
+  if (!rows.some(r => r.id === S.pcSel)) S.pcSel = rows[0]?.id || null;
+  const ed = S.pcEdit, r = ed === 'new' ? null : rows.find(x => x.id === S.pcSel), on = !!ed;
+  const dis = on ? '' : 'disabled', v = ed === 'new' ? { ctype:'WEB 접속 URL', info:'', resp:'', ip:'', memo:'', stop:null } : r;
+  const tab = (id, l) => `<button class="${T === id ? 'on' : ''}" data-act="pc-tab" data-t="${id}">${l}</button>`;
+  const val = x => x && x !== '—' ? esc(x) : '';
+  const pf = (id, l, ctl, req) => `<div class="pf" data-fk="${id}"><label for="pc_${id}">${l}${req ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl}</div><div class="err-t" role="alert"></div></div>`;
+  const inp = (id, x, ph = '') => `<input class="input mono" id="pc_${id}" value="${val(x)}" placeholder="${on ? ph : ''}" ${dis} autocomplete="off">`;
+  /* 패널 전용 도구 막대 — 이 패널(접속정보)에만 적용 */
+  const tb = on
+    ? `<span class="po-editing">${ic('edit')}${ed === 'new' ? '접속정보 등록 중' : '접속정보 수정 중'}</span><span class="grow"></span><button type="button" class="btn btn-sm" data-act="pc-cancel">${ic('x')}취소</button><button type="button" class="btn btn-sm btn-p" data-act="pc-save">${ic('check')}저장</button>`
+    : `<button type="button" class="btn btn-sm ${S.pcQOpen ? 'btn-soft' : ''}" data-act="pc-search" aria-pressed="${!!S.pcQOpen}">${ic('search')}검색</button>
+       ${canC ? `<button type="button" class="btn btn-sm po-regbtn" data-act="pc-new">${ic('plus')}등록</button><button type="button" class="btn btn-sm btn-p" data-act="pc-edit" ${r && !r.stop ? '' : 'disabled'}>${ic('edit')}수정</button><button type="button" class="btn btn-sm btn-d" data-act="pc-del" ${r && !r.stop ? '' : 'disabled'}>${ic('trash')}삭제</button>` : ''}
+       <span class="grow"></span>
+       ${can(PO_KEY, '삭제자료표시') ? `<label class="switch po-sw"><input type="checkbox" data-act="pc-delshow" ${S.pcDel ? 'checked' : ''}>삭제자료 표시</label>` : ''}${can(PO_KEY, '엑셀로') ? `<button type="button" class="btn btn-sm" data-act="pc-xls">${ic('download')}엑셀</button>` : ''}`;
+  const sbar = S.pcQOpen && !on ? `<div class="pc-q"><label class="sfield">${ic('search')}<input id="pcq" value="${esc(S.pcQ || '')}" placeholder="접속정보 · URL · IP 검색 후 Enter" autocomplete="off"></label>${S.pcQ ? `<button class="fchip" data-act="pc-qclear" aria-label="검색 해제">${esc(S.pcQ)}${ic('x')}</button>` : ''}</div>` : '';
+  /* 왼쪽: 상세(입력) — 접속정보 · 인증정보 탭 */
+  let left;
+  if (T === 'conn') {
+    left = v ? [
+      pf('pid', '제휴사ID', `<span class="po-val mono">${esc(p.pid)}</span>`),
+      pf('ctype', '접속종류', `<select class="select" id="pc_ctype" ${dis}>${PC_CT.map(c => `<option value="${c.split('=')[1]}" ${c.endsWith('=' + v.ctype) ? 'selected' : ''}>${c}</option>`).join('')}</select>`, 1),
+      pf('info', '접속정보', inp('info', v.info, 'https://… · 앱 패키지 ID · 서버 주소'), 1),
+      pf('resp', '데이터응답URL', inp('resp', v.resp, 'https://…/callback')),
+      pf('ip', '서버접속IP', inp('ip', v.ip, '예: 211.170.12.0/24')),
+      pf('memo', '비고', `<textarea class="input" id="pc_memo" rows="3" ${dis}>${esc(v.memo || '')}</textarea>`),
+      pf('st', '상태', `<select class="select" id="pc_st" ${dis}><option value="0" ${v.stop ? '' : 'selected'}>0=정상</option><option value="1" ${v.stop ? 'selected' : ''}>1=중지</option></select>`),
+    ].join('') : `<div class="empty" style="padding:18px">${ic('link')}<div>${canC ? '오른쪽 목록에서 고르거나<br>「등록」을 눌러 추가하세요.' : '등록된 접속정보가 없습니다.'}</div></div>`;
+  } else {
+    const tk = CFG['token'].rows.find(x => x.pid === p.pid && !x.stop), ck = CFG['crypto'].rows.find(x => x.pid === p.pid && !x.stop);
+    pcSecrets(tk, ck);
+    const box = (k, l, v, at, rows) => `<div class="pf pc-sec ${k === 'token' ? 'pc-grow' : ''}" data-fk="${k}"><label for="pcs_${k}">${l}${at ? `<span class="pc-at" title="발급 ${esc(at)}">발급 ${esc(at)}</span>` : ''}${v ? `<button type="button" class="linkbtn pc-copy" data-act="pc-copy" data-k="${k}" title="${l} 복사">${ic('copy')}복사</button>` : ''}</label>
+      ${v ? `<textarea class="input mono pc-secret" id="pcs_${k}" rows="${rows}" readonly spellcheck="false">${esc(v)}</textarea>` : `<div class="pc-none">미발급${canK ? ' — 아래 버튼으로 생성하세요' : ''}</div>`}</div>`;
+    left = box('token', '접속 masterToken', tk?.full, tk?.mt, 9) + box('mkey', 'MasterKey', ck?.mkeyFull, ck?.rg, 2) + box('iv', 'IvKey', ck?.ivFull, '', 2)
+      + (canK ? `<div class="pc-authbtns"><button type="button" class="btn btn-sm po-regbtn" data-act="pc-key">${ic('key')}암호화 KEY 생성</button><button type="button" class="btn btn-sm btn-d" data-act="pc-authdel" ${tk || ck ? '' : 'disabled'}>${ic('trash')}삭제</button></div>` : '');
+  }
+  /* 오른쪽: 접속 목록 */
+  const list = `<table class="tbl compact pc-tbl"><thead><tr><th>접속종류</th><th>접속정보</th><th>데이터응답URL</th></tr></thead><tbody>${rows.map(c => `<tr data-act="pc-pick" data-id="${c.id}" class="${c.id === S.pcSel && ed !== 'new' ? 'cur' : ''} ${c.stop ? 'is-del' : ''}" title="${esc(pcCode(c.ctype))} · ${esc(c.info)}"><td>${c.stop ? '<span class="del-tag">삭제</span>' : ''}${esc(pcCode(c.ctype))}</td><td class="mono">${esc(c.info)}</td><td class="mono">${esc(c.resp)}</td></tr>`).join('')
+    || `<tr><td colspan="3"><div class="empty" style="padding:20px">${ic('link')}<div>${q ? '검색 결과가 없습니다.' : '등록된 접속정보가 없습니다.'}</div></div></td></tr>`}</tbody></table>`;
+  const bar = `<div class="pc-tb ${on ? 'on' : ''}" role="toolbar" aria-label="제휴사 접속정보 관리 도구">${tb}</div>`;
+  const head = `<div class="pc-h"><h1>제휴사 접속정보 관리</h1><span class="pc-hp"><b>${esc(p.name)}</b> · <span class="mono">${p.pid}</span></span><span class="grow"></span><button type="button" class="ibtn" data-act="po-conn" aria-label="접속정보 패널 닫기" title="닫기">${ic('x')}</button></div>`;
+  return { head, bar, body:`<aside class="po-d po-cn card" aria-label="제휴사 접속정보 관리">
+    ${sbar}
+    <div class="pc-split">
+      <section class="pc-fcol ${on ? 'editing' : 'view'}">
+        ${canK ? `<button type="button" class="btn btn-sm pc-token" data-act="pc-token" title="이 거래처의 masterToken 을 새로 만듭니다 (기존 Token 즉시 만료)">${ic('key')}마스터 Token 생성</button>` : ''}
+        <div class="seg pc-seg">${tab('conn', '접속정보')}${tab('auth', '인증정보')}</div>
+        <div class="pc-fb dsec ${on ? 'editing' : 'view'}">${left}</div>
+      </section>
+      <section class="pc-lcol"><div class="pc-lh">접속 목록 <b class="num">${rows.length}</b>건${live.length !== rows.length && !q ? ` <span class="muted">(사용 ${live.length})</span>` : ''}</div><div class="pc-tw">${list}</div></section>
+    </div></aside>` };
+}
+function pcCur() { return PARTNERS.find(x => x.id === ls(PO_KEY).cur); }
+function pcGuard(go) { if (S.pcEdit) return openConfirm('편집 취소', { q:'입력 중인 접속정보를 버리시겠습니까?', note:'저장하지 않은 내용은 사라집니다.' }, '버리기', () => { S.pcEdit = null; go(); }, true); go(); }
+function pcRand(n) { const a = new Uint8Array(n); (self.crypto || window.crypto).getRandomValues(a); return a; }
+function pcSecrets(tk, ck) {
+  if (tk && !tk.full) { tk.full = btoa(String.fromCharCode(...pcRand(330))); tk.master = `mt_${tk.full.slice(0, 8)}…${tk.full.slice(-4, -1)}`; }
+  const hex = n => [...pcRand(n)].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+  if (ck && !ck.mkeyFull) { ck.mkeyFull = hex(16); ck.ivFull = hex(16); ck.mkey = '••••••••••••' + ck.mkeyFull.slice(-4); ck.iv = '••••••••' + ck.ivFull.slice(-4); }
+}
+function pcIssue(p, kind) {
+  const h = () => Math.random().toString(16).slice(2, 6), now = TODAY + ' ' + fDT(new Date()).slice(11, 16);
+  if (kind === 'token') { let tk = CFG['token'].rows.find(r => r.pid === p.pid && !r.stop); if (!tk) { tk = { id:'tk' + Date.now(), pid:p.pid, uid:p.pid.toLowerCase(), ttype:'masterToken', ip:'—', ct:'—', status:'활성' }; CFG['token'].rows.unshift(tk); } Object.assign(tk, { full:null, mt:now, status:'활성' }); pcSecrets(tk);
+    audit('마스터Token생성', '제휴사 접속정보 관리 · masterToken 생성 (기존 즉시 만료)', PO_KEY, p.pid); toast('masterToken 을 생성했습니다 · 발행토큰관리에 반영'); }
+  else { let ck = CFG['crypto'].rows.find(r => r.pid === p.pid && !r.stop); if (!ck) { ck = { id:'ck' + Date.now(), pid:p.pid, scope:'거래처 데이터·통신', ctype:'AES-CBC-256', status:'사용' }; CFG['crypto'].rows.unshift(ck); } Object.assign(ck, { mkeyFull:null, rg:TODAY }); pcSecrets(null, ck);
+    audit('암호화KEY생성', '제휴사 접속정보 관리 · MasterKey / IvKey 생성 (기존 즉시 만료)', PO_KEY, p.pid); toast('암호화 KEY 를 생성했습니다 · 암호화KEY관리에 반영'); }
+  S.pcTab = 'auth'; render();
+}
+/* 제휴사 접속정보 관리 — 접속정보 · 인증정보 확인 · 등록 · 삭제 (이전 팝업) */
+function poConn(p, tab = 'conn') {
+  const cs = poConns(p), tk = CFG['token'].rows.find(r => r.pid === p.pid && !r.stop), ck = CFG['crypto'].rows.find(r => r.pid === p.pid && !r.stop);
+  const t = (id, l) => `<button class="tab ${tab === id ? 'on' : ''}" data-act="po-conn-tab" data-t="${id}">${l}</button>`;
+  const connB = `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>접속타입</th><th>접속정보</th><th>응답 URL</th><th>허용 IP</th><th></th></tr></thead><tbody>${cs.map(c => `<tr><td>${esc(c.ctype)}</td><td class="mono">${esc(c.info)}</td><td class="mono">${esc(c.resp)}</td><td class="mono">${esc(c.ip)}</td><td><button class="btn btn-sm btn-d" data-act="po-conn-del" data-id="${c.id}" aria-label="삭제">${ic('trash')}</button></td></tr>`).join('') || `<tr><td colspan="5"><div class="empty" style="padding:24px">${ic('link')}<div>등록된 접속정보가 없습니다.</div></div></td></tr>`}</tbody></table></div>
+    <div class="sec-t">접속정보 등록</div><div class="fgrid"><div class="fld"><label for="pcT">접속타입</label><select class="select" id="pcT" style="width:100%">${CFG['partner/conn'].opts.ctype.map(o => `<option>${o}</option>`).join('')}</select></div>
+      <div class="fld"><label for="pcI">접속정보<span class="req">*</span></label><input class="input mono" id="pcI" style="width:100%" placeholder="https://… 또는 앱 ID"></div><div class="fld"><label for="pcR">응답 URL</label><input class="input mono" id="pcR" style="width:100%"></div><div class="fld"><label for="pcP">허용 IP</label><input class="input mono" id="pcP" style="width:100%"></div></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn btn-p" data-act="po-conn-add">${ic('plus')}접속정보 등록</button></div>`;
+  const authB = `<dl class="kv"><dt>masterToken</dt><dd class="mono">${tk ? esc(tk.master) : '<span class="muted">미발급</span>'}</dd><dt>발급일</dt><dd class="num">${tk?.mt || '—'}</dd><dt>masterKey</dt><dd class="mono">${ck ? esc(ck.mkey) : '<span class="muted">미발급</span>'}</dd><dt>IvKey</dt><dd class="mono">${ck ? esc(ck.iv) : '—'}</dd><dt>암호화 방식</dt><dd class="mono">AES-CBC-256</dd></dl>
+    <div class="callout warn" style="margin-top:14px">${ic('alert')}<div>재발급하면 기존 토큰 · KEY는 즉시 만료되어 거래처 연동에 영향을 줍니다. 거래처와 일정 협의 후 진행하세요.</div></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">${tk || ck ? `<button class="btn btn-d" data-act="po-auth-del">${ic('trash')}인증정보 삭제</button>` : ''}<button class="btn btn-p" data-act="po-auth-new">${ic('key')}${tk || ck ? '재발급' : '인증정보 등록'}</button></div>`;
+  openModal(MH('제휴사 접속정보 관리', `${esc(p.name)} · <span class="mono">${p.pid}</span>`) + `<div class="m-b"><div class="tabs" style="margin-bottom:14px">${t('conn', `접속정보 ${cs.length}`)}${t('auth', '인증정보')}</div>${tab === 'conn' ? connB : authB}</div><div class="m-f"><button class="btn" data-act="close-modal">닫기</button></div>`, { wide:true });
+  MD.po = { p, tab };
+}
+const PO_ACT = {
+  'po-pick': (a, e) => { if (e.target.closest('.ck')) return; const st = ls(PO_KEY), go = () => { st.cur = a.dataset.id; st.sel = new Set([st.cur]); render(); };
+    if (S.poEdit && S.poEdit !== a.dataset.id) { const ep = PARTNERS.find(x => x.id === S.poEdit); if (ep && poDirty(ep)) return poConfirmDiscard(ep, go); S.poEdit = null; S.poEditSec = null; } go(); },
+  'po-cancel': () => { const p = PARTNERS.find(x => x.id === S.poEdit); if (!p) { S.poEdit = null; S.poEditSec = null; return render(); } if (poDirty(p)) return poConfirmDiscard(p, () => { render(); toast('편집을 취소했습니다.'); }); S.poEdit = null; S.poEditSec = null; S.poEditTab = null; render(); },
+  'po-one': () => { const st = ls(PO_KEY); st.sel = new Set([st.cur]); render(); },
+  'po-tab': a => { const t = a.dataset.t, go = () => { S.poTab = t; render(); };
+    if (S.poEdit && S.poEditTab && S.poEditTab !== t) { const ep = PARTNERS.find(x => x.id === S.poEdit); if (ep && poDirty(ep)) return poConfirmDiscard(ep, go); S.poEdit = null; S.poEditTab = null; } go(); },
+  'po-sub': a => { S.poSub = a.dataset.t; render(); },
+  'po-adv': () => { const st = ls(PO_KEY); st.poAdv = !st.poAdv; st.open = true; render(); },
+  'po-search': () => { const st = ls(PO_KEY); st.q = $('#poq').value.trim(); st.qf = ''; st.cur = null; render(); },
+  'po-stop': () => { const st = ls(PO_KEY), ids = [...st.sel].filter(id => !PARTNERS.find(x => x.id === id)?.stop); if (!ids.length) return toast('이미 중지된 거래처입니다.', true); poStopConfirm(ids); },
+  'po-conn': () => pcGuard(() => { S.pcOpen = !S.pcOpen; if (!S.pcOpen) S.pcEdit = null; render(); }),
+  'pc-tab': a => pcGuard(() => { S.pcTab = a.dataset.t; render(); }),
+  'pc-pick': a => { if (S.pcSel === a.dataset.id && !S.pcEdit) return; pcGuard(() => { S.pcSel = a.dataset.id; render(); }); },
+  'pc-delshow': a => { S.pcDel = a.checked; render(); },
+  'pc-search': () => { S.pcQOpen = !S.pcQOpen; if (!S.pcQOpen) S.pcQ = ''; render(); if (S.pcQOpen) setTimeout(() => $('#pcq')?.focus(), 0); },
+  'pc-copy': a => { const k = a.dataset.k, t = $('#pcs_' + k), p = pcCur(); if (!t || !p) return; const l = { token:'접속 masterToken', mkey:'MasterKey', iv:'IvKey' }[k];
+    const done = () => { toast(`${l}를 복사했습니다.`); audit('인증정보 복사', l, PO_KEY, p.pid); };
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(t.value).then(done, () => { t.select(); document.execCommand('copy'); done(); }); else { t.select(); document.execCommand('copy'); done(); } },
+  'pc-qclear': () => { S.pcQ = ''; render(); setTimeout(() => $('#pcq')?.focus(), 0); },
+  'pc-new': () => { S.pcTab = 'conn'; S.pcEdit = 'new'; render(); setTimeout(() => $('#pc_info')?.focus(), 0); },
+  'pc-edit': () => { if (!S.pcSel) return; S.pcTab = 'conn'; S.pcEdit = S.pcSel; render(); setTimeout(() => $('#pc_info')?.focus(), 0); },
+  'pc-cancel': () => { S.pcEdit = null; render(); },
+  'pc-save': () => { const p = pcCur(); if (!p) return; const g = id => $('#pc_' + id).value.trim();
+    const v = { ctype:g('ctype'), info:g('info'), resp:g('resp'), ip:g('ip'), memo:g('memo') }, stop = g('st') === '1', errs = [];
+    if (!v.info) errs.push(['info', '접속정보를 입력하세요.']);
+    else if (v.ctype === 'WEB 접속 URL' && !/^https?:\/\//.test(v.info)) errs.push(['info', 'WEB 접속 URL 은 http:// 또는 https:// 로 시작해야 합니다.']);
+    else if (CFG['partner/conn'].rows.some(r => r.pid === p.pid && !r.stop && r.id !== S.pcEdit && r.ctype === v.ctype && r.info === v.info)) errs.push(['info', '같은 접속정보가 이미 등록되어 있습니다.']);
+    if (v.resp && !/^https?:\/\//.test(v.resp)) errs.push(['resp', 'http:// 또는 https:// 로 시작하는 주소를 입력하세요.']);
+    if (v.ip && !/^[0-9./,\s]+$/.test(v.ip)) errs.push(['ip', '숫자 IP 형식으로 입력하세요. 예: 211.170.12.0/24']);
+    document.querySelectorAll('.po-cn .pf.err').forEach(x => x.classList.remove('err'));
+    if (errs.length) { errs.forEach(([k, m]) => { const f = $(`.po-cn .pf[data-fk="${k}"]`); f.classList.add('err'); f.querySelector('.err-t').textContent = m; }); $('#pc_' + errs[0][0]).focus(); return toast(errs[0][1], true); }
+    v.resp ||= '—'; v.ip ||= '—';
+    if (S.pcEdit === 'new') { const r = { id:'cn' + Date.now(), pid:p.pid, ...v, rg:TODAY, stop:stop ? { date:TODAY, reason:'등록 시 중지', by:ME.id } : null }; CFG['partner/conn'].rows.unshift(r); S.pcSel = r.id; audit('제휴사접속정보등록', `${pcCode(v.ctype)} · ${v.info}`, PO_KEY, p.pid); toast('접속정보를 등록했습니다.'); }
+    else { const r = CFG['partner/conn'].rows.find(x => x.id === S.pcEdit); Object.assign(r, v); r.stop = stop ? (r.stop || { date:TODAY, reason:'상태 1=중지', by:ME.id }) : null; audit('수정', `접속정보 ${pcCode(v.ctype)} · ${v.info}`, 'partner/conn', p.pid); toast('접속정보를 저장했습니다.'); }
+    S.pcEdit = null; render(); },
+  'pc-del': () => { const p = pcCur(), r = CFG['partner/conn'].rows.find(x => x.id === S.pcSel); if (!p || !r || r.stop) return;
+    openConfirm('접속정보 삭제', { sub:`${esc(pcCode(r.ctype))} · <span class="mono">${esc(r.info)}</span>`, icon:'trash', q:'접속정보를 삭제 하시겠습니까?', note:'삭제한 자료는 「삭제자료 표시」를 켜면 다시 볼 수 있습니다.' }, '삭제', () => { r.stop = { date:TODAY, reason:'제휴사 접속정보 관리에서 삭제', by:ME.id }; audit('삭제', `접속정보 ${r.ctype} · ${r.info}`, 'partner/conn', p.pid); render(); toast('접속정보를 삭제했습니다.'); }, true); },
+  'pc-xls': () => { const p = pcCur(); if (!p) return; const rows = pcRows(p), lines = [['제휴사ID', '접속종류', '접속정보', '데이터응답URL', '서버접속IP', '비고', '상태', '등록일'], ...rows.map(r => [p.pid, pcCode(r.ctype), r.info, r.resp, r.ip, r.memo || '', r.stop ? '1=중지' : '0=정상', r.rg])].map(a => a.map(x => `"${String(x ?? '').replace(/"/g, '""')}"`).join(','));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' })); a.download = `제휴사접속정보_${p.pid}_${TODAY}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast(`${rows.length}건을 엑셀(CSV)로 내려받았습니다.`); },
+  'pc-token': () => { const p = pcCur(); if (!p) return; const has = CFG['token'].rows.some(r => r.pid === p.pid && !r.stop);
+    has ? openConfirm('마스터 Token 생성', { sub:`${esc(p.name)} · <span class="mono">${esc(p.pid)}</span>`, icon:'key', q:'masterToken을 새로 생성 하시겠습니까?', note:'기존 Token은 즉시 만료됩니다.' }, '생성', () => pcIssue(p, 'token'), true) : pcIssue(p, 'token'); },
+  'pc-key': () => { const p = pcCur(); if (!p) return; const has = CFG['crypto'].rows.some(r => r.pid === p.pid && !r.stop);
+    has ? openConfirm('암호화 KEY 생성', { sub:`${esc(p.name)} · <span class="mono">${esc(p.pid)}</span>`, icon:'key', q:'MasterKey · IvKey를 새로 생성 하시겠습니까?', note:'기존 KEY는 즉시 만료됩니다.' }, '생성', () => pcIssue(p, 'key'), true) : pcIssue(p, 'key'); },
+  'pc-authdel': () => { const p = pcCur(); if (!p) return;
+    openConfirm('인증정보 삭제', { sub:`${esc(p.name)} · <span class="mono">${esc(p.pid)}</span>`, icon:'trash', q:'인증정보를 삭제 하시겠습니까?', note:'masterToken · MasterKey · IvKey가 삭제되어 거래처 연동이 즉시 끊깁니다.' }, '삭제', () => { CFG['token'].rows.filter(r => r.pid === p.pid && !r.stop).forEach(r => r.stop = { date:TODAY, reason:'인증정보 삭제', by:ME.id }); CFG['crypto'].rows.filter(r => r.pid === p.pid && !r.stop).forEach(r => r.stop = { date:TODAY, reason:'인증정보 삭제', by:ME.id }); audit('삭제', '인증정보 (masterToken · 암호화KEY)', PO_KEY, p.pid); render(); toast('인증정보를 삭제했습니다.'); }, true); },
+  'po-conn-tab': a => poConn(MD.po.p, a.dataset.t),
+  'po-conn-add': () => { const p = MD.po.p, v = { ctype:$('#pcT').value, info:$('#pcI').value.trim(), resp:$('#pcR').value.trim() || '—', ip:$('#pcP').value.trim() || '—' };
+    if (!v.info) { $('#pcI').focus(); toast('접속정보를 입력하세요.', true); return; }
+    CFG['partner/conn'].rows.unshift({ id:'cn' + Date.now(), pid:p.pid, ...v, rg:TODAY }); audit('제휴사접속정보등록', `${v.ctype} · ${v.info}`, PO_KEY, p.pid); poConn(p, 'conn'); toast('접속정보를 등록했습니다.'); },
+  'po-conn-del': a => { const p = MD.po.p, r = CFG['partner/conn'].rows.find(x => x.id === a.dataset.id); r.stop = { date:TODAY, reason:'제휴사 접속정보 관리에서 삭제', by:ME.id }; audit('삭제', `접속정보 ${r.ctype} · ${r.info}`, 'partner/conn', p.pid); poConn(p, 'conn'); toast('접속정보를 삭제했습니다.'); },
+  'po-auth-new': () => { const p = MD.po.p, h = () => Math.random().toString(16).slice(2, 6), now = fDT(new Date()).slice(0, 16);
+    let tk = CFG['token'].rows.find(r => r.pid === p.pid && !r.stop); if (!tk) { tk = { id:'tk' + Date.now(), pid:p.pid, uid:p.pid.toLowerCase(), ttype:'masterToken', ip:'—', ct:'—', status:'활성' }; CFG['token'].rows.unshift(tk); } Object.assign(tk, { full:null, mt:now, status:'활성' }); pcSecrets(tk);
+    let ck = CFG['crypto'].rows.find(r => r.pid === p.pid && !r.stop); if (!ck) { ck = { id:'ck' + Date.now(), pid:p.pid, scope:'거래처 데이터·통신', ctype:'AES-CBC-256', status:'사용' }; CFG['crypto'].rows.unshift(ck); } Object.assign(ck, { mkeyFull:null, rg:TODAY }); pcSecrets(null, ck);
+    audit('마스터Token생성', '제휴사 접속정보 관리 · 인증정보 발급 (기존 즉시 만료)', PO_KEY, p.pid); poConn(p, 'auth'); toast('인증정보를 발급했습니다 · 발행토큰관리 · 암호화KEY관리에 반영'); },
+  'po-auth-del': () => { const p = MD.po.p; CFG['token'].rows.filter(r => r.pid === p.pid && !r.stop).forEach(r => r.stop = { date:TODAY, reason:'인증정보 삭제', by:ME.id }); CFG['crypto'].rows.filter(r => r.pid === p.pid && !r.stop).forEach(r => r.stop = { date:TODAY, reason:'인증정보 삭제', by:ME.id }); audit('삭제', '인증정보 (masterToken · 암호화KEY)', PO_KEY, p.pid); poConn(p, 'auth'); toast('인증정보를 삭제했습니다.'); },
+};
+document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if (!a || !PO_ACT[a.dataset.act]) return; if (route() !== PO_KEY && !MD?.po) return; const g = GUARD[a.dataset.act]; if (g && !can(PO_KEY, g)) return; PO_ACT[a.dataset.act](a, e); });
+document.addEventListener('keydown', e => { if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && route() === PO_KEY && S.poEdit && !MD && !e.target.matches?.('input, textarea, select')) { const p = PARTNERS.find(x => x.id === S.poEdit); if (p && poDirty(p)) { e.preventDefault(); e.stopImmediatePropagation(); toast('편집 중입니다 — 저장하거나 취소한 뒤 이동하세요.', true); } } }, true);
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'pcq') { e.preventDefault(); e.stopPropagation(); S.pcQ = e.target.value.trim(); render(); setTimeout(() => { const x = $('#pcq'); if (x) { x.focus(); x.setSelectionRange(x.value.length, x.value.length); } }, 0); } }, true);
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'poq') { e.preventDefault(); e.stopPropagation(); PO_ACT['po-search'](); } }, true);
+
+/* ---------- 종합관리 · 기본정보 바로 수정 (레거시 MASTER관리자 기본정보 항목) ----------
+   · 상세에서 바로 고치고 「저장」 → 데이터수정LOG · 감사LOG
+   · 저장 전 변경은 행별 초안으로 유지 (다른 행을 봤다 와도 남음, 목록에 ● 표시)
+   · 항목 옆 「검색」 → 그 값으로 목록 검색 */
+const PO_BANK = ['999=로드은행','004=KB국민은행','088=신한은행','020=우리은행','081=하나은행','011=NH농협은행'];
+const PO_TYPE = ['1=본사','2=대리점','3=거래처'];
+const PO_GRADE = ['1=일반가맹점','2=우수가맹점','3=VIP가맹점'];
+PARTNERS.forEach((p, i) => Object.assign(p, {
+  seq: p.seq ?? +poNo(p), rgTo: p.rgTo ?? TODAY, rgT: p.rgT ?? `${p.rg} 오후 ${pad(1 + i % 5)}:${pad(7 * i % 60)}:${pad(13 * i % 60)}`, name2: p.name2 ?? '',
+  mobile: p.mobile ?? `010${String(57784488 + i * 1111).slice(0, 8)}`, fax: p.fax ?? '', addr: p.addr ?? (p.loc === '국내' ? '서울특별시 마포구 월드컵북로 30 (동교동)' : `${NAT[p.nat]} 현지법인 주소`),
+  zip: p.zip ?? (p.loc === '국내' ? '03992' : ''), addr2: p.addr2 ?? (p.loc === '국내' ? `${500 + i}호` : ''),
+  bank: p.bank ?? (p.kt ? '004=KB국민은행' : '999=로드은행'), acct: p.acct ?? String(1100000000 + i * 7311), vacct: p.vacct ?? false, holder: p.holder ?? p.pid,
+  code: p.code ?? poNo(p), ptype: p.ptype ?? (p.kt ? '3=거래처' : '1=본사'), grade: p.grade ?? '1=일반가맹점' }));
+PARTNERS.forEach(p => { const f = poFee(p), b = poBiz(p); p.mods = Object.keys(MOD).filter(m => p.mods.includes(m)); Object.assign(p, {
+  rec: p.rec ?? '', recName: p.recName ?? '', bname: p.bname ?? (b?.name || p.name), kind: p.kind ?? (b?.kind || ''), btel: p.btel ?? p.tel, baddr: p.baddr ?? (b?.addr || ''), tax: p.tax ?? (b?.tax || p.mail),
+  unit: p.unit ?? String(f?.unit ?? ''), min: p.min ?? String(f?.min ?? ''), admin: p.admin ?? String(f?.admin ?? 0), from: p.from ?? (f?.from || p.rg), term: p.term ?? '12', billDay: p.billDay ?? '5', memo: p.memo ?? (f?.memo || '') }); });
+
+/* =====================================================================
+   레거시 등록 창 — 사업자정보 · 거래정보(사용서비스 · 거래수수료 · 기타)
+   등록 창과 상세가 같은 정의(bdForm)를 써서 항상 같은 구성
+   ===================================================================== */
+const BD_SVC = [['OCR','여권 AI OCR 인식/인증',700,0.55],['NFC','전자여권 인식/인증',500,0.4],['FACE','소유자 안면 인식/인증',300,0.25],['GOV','대한민국 정부 여권인증',500,0.5],['VISA','대한민국 정부 체류자격 인증',500,0.5],
+  ['PKD','여권 발급국 PKD 체인 인증',1000,1],['DID','모바일여권 DID 인증/정보제공',500,0.5],['INFO','여권정보전달',null,null],['VPN','VPN서비스',null,null],['CLOUD','클라우드 관리자 및 자료저장',1000000,1000]];
+const BD_FEE_L = { INFO:'여권정보제공', CLOUD:'클라우드 자료저장 및 관리자' };
+const BD_OPT = [['TWOFA','AI OCR 투팩터인증'],['SCREEN','AI OCR 스크린프린트 자료 차단'],['EXPIRY','여권 유효기간 만료 날짜 검사']];
+const BD_IND = ['정보통신업','도매 및 소매업','서비스업','운수 및 창고업','제조업','금융 및 보험업','기타'];
+const BD_FEE_KEYS = [...BD_SVC.map(x => x[0]), 'MIN'].flatMap(k => [`fee_${k}_krw`, `fee_${k}_usd`]);
+const bdEnd = (from, term) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(from || '') || !(+term > 0)) return ''; const d = new Date(from + 'T00:00:00'); d.setMonth(d.getMonth() + +term); d.setDate(d.getDate() - 1); return fD(d); };
+const bdFeeDefaults = () => Object.fromEntries([...BD_SVC.flatMap(([k, , kr, us]) => [[`fee_${k}_krw`, kr == null ? '' : String(kr)], [`fee_${k}_usd`, us == null ? '' : String(us)]]), ['fee_MIN_krw', '500000'], ['fee_MIN_usd', '400']]);
+PARTNERS.forEach(p => { const [t1, t2] = String(p.kind || '').split(' / ');
+  Object.assign(p, { ceoBirth:p.ceoBirth ?? '', ceoMobile:p.ceoMobile ?? '', ceoMail:p.ceoMail ?? (p.tax || p.mail), corpNo:p.corpNo ?? '', bizType:p.bizType ?? (t1 || ''), bizItem:p.bizItem ?? (t2 || ''),
+    bzip:p.bzip ?? '', baddr2:p.baddr2 ?? '', industry:p.industry ?? '정보통신업', bdesc:p.bdesc ?? '',
+    svcs:p.svcs ?? [...BD_SVC.map(x => x[0]).filter(k => p.mods.includes(k)), ...(p.kt ? ['INFO', 'CLOUD'] : [])], opts:p.opts ?? ['EXPIRY'], to:p.to ?? bdEnd(p.from, p.term) });
+  if (p.fee_OCR_krw === undefined) { Object.assign(p, bdFeeDefaults());
+    if (+p.unit) p.fee_OCR_krw = String(Math.max(0, +p.unit - 300)); p.fee_CLOUD_krw = +p.admin ? String(p.admin) : ''; p.fee_MIN_krw = +p.min ? String(p.min) : ''; if (!+p.min) p.fee_MIN_usd = ''; } });
+
+/* 사업자정보 · 거래정보 · 기타 편집 항목 (등록 창과 동일) — [key, 이름, 탭, 하위탭] */
+const PO_X = [['status','등록상태','a'],['rec','추천인','a'],['recName','추천인 이름','a'],
+  ['ceo','대표자성명','b'],['ceoBirth','대표자 생년월일','b'],['ceoMobile','대표자 핸드폰번호','b'],['btel','대표자 전화번호','b'],['ceoMail','대표자 E-MAIL','b'],
+  ['bname','상호(사업자)','b'],['biz','사업자번호','b'],['corpNo','법인번호','b'],['bizType','업태','b'],['bizItem','종목','b'],['baddr','사업장 주소','b'],['bzip','사업장 우편번호','b'],['baddr2','사업장 상세주소','b'],['industry','사업업종','b'],['bdesc','사업 설명','b'],
+  ['mode','서비스 종류','c','s'],['svcs','서비스','c','s'],['opts','사용옵션','c','s'],
+  ...BD_SVC.flatMap(([k, l]) => [[`fee_${k}_krw`, `거래수수료 · ${BD_FEE_L[k] || l} (KRW)`, 'c', 'f'], [`fee_${k}_usd`, `거래수수료 · ${BD_FEE_L[k] || l} (USD)`, 'c', 'f']]),
+  ['fee_MIN_krw','월간 기본 이용 금액 (KRW)','c','f'],['fee_MIN_usd','월간 기본 이용 금액 (USD)','c','f'],
+  ['from','서비스 시작 일자','c','f'],['term','계약기간','c','f'],['to','서비스 종료 일자','c','f'],['billDay','매월 수수료 청구 일자','c','f'],['memo','비고','c','e']];
+const poTabOf = k => { const x = PO_X.find(f => f[0] === k); return x ? [x[2], x[3]] : ['a']; };
+const poLabel = k => k === 'rgTo' ? '등록날짜(종료)' : k === 'name2' ? '제휴사 상호(2행)' : k === 'zip' ? '우편번호' : k === 'addr2' ? '상세주소' : PO_X.find(f => f[0] === k)?.[1] || PO_F.find(f => f[0] === k)?.[1] || k;
+/* 편집 항목 정의: [key, 이름, 종류, 옵션, 검색 가능] */
+/* ── 예시 데이터: 상세 화면의 모든 칸이 채워져 보이도록 (시제품 전용) ── */
+(() => {
+  const D = {
+    Lordsystem:{ name2:'LORDSYSTEM Co., Ltd.', fax:'02-3142-7791', zip:'03992', rec:'', recName:'', ceoBirth:'1972-03-14', ceoMobile:'010-2231-7790', corpNo:'110111-4521873', bizType:'정보통신업', bizItem:'소프트웨어 개발 · 공급', baddr:'서울특별시 마포구 월드컵북로 30 (동교동)', bzip:'03992', baddr2:'로드빌딩 7층', bdesc:'여권 인증 솔루션 개발 · 본사 테스트 계정',
+      etcMemo:'본사 테스트 계정 — 운영 데이터와 분리', chgReason:'연동 테스트용 IP 대역 변경', chgAt:'2026-10-14', chgBy:'lab.kim' },
+    KTGLOBAL:{ name2:'KT Global Telecom Business', fax:'02-2120-1199', zip:'03154', rec:'Lordsystem', recName:'㈜로드시스템', ceoBirth:'1968-11-02', ceoMobile:'010-5120-1100', corpNo:'110111-1468754', bizType:'정보통신업', bizItem:'전기통신 · 해외통신 서비스', baddr:'서울특별시 종로구 종로3길 33 (광화문 KT 빌딩)', bzip:'03155', baddr2:'east동 12층', bdesc:'KT 해외통신 가입 — 외국인 여권 실명확인',
+      etcMemo:'월 마감 후 5일 청구 · 세금계산서 global@kt.example', chgReason:'서버 접속 IP 추가 (14.63.21.10)', chgAt:'2026-11-04', chgBy:'lab.kim' },
+    HDINFINITY:{ name2:'HD INFINITY JAKARTA', fax:'+62-21-5790-311', zip:'12190', rec:'KTGLOBAL', recName:'KT 해외통신사업', ceoBirth:'1975-06-21', ceoMobile:'+62-812-3310-4471', corpNo:'110111-6230981', bizType:'도소매업', bizItem:'통신기기 · 유심 판매', baddr:'Jl. Jend. Sudirman Kav. 52-53, Jakarta Selatan', bzip:'12190', baddr2:'Sequis Tower 18F', bdesc:'인도네시아 현지 대리점 (KT 유심 판매)',
+      etcMemo:'현지 시간(UTC+7) 기준 정산 — 담당 Andi', chgReason:'응답 URL 변경 (/ret)', chgAt:'2026-10-20', chgBy:'signion.admin' },
+    BOUNDARY:{ name2:'BOUNDARY VIETNAM', fax:'+84-24-3936-883', zip:'100000', rec:'KTGLOBAL', recName:'KT 해외통신사업', ceoBirth:'1980-01-09', ceoMobile:'+84-90-221-8820', corpNo:'110111-7712346', bizType:'서비스업', bizItem:'통신 가입 대행', baddr:'54 Lieu Giai, Ba Dinh, Ha Noi', bzip:'100000', baddr2:'Lotte Center 21F', bdesc:'베트남 하노이 가입 대행점',
+      etcMemo:'NFC 미사용 계약 — 단말 지원 후 재협의', chgReason:'최초 등록', chgAt:'2026-09-12', chgBy:'signion.admin' },
+    GDKOREA:{ name2:'GLOBAL DIRECT KOREA NEPAL', fax:'+977-1-4411-46', zip:'44600', rec:'KTGLOBAL', recName:'KT 해외통신사업', ceoBirth:'1983-08-30', ceoMobile:'010-8841-4520', corpNo:'110111-8034412', bizType:'서비스업', bizItem:'해외 송금 · 통신 가입 대행', baddr:'Durbar Marg, Kathmandu 44600', bzip:'44600', baddr2:'Kantipur Complex 3F', bdesc:'네팔 근로자 출국 전 가입 대행',
+      etcMemo:'출국자 단체 접수 많음 — 월초 트래픽 급증', chgReason:'청구 일자 5일 → 10일', chgAt:'2026-10-30', chgBy:'cs.park' },
+    KTMNS:{ name2:'KT M&S', fax:'02-3489-3301', zip:'06164', rec:'KTGLOBAL', recName:'KT 해외통신사업', ceoBirth:'1970-04-17', ceoMobile:'010-6633-3300', corpNo:'110111-3390125', bizType:'도소매업', bizItem:'휴대폰 · 통신상품 판매', baddr:'서울특별시 강남구 테헤란로 422 (삼성동)', bzip:'06193', baddr2:'KT 선릉타워 9층', bdesc:'국내 직영 매장 외국인 개통',
+      etcMemo:'전국 매장 120곳 — 매장별 사용량 보고 월 1회', chgReason:'iOS 앱 번들 ID 등록', chgAt:'2026-10-02', chgBy:'lab.kim' },
+    VISIONMB:{ name2:'VISION MOBILE MONGOLIA', fax:'+976-11-3120-08', zip:'14200', rec:'HDINFINITY', recName:'㈜현대인피니티', ceoBirth:'1986-12-03', ceoMobile:'+976-9911-2207', corpNo:'110111-9123570', bizType:'서비스업', bizItem:'모바일 가입 대행', baddr:'Peace Avenue 17, Ulaanbaatar', bzip:'14200', baddr2:'Central Tower 6F', bdesc:'몽골 울란바토르 대리점 (심사 중)',
+      etcMemo:'몽골 PKD 인증서 만료 — NFC 비활성화로 계약', chgReason:'등록 심사 요청', chgAt:'2026-10-21', chgBy:'signion.admin' },
+    WINDM:{ name2:'WIND M UZBEKISTAN', fax:'+998-71-2005-20', zip:'100000', rec:'BOUNDARY', recName:'㈜바운더리', ceoBirth:'1979-07-25', ceoMobile:'+998-90-118-1919', corpNo:'110111-5567781', bizType:'도소매업', bizItem:'통신기기 판매', baddr:'Amir Temur 107B, Tashkent', bzip:'100084', baddr2:'International Business Center 4F', bdesc:'우즈베키스탄 타슈켄트 판매점',
+      chgReason:'자료 보완 요청 (사업자등록증 해상도)', chgAt:'2026-11-04', chgBy:'김시그' },
+    EASTERNTEL:{ name2:'EASTERN TELECOM CAMBODIA', fax:'+855-23-2160-62', zip:'12000', rec:'KTGLOBAL', recName:'KT 해외통신사업', ceoBirth:'1988-02-11', ceoMobile:'+855-12-660-161', corpNo:'110111-2245109', bizType:'정보통신업', bizItem:'이동통신 재판매', baddr:'Preah Norodom Blvd 66, Phnom Penh', bzip:'12207', baddr2:'Vattanac Capital 15F', bdesc:'캄보디아 프놈펜 신규 대리점',
+      etcMemo:'등록 요청 접수 — 서류 검토 대기', chgReason:'등록 요청 접수', chgAt:'2026-11-03', chgBy:'signion.admin' },
+    CORENET:{ name2:'CORENET MYANMAR', fax:'+95-1-2302-21', zip:'11181', rec:'BOUNDARY', recName:'㈜바운더리', ceoBirth:'1977-09-19', ceoMobile:'+95-9-4500-2201', corpNo:'110111-6678023', bizType:'서비스업', bizItem:'통신 가입 대행', baddr:'Sule Pagoda Rd 36, Yangon', bzip:'11182', baddr2:'Sakura Tower 10F', bdesc:'미얀마 양곤 대행점 (등록 거부)',
+      chgReason:'현지 법인 확인 불가 — 등록 거부', chgAt:'2026-10-12', chgBy:'signion.admin' },
+  };
+  const blank = v => v == null || v === '' || v === '—';
+  PARTNERS.forEach(p => { const d = D[p.pid]; if (!d) return;
+    Object.entries(d).forEach(([k, v]) => { if (blank(p[k])) p[k] = v; });
+    if (blank(p.btel)) p.btel = p.tel; if (blank(p.ceoMail)) p.ceoMail = p.mail;
+    p.kind = [p.bizType, p.bizItem].filter(Boolean).join(' / ');
+    PO_DOCS.forEach(doc => { if (!(p.docs ||= {})[doc]) p.docs[doc] = { file:`${p.pid}_${doc.replace(/\s/g, '')}.pdf`, at:p.rg + ' 10:' + pad(PO_DOCS.indexOf(doc) * 7), by:'signion.admin' }; });
+    if (!p.etcHist?.length) p.etcHist = [{ reason:'최초 등록', memo:`${p.name} 거래처 등록`, by:'signion.admin', at:p.rg + ' 10:00' }, ...(p.chgReason && p.chgReason !== '최초 등록' ? [{ reason:p.chgReason, memo:'', by:p.chgBy, at:p.chgAt + ' 14:20' }] : [])];
+  });
+  /* 접속정보 — 없는 거래처에 예시 추가 */
+  const CN = { GDKOREA:[['WEB 접속 URL','https://np.gdk.example','https://np.gdk.example/kyc/ret','202.51.74.0/24','네팔 본점 웹 접수'],['AOS APP 접속 ID','com.gdk.nepal.kyc','—','—','현장 태블릿 앱']],
+    VISIONMB:[['WEB 접속 URL','https://mn.visionmb.example','https://mn.visionmb.example/ret','202.131.0.0/24','심사용 테스트 연결']],
+    WINDM:[['WEB 접속 URL','https://uz.windm.example','https://uz.windm.example/ret','195.158.8.0/24','타슈켄트 매장 웹 접수']],
+    EASTERNTEL:[['서버 접속 IP','api.eastern.example','https://api.eastern.example/kyc/callback','103.216.51.0/24','등록 요청서 기재 값']],
+    CORENET:[['WEB 접속 URL','https://mm.corenet.example','—','—','등록 거부로 미사용']] };
+  Object.entries(CN).forEach(([pid, list]) => { if (CFG['partner/conn'].rows.some(r => r.pid === pid)) return; const rg = PARTNERS.find(x => x.pid === pid)?.rg || TODAY;
+    list.forEach(([ctype, info, resp, ip, memo], i) => CFG['partner/conn'].rows.push({ id:`cnx_${pid}_${i}`, pid, ctype, info, resp, ip, memo, rg, stop:pid === 'CORENET' ? { date:'2026-10-12', reason:'등록 거부', by:'signion.admin' } : null })); });
+  CFG['partner/conn'].rows.forEach(r => { if (!r.memo) r.memo = { 'WEB 접속 URL':'운영 웹 접수 화면', '서버 접속 IP':'서버 간 API 연동', 'AOS APP 접속 ID':'안드로이드 앱', 'IOS APP 접속 ID':'iOS 앱' }[r.ctype] || ''; });
+  /* 자료메모 — 거래처마다 1~2건 */
+  const MM = { Lordsystem:['연동 테스트 서버 11/20 점검 예정'], KTGLOBAL:['11월 사용량 전월 대비 18% 증가 — 단가 재협의 요청', '세금계산서 담당자 변경: 김민지'], HDINFINITY:['자카르타 2호점 개설 — 접속 IP 추가 요청 예정'],
+    BOUNDARY:['NFC 지원 단말 도입 일정 12월 회신 예정'], GDKOREA:['월초 단체 접수 — 트래픽 모니터링 필요'], KTMNS:['매장별 사용량 보고서 매월 3일 발송'], EASTERNTEL:['등록 서류 원본 우편 접수 확인 (11/04)'], CORENET:['현지 법인 등기 재제출 시 재심사 가능 안내'] };
+  Object.entries(MM).forEach(([pid, list]) => list.forEach((memo, i) => { if (!CFG['work/memo'].rows.some(m => m.target === pid && m.memo === memo)) CFG['work/memo'].rows.push({ id:`mm_${pid}_${i}`, target:pid, menu:'인증거래처관리', memo, who:i ? '박상담' : '김시그', dt:`2026-11-0${1 + i} 1${i}:3${i}` }); }));
+})();
+const PO_F = [
+  ['loc','사업등록지역','sel',[['국내','1=국내'],['해외','2=해외']],1], ['nat','국가코드','sel',() => Object.keys(NAT).map(k => [k, `${k}=${NAT[k]}`]),1], ['rg','등록날짜','date',null,1],
+  ['name','제휴사 상호','text',null,1,1], ['name2','','text'],
+  ['mobile','핸드폰번호','tel',null,1], ['tel','전화번호','tel',null,1], ['fax','FAX번호','tel'], ['mail','EMAIL','text',null,1],
+  ['addr','주소','text',null,0], ['zip','우편번호','text'], ['addr2','상세주소','text'],
+  ['bank','거래은행','sel',PO_BANK.map(b => [b, b]),1], ['acct','계좌번호','text',null,1], ['vacct','가상계좌','chk'], ['holder','예금주','text'],
+  ['code','제휴사 코드','text',null,1], ['ptype','제휴사 타입','sel',PO_TYPE.map(b => [b, b]),1], ['grade','제휴사 등급','sel',PO_GRADE.map(b => [b, b]),1],
+];
+const PO_EDIT = PO_F.map(f => f[0]).concat('rgTo', ...PO_X.map(f => f[0]));
+S.poDrafts = S.poDrafts || {};
+const poVal = (p, k) => (S.poDrafts[p.id] && k in S.poDrafts[p.id]) ? S.poDrafts[p.id][k] : p[k];
+const poDirty = p => { const d = S.poDrafts[p.id]; return !!d && Object.keys(d).some(k => String(d[k] ?? '') !== String(p[k] ?? '')); };
+function poSetDraft(p, k, v) { const d = (S.poDrafts[p.id] ||= {}); d[k] = v; if (String(v ?? '') === String(p[k] ?? '')) delete d[k]; if (!Object.keys(d).length) delete S.poDrafts[p.id]; poPaintDirty(p); }
+function poPaintDirty(p) { const on = poDirty(p); $$('.po-save, .po-revert').forEach(b => b.disabled = !on); $('.po-dirty')?.toggleAttribute('hidden', !on); $(`.po-tw tr[data-id="${p.id}"] .po-dot`)?.toggleAttribute('hidden', !on);
+  $$('.po-form [data-pof]').forEach(el => el.closest('.pf, td')?.classList.toggle('chg', String(poVal(p, el.dataset.pof) ?? '') !== String(p[el.dataset.pof] ?? ''))); }
+function poBasicForm(p) {
+  const X = poSecCtx(p);
+  const find = (k, on) => on ? `<button type="button" class="pf-find" data-act="po-find" data-k="${k}" title="이 값으로 목록 검색" aria-label="이 값으로 목록 검색">${ic('search')}<span>검색</span></button>` : '<span></span>';
+  const chg = k => String(poVal(p, k) ?? '') !== String(p[k] ?? '') ? 'chg' : '';
+  let dis = '';
+  const W = (key, title, icon, fn, acts = '') => { dis = X.disOf(key); return X.wrap(key, title, icon, fn(), acts); };
+  ['rg', 'rgTo'].forEach(k => DPK.reg(`po_${k}`, { mode:'single', min:'2000-01-01', max:'2099-12-31', get:() => poVal(p, k), set:v => { poSetDraft(p, k, v || p[k]); render(); } }));
+  const ctl = ([k, , t, o]) => {
+    const v = poVal(p, k) ?? '';
+    if (t === 'sel') { const opts = typeof o === 'function' ? o() : o; return `<select class="select" data-pof="${k}" id="pf_${k}" ${dis}>${opts.map(([val, l]) => `<option value="${esc(val)}" ${String(v) === String(val) ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`; }
+    if (t === 'chk') return `<label class="switch"><input type="checkbox" data-pof="${k}" ${v ? 'checked' : ''} ${dis}>가상계좌</label>`;
+    return `<input class="input ${t === 'tel' ? 'mono' : ''}" data-pof="${k}" id="pf_${k}" value="${esc(v)}" ${k === 'name2' ? 'aria-label="제휴사 상호 2행" placeholder="영문명 · 지점명 (선택)"' : ''} ${t === 'tel' ? 'inputmode="tel"' : ''} autocomplete="off" ${dis}>`;
+  };
+  const row = (f, extra = '') => `<div class="pf ${chg(f[0])}" data-fk="${f[0]}"><label for="pf_${f[0]}">${f[1]}${f[5] ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl(f)}${extra}</div>${find(f[0], f[4])}<div class="err-t" role="alert"></div></div>`;
+  const F = k => PO_F.find(f => f[0] === k);
+  return `<form class="po-form" data-id="${p.id}" novalidate autocomplete="off">
+    ${X.ro ? `<div class="callout ${p.stop ? 'bad' : 'info'}" style="margin-bottom:12px">${ic('lock')}<div>${p.stop ? `중지된 거래처입니다 (${esc(p.stop.reason)}).` : '수정 권한이 없어 읽기 전용입니다.'}</div></div>` : ''}
+    ${W('base', '기본정보', 'building', () => `<div class="pf"><label>전산코드</label><div class="pf-c"><span class="po-val num">${poNo(p)}</span></div><span></span></div>
+      ${row(F('loc'))}${row(F('nat'))}
+      <div class="pf ${chg('rg') || chg('rgTo')}" data-fk="rg"><label>등록날짜</label><div class="pf-c pf-dates">${dis ? `<span class="po-val num">${p.rg} ~ ${p.rgTo}</span>` : `${DPK.btn('po_rg', '등록 시작일')}<span class="muted">~</span>${DPK.btn('po_rgTo', '등록 종료일')}`}<span class="pf-ts num">${esc(p.rgT)}</span></div>${find('rg', 1)}<div class="err-t" role="alert"></div></div>
+      ${row(F('name'))}<div class="pf ${chg('name2')}" data-fk="name2"><span></span><div class="pf-c">${ctl(F('name2'))}</div><span></span></div>`)}
+    ${W('contact', '연락처 · 주소', 'mail', () => `${row(F('mobile'))}${row(F('tel'))}${row(F('fax'))}${row(F('mail'))}
+      <div class="pf ${chg('addr')}" data-fk="addr"><label for="pf_addr">주소</label><div class="pf-c">${ctl(F('addr'))}</div><span></span><div class="err-t"></div></div>
+      <div class="pf ${chg('zip') || chg('addr2')}" data-fk="zip"><span></span><div class="pf-c pf-addr"><input class="input num" data-pof="zip" id="pf_zip" aria-label="우편번호" value="${esc(poVal(p, 'zip'))}" placeholder="우편번호" ${dis}><input class="input" data-pof="addr2" id="pf_addr2" aria-label="상세주소" value="${esc(poVal(p, 'addr2'))}" placeholder="상세주소" ${dis}></div><span></span></div>`)}
+    ${W('account', '로그인 계정', 'key', () => `<div class="pf"><label>아이디</label><div class="pf-c"><span class="po-val mono">${esc(p.pid)}</span><button type="button" class="btn btn-sm po-inbtn" data-act="extra" data-l="아이디수정" ${dis} title="${dis ? '「수정」을 누르면 사용할 수 있습니다' : '아이디를 바꿉니다'}">${ic('edit')}아이디 수정</button></div>${find('pid', 1)}</div>
+      <div class="pf"><label>비밀번호</label><div class="pf-c"><span class="po-val">●●●●●●●●</span><button type="button" class="btn btn-sm po-inbtn" data-act="extra" data-l="비밀번호초기화" ${dis} title="${dis ? '「수정」을 누르면 사용할 수 있습니다' : '임시 비밀번호를 메일로 보냅니다'}">${ic('lock')}비밀번호 초기화</button></div><span></span></div>`,
+      '')}
+    ${W('bank', '정산 계좌', 'card', () => `${row(F('bank'))}
+      <div class="pf ${chg('acct') || chg('vacct')}" data-fk="acct"><label for="pf_acct">계좌번호</label><div class="pf-c">${ctl(F('acct'))}<button type="button" class="ibtn" data-act="toast" data-msg="계좌 실명 조회는 개발 단계에서 연결됩니다." title="계좌 실명 조회" aria-label="계좌 실명 조회" ${dis}>${ic('more')}</button>${ctl(F('vacct'))}</div>${find('acct', 1)}<div class="err-t" role="alert"></div></div>
+      ${row(F('holder'))}`)}
+    ${W('class', '제휴사 구분', 'users', () => `${row(F('code'), `<button type="button" class="nw-chk" data-act="po-codechk" ${dis}>제휴사코드중복검증</button>`)}${row(F('ptype'))}${row(F('grade'))}
+      <div class="pf ${chg('status')}" data-fk="status"><label for="pf_status">등록상태</label><div class="pf-c"><select class="select" data-pof="status" id="pf_status" ${dis}>${NW_STATUS.map(x => `<option ${String(poVal(p, 'status')) === x ? 'selected' : ''}>${x}</option>`).join('')}</select></div><span></span><div class="err-t" role="alert"></div></div>
+      <div class="pf ${chg('rec')}" data-fk="rec"><label for="pf_rec">추천인</label><div class="pf-c"><input class="input mono" data-pof="rec" id="pf_rec" value="${esc(poVal(p, 'rec'))}" placeholder="아이디" autocomplete="off" ${dis}><button type="button" class="ibtn" data-act="po-rec" aria-label="추천인 조회" title="추천인 조회" ${dis}>${ic('more')}</button><input class="input" value="${esc(poVal(p, 'recName'))}" readonly tabindex="-1" aria-label="추천인 이름" ${dis}></div><span></span><div class="err-t" role="alert"></div></div>`)}
+  </form>`;
+}
+
+/* =====================================================================
+   상세 섹션 카드 — 「아이콘 + 제목 + 그 섹션 버튼」, 수정도 섹션별
+   ===================================================================== */
+const PO_EDITABLE = new Set(['base','contact','bank','class','rep','biz','svc','opt','fee','bill','memo']);
+const PO_SEC_OF = { loc:'base', nat:'base', rg:'base', rgTo:'base', name:'base', name2:'base', mobile:'contact', tel:'contact', fax:'contact', mail:'contact', addr:'contact', zip:'contact', addr2:'contact',
+  bank:'bank', acct:'bank', vacct:'bank', holder:'bank', code:'class', ptype:'class', grade:'class', status:'class', rec:'class', recName:'class',
+  ceo:'rep', ceoBirth:'rep', ceoMobile:'rep', btel:'rep', ceoMail:'rep', bname:'biz', biz:'biz', corpNo:'biz', bizType:'biz', bizItem:'biz', baddr:'biz', bzip:'biz', baddr2:'biz', industry:'biz', bdesc:'biz',
+  mode:'svc', svcs:'svc', opts:'opt', from:'bill', term:'bill', to:'bill', billDay:'bill', memo:'memo' };
+const poSecOf = k => k.startsWith('fee_') ? 'fee' : PO_SEC_OF[k] || 'base';
+const PO_SEC_TAB = { base:['a'], contact:['a'], bank:['a'], class:['a'], rep:['b'], biz:['b'], svc:['c','s'], opt:['c','s'], fee:['c','f'], bill:['c','f'], memo:['c','e'] };
+function dsec(key, title, icon, body, acts = '', cls = 'editing') {
+  return `<section class="dsec ${cls}" data-sec="${key}"><header class="dsec-h"><h4>${title}</h4><div class="dsec-a">${acts}</div></header><div class="dsec-b">${body}</div></section>`;
+}
+/* 상세용: 섹션 편집 상태에 따라 버튼 · 입력 가능 여부 */
+function poSecCtx(p) {
+  const ro = !can(PO_KEY, '수정') || !!p.stop, ed = S.poEdit === p.id;
+  const disOf = key => ro || !(ed && (PO_SEC_TAB[key] || ['a'])[0] === S.poEditTab) ? 'disabled' : '';
+  const wrap = (key, title, icon, body) => dsec(key, title, icon, body, '', disOf(key) ? 'view' : 'editing');
+  return { ro, ed, disOf, wrap };
+}
+
+function bdForm(tab, ctx) {
+  const { a, idp, val, chg = () => '', date, find = () => '<span></span>', sub, subAct, rowCls = '' } = ctx, attr = `data-${a}`;
+  let cur = ''; const D = () => ctx.disOf ? ctx.disOf(cur) : (ctx.dis || '');
+  const W = (key, title, icon, fn, acts = '') => { cur = key; const body = fn(); return ctx.wrap ? ctx.wrap(key, title, icon, body, acts) : dsec(key, title, icon, body); };
+  const inp = (k, o = {}) => `<input class="input ${o.cls || ''}" ${attr}="${k}" id="${idp}${k}" value="${esc(val(k) ?? '')}" ${o.ph ? `placeholder="${o.ph}"` : ''} ${o.im ? `inputmode="${o.im}"` : ''} ${o.aria ? `aria-label="${o.aria}"` : ''} autocomplete="off" ${D()}>`;
+  const row = (k, l, ctl, req, extra = '<span></span>') => `<div class="pf ${rowCls} ${chg(k)}" data-fk="${k}"><label for="${idp}${k}">${l}${req ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl}</div>${extra}<div class="err-t" role="alert"></div></div>`;
+  const unit = t => `<span class="muted" style="font-size:12.5px;white-space:nowrap">${t}</span>`;
+  if (tab === 'b') return W('rep', '대표자정보', 'user', () => row('ceo', '대표자성명', inp('ceo'), 1) + row('ceoBirth', '생년월일', inp('ceoBirth', { cls:'num', ph:'YYYY-MM-DD' })) + row('ceoMobile', '핸드폰번호', inp('ceoMobile', { cls:'mono', im:'tel' }))
+      + row('btel', '전화번호', inp('btel', { cls:'mono', im:'tel' })) + row('ceoMail', 'E-MAIL', inp('ceoMail')))
+    + W('biz', '사업자정보', 'building', () => row('bname', '상호', inp('bname')) + row('biz', '사업자번호', inp('biz', { cls:'mono', ph:'000-00-00000' }) + `<button type="button" class="nw-chk ${ctx.bizOk ? 'ok' : ''}" data-act="bd-bizchk" ${D()}>${ctx.bizOk ? ic('check') + '확인됨' : '사업자번호검증'}</button>`)
+      + row('corpNo', '법인번호', inp('corpNo', { cls:'mono', ph:'000000-0000000' })) + row('bizType', '업태', inp('bizType')) + row('bizItem', '종목', inp('bizItem')) + row('baddr', '주소', inp('baddr', { ph:'도로명 주소' }))
+      + `<div class="pf ${rowCls} ${chg('bzip') || chg('baddr2')}" data-fk="bzip"><span></span><div class="pf-c pf-addr">${inp('bzip', { cls:'num', ph:'우편번호', aria:'사업장 우편번호' })}${inp('baddr2', { ph:'상세주소', aria:'사업장 상세주소' })}</div><span></span></div>`
+      + row('industry', '사업업종', `<select class="select" ${attr}="industry" id="${idp}industry" ${D()}><option value="">선택</option>${BD_IND.map(x => `<option ${val('industry') === x ? 'selected' : ''}>${x}</option>`).join('')}</select>`)
+      + `<div class="pf ${rowCls} ${chg('bdesc')} pf-memo" data-fk="bdesc"><label for="${idp}bdesc">사업 설명</label><textarea class="input" ${attr}="bdesc" id="${idp}bdesc" rows="4" ${D()}>${esc(val('bdesc') ?? '')}</textarea><span></span></div>`);
+  const sb = (id, l) => `<button type="button" class="${sub === id ? 'on' : ''}" data-act="${subAct}" data-t="${id}">${l}</button>`;
+  const seg = `<div class="seg po-seg">${sb('s', '사용서비스')}${sb('f', '거래수수료')}${sb('e', '기타')}</div>`;
+  if (sub === 's') { const svcs = val('svcs') || [], opts = val('opts') || [];
+    const ck = (kind, k, l, on) => `<label class="bd-ck"><span>${l}</span><span class="bd-use"><input type="checkbox" class="cbox" data-${a}${kind}="${k}" ${on ? 'checked' : ''} ${D()}>사용</span></label>`;
+    return seg + W('svc', '서비스', 'shield', () => row('mode', '서비스 종류', ['운영', '테스트'].map(m => `<label class="bd-radio"><input type="radio" name="${idp}mode" ${attr}="mode" value="${m}" ${val('mode') === m ? 'checked' : ''} ${D()}>${m === '운영' ? '상용' : '테스트'}</label>`).join(''))
+        + `<div class="bd-block ${chg('svcs')}" data-fk="svcs"><div class="bd-list">${BD_SVC.map(([k, l]) => ck('svc', k, l, svcs.includes(k))).join('')}</div><div class="err-t" role="alert"></div></div>`)
+      + W('opt', '사용옵션', 'settings', () => `<div class="bd-block ${chg('opts')}" data-fk="opts"><div class="bd-list">${BD_OPT.map(([k, l]) => ck('opt', k, l, opts.includes(k))).join('')}</div></div>`); }
+  if (sub === 'f') {
+    const fv = k => { const v = val(k) ?? ''; return D() && k.endsWith('_krw') && /^\d+$/.test(String(v)) ? fmt(+v) : v; };
+    const fi = (k, l) => `<td class="${chg(k)}" data-fk="${k}"><input class="input num" ${attr}="${k}" id="${idp}${k}" value="${esc(fv(k))}" inputmode="decimal" aria-label="${l}" autocomplete="off" ${D()}></td>`;
+    const tr = (k, l, cls = '', extra = '') => `<tr class="${cls}"><th>${l}${extra}</th>${fi(`fee_${k}_krw`, l + ' 원화')}${fi(`fee_${k}_usd`, l + ' 미화')}</tr>`;
+    return seg + W('fee', '거래수수료', 'coins', () => `<table class="bd-fee"><thead><tr><th>구분</th><th>원화(KRW)</th><th>미화(USD)</th></tr></thead><tbody>${BD_SVC.map(([k, l]) => tr(k, BD_FEE_L[k] || l)).join('')}</tbody><tfoot>${tr('MIN', '월간 기본 이용 금액(최소금액)', 'bd-min', ` <span class="bd-info" title="여권인증 사용료가 이 금액보다 적으면 이 금액을 청구합니다.">${ic('help')}</span>`)}</tfoot></table>`)
+      + W('bill', '청구정보', 'file', () => row('from', '서비스 시작 일자', date('from', '서비스 시작 일자', D()), 0, find('from')) + row('term', '계약기간', inp('term', { cls:'num', im:'numeric' }) + unit('개월'))
+        + row('to', '서비스 종료 일자', date('to', '서비스 종료 일자', D()), 0, find('to')) + row('billDay', '매월 수수료 청구 일자', inp('billDay', { cls:'num', im:'numeric' }) + unit('일')));
+  }
+  return seg + W('memo', '비고', 'memo', () => `<div class="pf ${rowCls} ${chg('memo')} pf-memo pf-wide" data-fk="memo"><textarea class="input" ${attr}="memo" id="${idp}memo" rows="10" aria-label="비고" ${D()}>${esc(val('memo') ?? '')}</textarea></div>`);
+}
+function poMoreForm(p, tab) {
+  const X = poSecCtx(p), chg = k => String(poVal(p, k) ?? '') !== String(p[k] ?? '') ? 'chg' : '';
+  const head = X.ro ? `<div class="callout ${p.stop ? 'bad' : 'info'}" style="margin-bottom:12px">${ic('lock')}<div>${p.stop ? '중지된 거래처입니다.' : '수정 권한이 없어 읽기 전용입니다.'}</div></div>` : '';
+  const date = (k, l, dis) => { if (dis) return `<span class="po-val num">${esc(poVal(p, k) || '—')}</span>`; DPK.reg('po_' + k, { mode:'single', min:'2000-01-01', max:'2099-12-31', allowEmpty:true, get:() => poVal(p, k), set:v => { poSetDraft(p, k, v || ''); render(); } }); return DPK.btn('po_' + k, l); };
+  const find = k => `<button type="button" class="pf-find" data-act="po-find" data-k="${k}" title="이 값으로 목록 검색" aria-label="이 값으로 목록 검색">${ic('search')}<span>검색</span></button>`;
+  return `<form class="po-form" data-id="${p.id}" novalidate autocomplete="off">${head}${bdForm(tab, { a:'pof', idp:'pf_', val:k => poVal(p, k), disOf:X.disOf, wrap:X.wrap, chg, date, find, sub:S.poSub, subAct:'po-sub', bizOk:S.poBizOk && S.poBizOk === `${p.id}|${poVal(p, 'biz')}` })}</form>`;
+}
+/* 사업자정보 · 거래정보 검증 (등록 · 상세 공통) — d: 바꾼 항목(상세는 바꾼 값만 형식 검사, 등록은 전부) */
+function bdCheck(o, d) {
+  const e = [], has = k => d === null || k in d, phone = /^[+\d][\d\s-]*$/, mail = /^\S+@\S+\.\S+$/;
+  if (!String(o.ceo || '').trim()) e.push(['ceo', '대표자성명을 입력하세요.']);
+  if (has('ceoBirth') && o.ceoBirth && !(/^\d{4}-\d{2}-\d{2}$/.test(o.ceoBirth) && fD(new Date(o.ceoBirth + 'T00:00:00')) === o.ceoBirth)) e.push(['ceoBirth', 'YYYY-MM-DD 형식으로 입력하세요.']);
+  ['ceoMobile', 'btel'].forEach(k => { if (has(k) && o[k] && !phone.test(String(o[k]).replace(/\*/g, '0'))) e.push([k, '숫자 · - · + 만 입력하세요.']); });
+  if (has('ceoMail') && o.ceoMail && !mail.test(o.ceoMail)) e.push(['ceoMail', '이메일 형식을 확인하세요.']);
+  if (has('biz') && o.biz && o.biz !== '—' && !/^\d{3}-?\d{2}-?\d{5}$/.test(o.biz)) e.push(['biz', '사업자번호 10자리를 확인하세요.']);
+  if (has('corpNo') && o.corpNo && !/^\d{6}-?\d{7}$/.test(o.corpNo)) e.push(['corpNo', '법인번호 13자리를 확인하세요.']);
+  if (!(o.svcs || []).length) e.push(['svcs', '서비스를 하나 이상 선택하세요.']);
+  BD_FEE_KEYS.forEach(k => { const v = String(o[k] ?? '').replace(/,/g, ''); if (has(k) && v !== '' && !(k.endsWith('_krw') ? /^\d+$/ : /^\d+(\.\d{1,4})?$/).test(v)) e.push([k, k.endsWith('_krw') ? '원화는 숫자만 입력하세요.' : '미화는 숫자(소수 4자리까지)만 입력하세요.']); });
+  if (String(o.term ?? '') !== '' && !/^\d+$/.test(String(o.term))) e.push(['term', '숫자(개월)만 입력하세요.']);
+  if (String(o.billDay ?? '') !== '' && (!/^\d+$/.test(String(o.billDay)) || +o.billDay < 1 || +o.billDay > 28)) e.push(['billDay', '1~28 사이로 입력하세요.']);
+  if (o.from && o.to && o.to < o.from) e.push(['to', '서비스 종료 일자는 시작 일자 이후여야 합니다.']);
+  return e;
+}
+function poValidate(o, d = {}) {
+  const e = [];
+  if (!String(o.name || '').trim()) e.push(['name', '제휴사 상호를 입력하세요.']);
+  if (o.mail && !/^\S+@\S+\.\S+$/.test(o.mail)) e.push(['mail', '이메일 형식을 확인하세요.']);
+  ['mobile', 'tel', 'fax'].forEach(k => { if (o[k] && o[k] !== '—' && !/^[+\d][\d\s-]*$/.test(String(o[k]).replace(/\*/g, '0'))) e.push([k, '숫자 · - · + 만 입력하세요.']); });
+  if (o.code && !/^\d+$/.test(o.code)) e.push(['code', '숫자만 입력하세요.']);
+  if (o.acct && !/^[\d-]+\*{0,4}$/.test(o.acct)) e.push(['acct', '계좌번호는 숫자와 - 만 입력하세요.']);
+  if (o.rg && o.rgTo && o.rgTo < o.rg) e.push(['rg', '종료일은 시작일 이후여야 합니다.']);
+  if ('code' in d && /^\d+$/.test(o.code) && PARTNERS.some(x => x.id !== o._id && String(x.code) === String(o.code))) e.push(['code', '이미 사용 중인 제휴사 코드입니다.']);
+  bdCheck(o, d).forEach(x => e.push(x));
+  return e;
+}
+function poSave(p) {
+  if (!can(PO_KEY, '수정')) return deny(PO_KEY, '수정');
+  const d = S.poDrafts[p.id]; if (!d || !poDirty(p)) return toast('바뀐 항목이 없습니다.');
+  const o = Object.fromEntries(PO_EDIT.map(k => [k, poVal(p, k)])); o._id = p.id; const errs = poValidate(o, d);
+  $$('.po-form .pf.err').forEach(x => x.classList.remove('err'));
+  if (errs.length) { const [t0, s0] = PO_SEC_TAB[poSecOf(errs[0][0])] || poTabOf(errs[0][0]); if (S.poEdit === p.id && S.poEditTab && S.poEditTab !== t0) S.poEditTab = t0; if (S.poTab !== t0 || (s0 && S.poSub !== s0)) { S.poTab = t0; if (s0) S.poSub = s0; render(); }
+    const other = [...new Set(errs.map(x => poTabOf(x[0])[0]).filter(t => t !== t0))].map(t => ({ a:'기본정보', b:'사업자정보', c:'거래정보' })[t]);
+    if (other.length) toast(`${other.join(' · ')} 탭에도 확인할 항목이 있습니다.`, true);
+    errs.forEach(([k, m]) => { const f = $(`.po-form [data-fk="${k}"]`); if (f) { f.classList.add('err'); const t = f.querySelector('.err-t'); if (t) t.textContent = m; } }); $(`.po-form [data-fk="${errs[0][0]}"] input, .po-form [data-fk="${errs[0][0]}"] .csel`)?.focus(); return toast(`입력 항목 ${errs.length}개를 확인하세요.`, true); }
+  const label = poLabel, TB = k => ({ b:'MemberTaxInfo', c:'MemberServiceInfo' })[poTabOf(k)[0]] || 'Member';
+  const ch = Object.keys(d).filter(k => String(d[k] ?? '') !== String(p[k] ?? ''));
+  ch.forEach((k, i) => CFG['work/datalog'].rows.unshift({ id:'d' + Date.now() + i, dt:fDT(new Date()).slice(0, 16), tbl:TB(k), key:p.pid, field:label(k), before:String(p[k] ?? ''), after:String(d[k] ?? ''), who:ME.id }));
+  audit('수정', ch.map(k => `${label(k)}: ${p[k] ?? ''} → ${d[k] ?? ''}`).join(' · '), PO_KEY, p.pid);
+  ch.forEach(k => p[k] = Array.isArray(d[k]) ? [...d[k]] : d[k]); delete S.poDrafts[p.id]; S.poEdit = null; S.poEditSec = null; S.poEditTab = null; poSync(p); render(); toast(`${ch.length}개 항목을 저장했습니다 · 데이터수정LOG에 기록`);
+}
+/* 저장 후 관련 화면(요금관리 · 사업자정보관리 · 업체대표자관리)에 반영 */
+function poSync(p) {
+  const n = k => +String(p[k] ?? '').replace(/,/g, '') || 0;
+  p.svcs = BD_SVC.map(x => x[0]).filter(k => (p.svcs || []).includes(k)); p.mods = p.svcs.filter(k => MOD[k]);
+  p.kind = [p.bizType, p.bizItem].filter(Boolean).join(' / '); p.tax = p.ceoMail || p.mail;
+  p.unit = String(n('fee_OCR_krw') + (p.svcs.includes('FACE') ? n('fee_FACE_krw') : 0)); p.min = String(n('fee_MIN_krw')); p.admin = String(p.svcs.includes('CLOUD') ? n('fee_CLOUD_krw') : 0);
+  let f = poFee(p); if (!f) { f = { id:'fe' + Date.now(), pid:p.pid }; CFG['partner/fee'].rows.unshift(f); }
+  Object.assign(f, { name:p.name, unit:+p.unit, min:+p.min, admin:+p.admin, from:p.from, memo:p.memo, rtype:p.mode === '테스트' ? '테스트(무과금)' : +p.admin ? '건당+월정액' : '건당' });
+  let b = poBiz(p); if (!b) { b = { id:'bz' + Date.now(), pid:p.pid }; CFG['partner/biz'].rows.unshift(b); }
+  Object.assign(b, { name:p.bname || p.name, biz:p.biz, kind:p.kind, addr:[p.baddr, p.baddr2].filter(Boolean).join(' '), tax:p.tax });
+  let c = CFG['partner/ceo'].rows.find(r => r.pid === p.pid); if (!c) { c = { id:'ce' + Date.now(), pid:p.pid, rg:p.rg }; CFG['partner/ceo'].rows.unshift(c); }
+  Object.assign(c, { ceo:p.ceo, tel:p.btel || p.ceoMobile, mail:p.ceoMail || p.mail });
+}
+/* 목록 높이에 들어가는 행 수 계산 → 바뀌면 다시 그림 (세로 스크롤 없음) */
+function poFit() {
+  const tw = $('.po-tw'); if (!tw) return; const st = ls(PO_KEY), rows = [...tw.querySelectorAll('tbody tr[data-id]')];
+  const head = tw.querySelector('thead')?.offsetHeight || 0, rh = rows.length ? Math.max(...rows.map(r => r.offsetHeight)) : 46;
+  const per = Math.max(3, Math.floor((tw.clientHeight - head - 2) / rh));
+  if (per !== st.poPer) { st.poPer = per; render(); }
+}
+let poFitT = null; addEventListener('resize', () => { clearTimeout(poFitT); poFitT = setTimeout(() => { if (route() === PO_KEY) poFit(); }, 120); });
+function poConfirmDiscard(p, then) {
+  const n = Object.keys(S.poDrafts[p.id] || {}).filter(k => String(S.poDrafts[p.id][k] ?? '') !== String(p[k] ?? '')).length;
+  openConfirm('편집 취소', { sub:esc(p.name), q:`저장하지 않은 변경 ${n}개를 버리시겠습니까?`, note:'버린 변경은 되돌릴 수 없습니다.' }, '변경 버리기', () => { delete S.poDrafts[p.id]; S.poEdit = null; S.poEditSec = null; S.poEditTab = null; then(); }, true);
+}
+Object.assign(PO_ACT, {
+  'po-pg': a => { const st = ls(PO_KEY), all = listView(PO_KEY).all, per = st.poPer || 12, pg = Math.max(0, Math.min(Math.ceil(all.length / per) - 1, (st.poPg || 0) + +a.dataset.d)); const r = all[pg * per]; if (r) { st.cur = r.id; st.sel = new Set([r.id]); render(); } },
+  'po-codechk': () => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur), c = String(poVal(p, 'code') ?? '').trim(), f = $('.po-form [data-fk="code"]');
+    const bad = !c ? '제휴사 코드를 입력하세요.' : !/^\d+$/.test(c) ? '숫자만 입력하세요.' : PARTNERS.some(x => x.id !== p.id && String(x.code) === c) ? '이미 사용 중인 제휴사 코드입니다.' : '';
+    if (bad) { f?.classList.add('err'); const t = f?.querySelector('.err-t'); if (t) t.textContent = bad; return toast(bad, true); } f?.classList.remove('err'); toast(`제휴사 코드 ${c} — 사용할 수 있습니다.`); },
+  'po-rec': () => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur), id = String(poVal(p, 'rec') ?? '').trim();
+    if (!id) { poSetDraft(p, 'recName', ''); render(); return toast('추천인 아이디를 입력하세요.', true); }
+    const q = PARTNERS.find(x => x.id !== p.id && x.pid.toLowerCase() === id.toLowerCase()), a = ACCOUNTS.find(x => x.uid.toLowerCase() === id.toLowerCase());
+    if (!q && !a) { poSetDraft(p, 'recName', ''); render(); return toast('추천인을 찾을 수 없습니다.', true); }
+    poSetDraft(p, 'rec', q?.pid || a.uid); poSetDraft(p, 'recName', q ? q.name : `${a.man} (${a.org})`); render(); },
+  'po-sec-edit-old': a => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur), key = a.dataset.sec; if (!p || p.stop) return;
+    if (S.poEdit === p.id && S.poEditSec && S.poEditSec !== key && poDirty(p)) return toast('편집 중인 섹션을 먼저 저장하거나 취소하세요.', true);
+    S.poEdit = p.id; S.poEditSec = key; render(); setTimeout(() => { const f = $(`.dsec[data-sec="${key}"] input:not([disabled]):not([readonly]), .dsec[data-sec="${key}"] .csel:not([disabled]), .dsec[data-sec="${key}"] textarea:not([disabled])`); f?.focus(); f?.scrollIntoView({ block:'nearest' }); }, 0); },
+  'po-stop-one': () => { const st = ls(PO_KEY); if (!st.cur) return; st.sel = new Set([st.cur]); PO_ACT['po-stop'](); },
+  'po-edit': () => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur); if (!p || p.stop) return; if (!['a', 'b', 'c'].includes(S.poTab)) S.poTab = 'a';
+    S.poEdit = p.id; S.poEditTab = S.poTab; S.poEditSec = null; render(); setTimeout(() => { const f = $('.po-db .dsec.editing input:not([disabled]):not([readonly]), .po-db .dsec.editing .csel:not([disabled]), .po-db .dsec.editing textarea:not([disabled])'); f?.focus(); f?.scrollIntoView({ block:'nearest' }); }, 0); },
+  'po-save': () => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur); if (p) poSave(p); },
+  'po-revert': () => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur); if (p) { delete S.poDrafts[p.id]; render(); toast('변경 내용을 되돌렸습니다.'); } },
+  'po-find': a => { const p = PARTNERS.find(x => x.id === ls(PO_KEY).cur), k = a.dataset.k, st = ls(PO_KEY); if (!p) return; st.q = String(p[k] ?? ''); st.qf = k; st.cur = null; render(); toast(`${PO_F.find(f => f[0] === k)?.[1] || (k === 'pid' ? '아이디' : k)} = ${st.q} 로 검색`); },
+  'po-qclear': () => { const st = ls(PO_KEY); st.q = ''; st.qf = ''; render(); },
+});
+GUARD['po-edit'] = '수정'; GUARD['po-save'] = '수정'; GUARD['po-sec-edit'] = '수정'; GUARD['po-stop-one'] = '삭제';
+document.addEventListener('input', e => { const el = e.target.closest?.('.po-form [data-pof]'); if (!el) return; const p = PARTNERS.find(x => x.id === $('.po-form').dataset.id); el.closest('.pf')?.classList.remove('err'); poSetDraft(p, el.dataset.pof, el.type === 'checkbox' ? el.checked : el.value); });
+document.addEventListener('change', e => { const m = e.target.closest?.('.po-form [data-pofmod]'); if (!m) return; const p = PARTNERS.find(x => x.id === $('.po-form').dataset.id);
+  poSetDraft(p, 'mods', Object.keys(MOD).filter(k => $(`.po-form [data-pofmod="${k}"]`)?.checked)); m.closest('.pf')?.classList.remove('err'); });
+document.addEventListener('change', e => { const el = e.target.closest?.('.po-form [data-pof]'); if (!el || el.tagName === 'INPUT' && el.type !== 'checkbox') return; const p = PARTNERS.find(x => x.id === $('.po-form').dataset.id); poSetDraft(p, el.dataset.pof, el.type === 'checkbox' ? el.checked : el.value); });
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && e.target.closest?.('.po-form')) { e.preventDefault(); PO_ACT['po-save'](); } if (e.key === 'Enter' && !e.ctrlKey && e.target.closest?.('.po-form input')) e.preventDefault(); }, true);
+
+/* ---------- 종합관리 · 여권인증거래처등록 (레거시 등록 창: 기본정보 · 사업자정보 · 거래정보) ----------
+   · 아이디 / 제휴사 코드 중복검증을 통과해야 저장 · 계좌번호 자동발급(가상계좌) · 추천인 조회
+   · 저장하면 목록 맨 위(최근 등록)에 생기고 바로 선택 · 상세 표시 */
+const NW_STATUS = ['대기중','등록요청접수','등록심사중','자료보완요청','등록거부','등록완료'];
+function nwInit() {
+  return { tab:'a', sub:'s', idOk:'', codeOk:'', v:{ loc:'', nat:'KOR', rg:TODAY, name:'', name2:'', mobile:'', tel:'', fax:'', mail:'', addr:'', zip:'', addr2:'', pid:'', pw:'',
+    bank:'', acct:'', vacct:false, holder:'', code:'', ptype:'', grade:'', status:'대기중', rec:'', recName:'',
+    ceo:'', ceoBirth:'', ceoMobile:'', btel:'', ceoMail:'', bname:'', biz:'', corpNo:'', bizType:'', bizItem:'', baddr:'', bzip:'', baddr2:'', industry:'', bdesc:'',
+    mode:'테스트', svcs:['OCR','FACE'], opts:['EXPIRY'], ...bdFeeDefaults(), from:TODAY, term:'12', to:bdEnd(TODAY, 12), billDay:'5', memo:'' } };
+}
+function poNew(start) {
+  if (!can(PO_KEY, '등록')) return deny(PO_KEY, '등록');
+  const N = MD?.nw || Object.assign(nwInit(), start || {}), v = N.v;
+  const inp = (k, o = {}) => `<input class="input ${o.cls || ''}" data-nw="${k}" id="nw_${k}" value="${esc(v[k])}" ${o.ph ? `placeholder="${o.ph}"` : ''} ${o.type ? `type="${o.type}"` : ''} ${o.im ? `inputmode="${o.im}"` : ''} ${o.ro ? 'readonly tabindex="-1"' : ''} autocomplete="off" ${o.aria ? `aria-label="${o.aria}"` : ''}>`;
+  const sel = (k, opts, ph = '') => `<select class="select" data-nw="${k}" id="nw_${k}">${ph !== null ? `<option value="">${ph}</option>` : ''}${opts.map(o => { const [val, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(val)}" ${String(v[k]) === String(val) ? 'selected' : ''}>${esc(l)}</option>`; }).join('')}</select>`;
+  const row = (l, k, ctl, req, extra = '') => `<div class="pf nwf" data-fk="${k}"><label for="nw_${k}">${l}${req ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl}</div>${extra || '<span></span>'}<div class="err-t" role="alert"></div></div>`;
+  const chk = (ok, act, l) => `<button type="button" class="nw-chk ${ok ? 'ok' : ''}" data-act="${act}">${ok ? ic('check') + '확인됨' : l}</button>`;
+  const sep = '<div class="pf-sep"></div>';
+  DPK.reg('nw_rg', { mode:'single', min:'2000-01-01', max:'2099-12-31', get:() => v.rg, set:x => { v.rg = x || TODAY; poNew(); } });
+  DPK.reg('nw_from', { mode:'single', min:'2000-01-01', max:'2099-12-31', get:() => v.from, set:x => { v.from = x || TODAY; poNew(); } });
+  const A = dsec('base', '기본정보', 'building', `${row('사업등록지역', 'loc', sel('loc', [['국내','1=국내'],['해외','2=해외']], '선택'), 1)}${row('국가코드', 'nat', sel('nat', Object.keys(NAT).map(k => [k, `${k}=${NAT[k]}`]), null), 1)}
+    ${row('등록날짜', 'rg', DPK.btn('nw_rg', '등록날짜'))}
+    ${row('제휴사상호', 'name', inp('name'), 1)}<div class="pf nwf"><span></span><div class="pf-c">${inp('name2', { ph:'영문명 · 지점명 (선택)', aria:'제휴사상호 2행' })}</div><span></span></div>`)
+    + dsec('contact', '연락처 · 주소', 'mail', `${row('핸드폰번호', 'mobile', inp('mobile', { cls:'mono', im:'tel' }))}${row('전화번호', 'tel', inp('tel', { cls:'mono', im:'tel' }))}${row('FAX번호', 'fax', inp('fax', { cls:'mono', im:'tel' }))}${row('EMAIL', 'mail', inp('mail', { type:'email' }), 1)}
+    ${row('주소', 'addr', inp('addr', { ph:'도로명 주소' }))}<div class="pf nwf"><span></span><div class="pf-c pf-addr">${inp('zip', { cls:'num', ph:'우편번호', aria:'우편번호' })}${inp('addr2', { ph:'상세주소', aria:'상세주소' })}</div><span></span></div>`)
+    + dsec('account', '로그인 계정', 'key', `${row('아이디', 'pid', inp('pid', { cls:'mono' }) + chk(N.idOk && N.idOk === v.pid, 'nw-idchk', '아이디중복검증'), 1)}
+    ${row('비밀번호', 'pw', inp('pw', { type:'password', ph:'8자 이상 · 영문 + 숫자' }), 1)}`)
+    + dsec('bank', '정산 계좌', 'card', `${row('거래은행', 'bank', sel('bank', PO_BANK, '선택'))}
+    ${row('계좌번호', 'acct', inp('acct', { cls:'mono' }) + `<button type="button" class="ibtn" data-act="toast" data-msg="계좌 실명 조회는 개발 단계에서 연결됩니다." aria-label="계좌 실명 조회">${ic('more')}</button><label class="switch"><input type="checkbox" data-nw="vacct" ${v.vacct ? 'checked' : ''}>가상계좌</label><button type="button" class="nw-chk" data-act="nw-acct">자동발급</button>`)}
+    ${row('예금주', 'holder', inp('holder'))}`)
+    + dsec('class', '제휴사 구분', 'users', `${row('제휴사 코드', 'code', inp('code', { cls:'num', im:'numeric' }) + chk(N.codeOk && N.codeOk === v.code, 'nw-codechk', '제휴사코드중복검증'), 1)}
+    ${row('제휴사 타입', 'ptype', sel('ptype', PO_TYPE, '선택'), 1)}${row('제휴사 등급', 'grade', sel('grade', PO_GRADE, '선택'), 1)}${row('등록상태', 'status', sel('status', NW_STATUS, null))}
+    ${row('추천인', 'rec', inp('rec', { cls:'mono', ph:'아이디' }) + `<button type="button" class="ibtn" data-act="nw-rec" aria-label="추천인 조회" title="추천인 조회">${ic('more')}</button>${inp('recName', { ro:true, aria:'추천인 이름' })}`)}`);
+  const nctx = { a:'nw', idp:'nw_', val:k => v[k], sub:N.sub, subAct:'nw-sub', rowCls:'nwf', bizOk:!!N.bizOk && N.bizOk === v.biz,
+    date:(k, l) => { DPK.reg('nw_' + k, { mode:'single', min:'2000-01-01', max:'2099-12-31', allowEmpty:true, get:() => v[k], set:x => { v[k] = x || ''; if (k === 'from' && x) v.to = bdEnd(x, v.term) || v.to; poNew(); } }); return DPK.btn('nw_' + k, l); } };
+  const B = bdForm('b', nctx), C = bdForm('c', nctx);
+  const tab = (id, l) => `<button type="button" class="tab ${N.tab === id ? 'on' : ''}" data-act="nw-tab" data-t="${id}">${l}</button>`;
+  const keepScroll = $('#modal .nw-b')?.scrollTop || 0, wasOpen = !!MD?.nw;
+  openModal(MH('여권인증거래처등록', '<span class="req">*</span> 필수 · 아이디 · 제휴사 코드는 중복검증 후 저장할 수 있습니다.')
+    + `<div class="tabs nw-tabs">${tab('a','기본정보')}${tab('b','사업자정보')}${tab('c','거래정보')}</div><form class="m-b nw-b nw-form" id="nwf" novalidate autocomplete="off">${({ a:A, b:B, c:C })[N.tab]}</form>
+    <div class="m-f"><span class="m-warn" hidden>${ic('alert')}입력한 내용이 있습니다. 한 번 더 누르면 닫힙니다.</span><button type="button" class="btn" data-act="close-modal">취소</button><button type="button" class="btn btn-p nw-save" data-act="nw-save">${ic('check')}여권인증거래처등록저장</button></div>`, { wide:true });
+  MD.nw = N; MD.form = true; MD.dirty = wasOpen ? true : false;
+  if (wasOpen) { const b = $('#modal .nw-b'); if (b) b.scrollTop = keepScroll; }
+}
+function nwErrors(N) {
+  const v = N.v, e = [];
+  const need = (k, m) => { if (!String(v[k] ?? '').trim()) e.push([k, m]); };
+  need('loc', '사업등록지역을 선택하세요.'); need('name', '제휴사상호를 입력하세요.'); need('mail', 'EMAIL을 입력하세요.'); need('ptype', '제휴사 타입을 선택하세요.'); need('grade', '제휴사 등급을 선택하세요.');
+  if (v.mail && !/^\S+@\S+\.\S+$/.test(v.mail)) e.push(['mail', '이메일 형식을 확인하세요.']);
+  if (!v.pid.trim()) e.push(['pid', '아이디를 입력하세요.']); else if (N.idOk !== v.pid) e.push(['pid', '아이디중복검증을 하세요.']);
+  if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(v.pw)) e.push(['pw', '8자 이상, 영문과 숫자를 섞어 입력하세요.']);
+  if (!v.code.trim()) e.push(['code', '제휴사 코드를 입력하세요.']); else if (!/^\d+$/.test(v.code)) e.push(['code', '숫자만 입력하세요.']); else if (N.codeOk !== v.code) e.push(['code', '제휴사코드중복검증을 하세요.']);
+  ['mobile', 'tel', 'fax'].forEach(k => { if (v[k] && !/^[+\d][\d\s-]*$/.test(v[k])) e.push([k, '숫자 · - · + 만 입력하세요.']); });
+  if (v.acct && !/^[\d-]+$/.test(v.acct)) e.push(['acct', '숫자와 - 만 입력하세요.']);
+  bdCheck(v, null).forEach(x => e.push(x));
+  return e.map(([k, m]) => { const [t, sb] = poTabOf(k); return [k, m, t, sb]; });
+}
+function nwSave() {
+  const N = MD.nw, v = N.v, errs = nwErrors(N);
+  if (errs.length) {
+    const t0 = errs[0][2], s0 = errs[0][3]; if (N.tab !== t0 || (s0 && N.sub !== s0)) { N.tab = t0; if (s0) N.sub = s0; poNew(); }
+    errs.filter(x => x[2] === N.tab && (!x[3] || x[3] === N.sub)).forEach(([k, m]) => { const f = $(`#nwf [data-fk="${k}"]`); if (f) { f.classList.add('err'); const t = f.querySelector('.err-t'); if (t) t.textContent = m; } });
+    $(`#nwf [data-fk="${errs[0][0]}"] input, #nwf [data-fk="${errs[0][0]}"] .csel`)?.focus();
+    const other = [...new Set(errs.map(x => x[2]).filter(t => t !== N.tab))].map(t => ({ a:'기본정보', b:'사업자정보', c:'거래정보' })[t]);
+    return toast(`입력 항목 ${errs.length}개를 확인하세요${other.length ? ` (${other.join(' · ')} 탭 포함)` : ''}.`, true);
+  }
+  const n = Math.max(...PARTNERS.map(p => +String(p.id).replace(/\D/g, '') || 0)) + 1, to = v.to || bdEnd(v.from, v.term) || '—';
+  const p = { id:'p' + n, seq:n, pid:v.pid, name:v.name, name2:v.name2, nat:v.nat, loc:v.loc, mode:v.mode, status:v.status, mods:v.svcs.filter(k => MOD[k]), cnt:0, rg:v.rg, rgTo:TODAY, rgT:`${v.rg} ${fDT(new Date()).slice(11)}`,
+    ceo:v.ceo, biz:v.biz || '—', tel:v.tel || v.btel || v.ceoMobile || '', mail:v.mail, url:'—', ip:'—', kt:v.ptype === '3=거래처', mobile:v.mobile, fax:v.fax, addr:v.addr, zip:v.zip, addr2:v.addr2,
+    bank:v.bank, acct:v.acct, vacct:v.vacct, holder:v.holder, code:v.code, ptype:v.ptype, grade:v.grade, rec:v.rec, stop:null };
+  PO_X.forEach(([k]) => { if (k in v) p[k] = Array.isArray(v[k]) ? [...v[k]] : v[k]; }); if (!p.bname) p.bname = v.name;
+  PARTNERS.unshift(p); poSync(p);
+  if (v.memo) CFG['work/memo'].rows.unshift({ id:'m' + Date.now(), target:v.pid, menu:'인증거래처관리', memo:v.memo, who:ME.name, dt:fDT(new Date()).slice(0, 16) });
+  audit('등록', `${v.name} · 아이디 ${v.pid} · 코드 ${v.code} · ${v.mode} · 계약 ${v.from} ~ ${to}`, PO_KEY, v.pid);
+  const st = ls(PO_KEY); st.q = ''; st.qf = ''; st.f = {}; st.sort = { k:'rg', dir:-1 }; st.cur = p.id; st.sel = new Set([p.id]); S.poTab = 'a';
+  closeModal(); render(); $(`.po-tw tr[data-id="${p.id}"]`)?.scrollIntoView({ block:'nearest' });
+  toast(`${v.name} 등록 완료 · 비밀번호 설정 안내를 ${v.mail}(으)로 발송`);
+}
+const nwStore = el => { const N = MD?.nw; if (!N) return; if (el.dataset.nwsvc || el.dataset.nwopt) { const key = el.dataset.nwsvc ? 'svcs' : 'opts', m = el.dataset.nwsvc || el.dataset.nwopt; N.v[key] = el.checked ? [...new Set([...N.v[key], m])] : N.v[key].filter(x => x !== m); }
+  else if (el.dataset.nw) N.v[el.dataset.nw] = el.type === 'checkbox' ? el.checked : el.value; MD.dirty = true; el.closest('.pf')?.classList.remove('err');
+  if (el.dataset.nw === 'term' && /^\d+$/.test(el.value)) { N.v.to = bdEnd(N.v.from, el.value) || N.v.to; }
+  if (el.dataset.nw === 'biz' && N.bizOk) { N.bizOk = ''; const b = el.closest('.pf-c')?.querySelector('.nw-chk'); if (b) { b.classList.remove('ok'); b.textContent = '사업자번호검증'; } }
+  if (el.dataset.nw === 'pid' || el.dataset.nw === 'code') { const b = el.closest('.pf-c')?.querySelector('.nw-chk'); if (b && b.classList.contains('ok')) { b.classList.remove('ok'); b.textContent = el.dataset.nw === 'pid' ? '아이디중복검증' : '제휴사코드중복검증'; } } };
+document.addEventListener('input', e => { if (e.target.closest?.('#nwf') && (e.target.dataset.nw || e.target.dataset.nwsvc || e.target.dataset.nwopt)) nwStore(e.target); });
+document.addEventListener('change', e => { if (e.target.closest?.('#nwf') && (e.target.dataset.nw || e.target.dataset.nwsvc || e.target.dataset.nwopt)) nwStore(e.target); });
+/* 상세: 서비스 · 사용옵션 체크 → 초안 */
+document.addEventListener('change', e => { const el = e.target.closest?.('.po-form [data-pofsvc], .po-form [data-pofopt]'); if (!el) return; const p = PARTNERS.find(x => x.id === $('.po-form').dataset.id), svc = !!el.dataset.pofsvc, key = svc ? 'svcs' : 'opts';
+  poSetDraft(p, key, (svc ? BD_SVC : BD_OPT).map(x => x[0]).filter(k => $(`.po-form [data-pof${svc ? 'svc' : 'opt'}="${k}"]`)?.checked)); const b = el.closest('[data-fk]'); b?.classList.remove('err'); b?.classList.toggle('chg', String(poVal(p, key)) !== String(p[key])); });
+/* 사업자번호검증 (등록 · 상세 공통) */
+PO_ACT['bd-bizchk'] = () => { const nw = !!MD?.nw, p = nw ? null : PARTNERS.find(x => x.id === ls(PO_KEY).cur), b = String((nw ? MD.nw.v.biz : poVal(p, 'biz')) || '').trim(), f = $(`${nw ? '#nwf' : '.po-form'} [data-fk="biz"]`), dg = b.replace(/-/g, '');
+  const bad = !b ? '사업자번호를 입력하세요.' : !/^\d{10}$/.test(dg) ? '사업자번호 10자리(숫자)를 확인하세요.' : PARTNERS.some(x => x !== p && String(x.biz || '').replace(/-/g, '') === dg) ? '이미 등록된 사업자번호입니다.' : '';
+  if (bad) { f?.classList.add('err'); const t = f?.querySelector('.err-t'); if (t) t.textContent = bad; return toast(bad, true); }
+  if (nw) { MD.nw.bizOk = b; poNew(); } else { S.poBizOk = `${p.id}|${b}`; render(); } toast(`사업자번호 ${b} — 형식 · 중복 확인 완료 (국세청 상태조회는 개발 단계에서 연결)`); };
+Object.assign(PO_ACT, {
+  'po-new': a => { if (MD) closeModal(); const T = a?.dataset?.t || 'a', p = PARTNERS.find(x => x.id === ls(PO_KEY).cur);
+    if (T === 'd') return poDocReg(p); if (T === 'e') return poEtcReg(p); if (T === 'f') { if (!p) return; rowAction(PO_KEY, p, '메모등록'); const f0 = MD?.onConfirm; if (f0) MD.onConfirm = () => { f0(); S.poTab = 'f'; render(); }; return; }
+    poNew({ tab:['b', 'c'].includes(T) ? T : 'a', sub:T === 'c' ? S.poSub : 's' }); },
+  'nw-tab': a => { MD.nw.tab = a.dataset.t; poNew(); },
+  'nw-sub': a => { MD.nw.sub = a.dataset.t; poNew(); },
+  'nw-idchk': () => { const N = MD.nw, id = N.v.pid.trim(), f = $('#nwf [data-fk="pid"]');
+    const bad = !id ? '아이디를 입력하세요.' : !/^[A-Za-z][A-Za-z0-9._-]{3,19}$/.test(id) ? '영문으로 시작하는 4~20자 (영문 · 숫자 · . _ -)' : PARTNERS.some(p => p.pid.toLowerCase() === id.toLowerCase()) || ACCOUNTS.some(a => a.uid.toLowerCase() === id.toLowerCase()) ? '이미 사용 중인 아이디입니다.' : '';
+    if (bad) { N.idOk = ''; f.classList.add('err'); f.querySelector('.err-t').textContent = bad; return toast(bad, true); }
+    N.idOk = id; poNew(); toast(`${id} — 사용할 수 있는 아이디입니다.`); },
+  'nw-codechk': () => { const N = MD.nw, c = N.v.code.trim(), f = $('#nwf [data-fk="code"]');
+    const bad = !c ? '제휴사 코드를 입력하세요.' : !/^\d+$/.test(c) ? '숫자만 입력하세요.' : PARTNERS.some(p => String(p.code ?? poNo(p)) === c) ? '이미 사용 중인 제휴사 코드입니다.' : '';
+    if (bad) { N.codeOk = ''; f.classList.add('err'); f.querySelector('.err-t').textContent = bad; return toast(bad, true); }
+    N.codeOk = c; poNew(); toast(`제휴사 코드 ${c} — 사용할 수 있습니다.`); },
+  'nw-acct': () => { const N = MD.nw; if (!N.v.bank) N.v.bank = '004=KB국민은행'; N.v.acct = `5620-81-${String(Math.floor(100000 + Math.random() * 899999))}`; N.v.vacct = true; if (!N.v.holder) N.v.holder = N.v.name || N.v.pid; poNew(); toast('가상계좌를 발급했습니다 (발급관리 › 계좌번호발급관리 연동 예정).'); },
+  'nw-rec': () => { const N = MD.nw, id = N.v.rec.trim(); if (!id) return toast('추천인 아이디를 입력하세요.', true); const p = PARTNERS.find(x => x.pid.toLowerCase() === id.toLowerCase()), a = ACCOUNTS.find(x => x.uid.toLowerCase() === id.toLowerCase());
+    if (!p && !a) { N.v.recName = ''; poNew(); return toast('추천인을 찾을 수 없습니다.', true); } N.v.rec = p?.pid || a.uid; N.v.recName = p ? p.name : `${a.man} (${a.org})`; poNew(); },
+  'nw-save': () => nwSave(),
+});
+GUARD['po-new'] = '등록'; GUARD['nw-save'] = '등록';
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && MD?.nw) { e.preventDefault(); e.stopPropagation(); nwSave(); } else if (e.key === 'Enter' && e.target.closest?.('#nwf input')) e.preventDefault(); }, true);
+
 Object.defineProperty(CFG['work/staff'].opts, 'role', { get:() => ROLES_.map(r => r.name), enumerable:true });
 /* =====================================================================
    고객 요청사항 · 개발 정보 (개발 인수인계)
@@ -2742,8 +4206,8 @@ const _Shell = Shell;
 Shell = (r, body) => {
   const open = REQS.filter(x => x.status === '접수' || x.status === '검토중').length;
   return _Shell(r, body)
-    .replace('<button class="ibtn" data-act="help"', `<button class="btn btn-sm btn-soft req-btn" data-act="req-new" title="이 화면에 대한 요청 남기기">${ic('message')}<span>요청 남기기</span></button>${S.dev ? `<button class="btn btn-sm btn-ghost dev-btn" data-act="dev-info" title="이 화면의 개발 정보">${ic('db')}<span>개발 정보</span></button>` : ''}<button class="ibtn" data-act="help"`)
-    .replace('<a href="#/bi"', `<a href="#/req" class="${r === 'req' ? 'on' : ''}" title="요청사항">${ic('memo')}<span>요청사항</span>${open ? `<span class="req-n">${open}</span>` : ''}</a>${S.dev ? `<a href="#/spec" class="${r === 'spec' ? 'on' : ''}" title="개발 명세">${ic('db')}<span>개발 명세</span></a>` : ''}<a href="#/bi"`)
+    .replace('<button class="ibtn" data-act="theme"', `<button class="btn btn-sm btn-soft req-btn" data-act="req-new" title="이 화면에 대한 요청 남기기">${ic('message')}<span>요청 남기기</span></button>${S.dev ? `<button class="btn btn-sm btn-ghost dev-btn" data-act="dev-info" title="이 화면의 개발 정보">${ic('db')}<span>개발 정보</span></button>` : ''}<button class="ibtn" data-act="theme"`)
+    .replace('<a class="dd-i" href="#/bi">', `<a class="dd-i" href="#/req">${ic('memo')}요청사항${open ? `<span class="req-n">${open}</span>` : ''}</a>${S.dev ? `<a class="dd-i" href="#/spec">${ic('db')}개발 명세</a>` : ''}<a class="dd-i" href="#/bi">`)
     .replace('<div class="dd-sep"></div>\n          <button class="dd-i" data-act="logout">', `<div class="dd-sep"></div><button class="dd-i" data-act="dev-mode">${ic(S.dev ? 'check' : 'db')}개발자 모드 ${S.dev ? '끄기' : '켜기'}</button>
           <div class="dd-sep"></div>
           <button class="dd-i" data-act="logout">`);
@@ -2814,7 +4278,11 @@ const SPEC_HEAD = () => [`# SIGNION BackOffice 개발 명세 (프로토타입 �
   '- **감사LOG**: 등록 · 수정(변경 전/후) · 삭제(사유) · 기능버튼 · 엑셀 · 리포트 · 개인정보 보기 · 권한/프로그램 변경 · 권한 없음 시도를 기록 (누가 · 역할 · 언제 · 메뉴 · 대상 · 내용 · IP). 수정/삭제 불가.',
   '- **삭제**: 사유 필수 · 논리삭제. 「삭제자료표시」 권한이 있으면 조회 가능.',
   '- **개인정보**: 성명 · 여권번호 등은 서버에서 마스킹해서 내려줌. 「개인정보 보기」는 사유 입력 후 1건씩 원문 조회 + 감사LOG.',
-  '- **보안**: 내부망/허용 IP 전용, 로그인 2단계 인증, 15분 미사용 시 자동 로그아웃, 검색엔진 차단. 세부 보안 기준은 확정 후 반영.', ''];
+  '- **보안**: 내부망/허용 IP 전용, 로그인 2단계 인증, 15분 미사용 시 자동 로그아웃, 검색엔진 차단. 세부 보안 기준은 확정 후 반영.',,
+  '- **대리점 과금 (KT 통합 Admin 정책)**: 계약 단위는 대리점 ID. 모든 관리자 계정 · 문서 · 사용량 · 인증 · 과금 이벤트에 대리점 ID를 붙이고 대리점별로 데이터 · 권한을 격리. 금액 · 한도는 「대리점 과금관리 › 계약 · 요금 설정」(`agency/setting`) 설정값에서만 읽음(고정 금액 구현 금지). 설정 저장 시 변경 이력 + 고객사 어드민 읽기 전용 반영.',
+  '- **집계 규칙**: 문서 처리 = 성공한 업로드 · 재업로드 · 다운로드 각 1건(실패 · 목록 조회 제외). 동시 보관 용량 = 실제 저장 바이트 합계(삭제 · 만료 시 차감). 여권인증 청구 = 결과 산출 건(성공 · 실패), 결과 미산출 제외. 외부 송신량은 내부 참고용(과금 제외).',
+  '- **월 정산**: 기본료 + MAX(인증 건수 × 단가, 최소료) + 유료 추가 계정(당월 최초 고객정보 · 문서 조회/처리한 계정, 생성 · 로그인만으로는 미과금, 당월 삭제해도 유지) + 확장팩(신청 즉시 적용 · 신청 월 전액). 일할계산 없음. VAT = floor(공급가액 × 10%). 월 마감 확정 시 설정값 스냅샷 고정, 이후 변경은 「정정」(사유 · 조정액 · 감사LOG)으로만.',
+  '- **한도 제어**: 보관 잔여 10% 경고 · 초과 시 업로드/다운로드 차단 · 문서 월 한도 도달 시 처리 제한 · 확장팩 신청 즉시 해제. 필요 팩 수 = max(문서 초과분 기준, 용량 초과분 기준).', ''];
 function SpecPage() {
   const rowsH = PROG_LIST.map(p => { const s = specOf(p.route); return `<tr><td class="mono muted">${s.programId}</td><td class="strong">${esc(s.screen)}</td><td class="mono muted">#/${p.route}</td><td class="num">${s.fields.length || '—'}</td><td>${s.filters?.map(f => esc(f.label)).join(', ') || '<span class="muted">—</span>'}</td><td>${[...s.acts, ...s.btns].map(a => `<span class="chip">${esc(a)}</span>`).join(' ')}</td><td><button class="btn btn-sm btn-ghost" data-act="dev-info" data-r="${p.route}">보기</button></td></tr>`; }).join('');
   return PH('개발 명세', '화면별 필드 · 검색조건 · 기능버튼 · 권한 코드 · API 초안을 프로토타입에서 그대로 뽑았습니다. 화면을 고치면 명세도 같이 바뀝니다.',
@@ -3132,6 +4600,45 @@ document.addEventListener('click', e => {
 });
 
 Object.values(CFG).forEach(cfg => { if (cfg.dateKey) return; const c = cfg.cols.find(c => c.t === 'date' && cfg.rows.length && cfg.rows.every(r => /^\d{4}-\d{2}-\d{2}/.test(r[c.k] || ''))); if (c) cfg.dateKey = c.k; });
+
+/* =====================================================================
+   상단 윈도우 탭 — 메뉴를 열면 탭으로 쌓이고, 눌러서 전환 · × 로 닫기 (대시보드 고정)
+   · 탭 목록은 이 브라우저 세션에 저장 (새로고침해도 유지) · 각 화면의 검색 조건 · 선택 상태는 그대로
+   ===================================================================== */
+const WT_MAX = 12;
+let WT = (() => { try { const a = JSON.parse(sessionStorage.getItem('sg_tabs') || '[]'); return Array.isArray(a) ? a.filter(x => typeof x === 'string') : []; } catch (e) { return []; } })();
+const wtSave = () => { try { sessionStorage.setItem('sg_tabs', JSON.stringify(WT)); } catch (e) {} };
+const wtLabel = r => { const c = crumbOf(r).filter(Boolean); return c[c.length - 1] || r; };
+const wtIcon = r => r === 'dashboard' ? 'grid' : r === 'req' ? 'memo' : r === 'spec' ? 'db' : r === 'bi' ? 'palette' : (MENU.find(m => m.id === r.split('/')[0])?.icon || 'file');
+function wtTouch(r) {
+  if (!r || r === 'login') return;
+  if (!WT.includes('dashboard')) WT.unshift('dashboard');
+  if (!WT.includes(r)) { WT.push(r); while (WT.length > WT_MAX) { const i = WT.findIndex(x => x !== 'dashboard' && x !== r); if (i < 0) break; wtDropped(WT[i]); WT.splice(i, 1); } }
+  wtSave();
+}
+function TabBar(r) {
+  wtTouch(r);
+  const dup = l => WT.filter(x => wtLabel(x) === l).length > 1, lbl = t => dup(wtLabel(t)) ? crumbOf(t).filter(Boolean).join(' › ') : wtLabel(t);
+  return `<div class="wtabs"><div class="wt-list" role="tablist" aria-label="열린 화면">${WT.map(t => `<div class="wtab ${t === r ? 'on' : ''}" role="tab" aria-selected="${t === r}" data-wt="${esc(t)}" title="${esc(menuName(t))}" tabindex="0">${ic(wtIcon(t))}<span>${esc(lbl(t))}</span>${t === 'dashboard' ? '' : `<button type="button" class="wt-x" data-wt-x="${esc(t)}" aria-label="${esc(lbl(t))} 탭 닫기" title="닫기">${ic('x')}</button>`}</div>`).join('')}</div>
+    ${WT.length > 2 ? `<button type="button" class="wt-all" data-wt-all title="대시보드 · 현재 화면만 남기고 닫기">다른 탭 닫기</button>` : ''}</div>`;
+}
+const wtDropped = t => { if (LS[t]) LS[t].poOpen = false; };
+function wtClose(t) {
+  const i = WT.indexOf(t); if (i < 0 || t === 'dashboard') return;
+  WT.splice(i, 1); wtSave(); wtDropped(t);
+  if (route() === t) location.hash = '#/' + (WT[i] || WT[i - 1] || 'dashboard'); else render();
+}
+{ const _S = Shell; Shell = (r, body) => _S(r, body).replace('</header>', '</header>' + TabBar(r)); }
+{ const _R = render; render = function () { _R.apply(this, arguments); const on = $('.wt-list .wtab.on'), l = $('.wt-list'); if (on && l) { const a = on.offsetLeft - 8, z = on.offsetLeft + on.offsetWidth + 8; if (a < l.scrollLeft) l.scrollLeft = a; else if (z > l.scrollLeft + l.clientWidth) l.scrollLeft = z - l.clientWidth; } }; }
+document.addEventListener('click', e => {
+  const x = e.target.closest('[data-wt-x]'); if (x) { e.preventDefault(); e.stopPropagation(); wtClose(x.dataset.wtX); return; }
+  if (e.target.closest('[data-wt-all]')) { const r = route(); WT.filter(t => t !== 'dashboard' && t !== r).forEach(wtDropped); WT = WT.filter(t => t === 'dashboard' || t === r); wtSave(); render(); return; }
+  const t = e.target.closest('[data-wt]'); if (t && t.dataset.wt !== route()) location.hash = '#/' + t.dataset.wt;
+}, true);
+document.addEventListener('auxclick', e => { const t = e.target.closest('[data-wt]'); if (t && e.button === 1) { e.preventDefault(); wtClose(t.dataset.wt); } });
+document.addEventListener('keydown', e => { const t = e.target.closest?.('[data-wt]'); if (!t) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '#/' + t.dataset.wt; } else if (e.key === 'Delete') wtClose(t.dataset.wt); });
+document.addEventListener('wheel', e => { const b = e.target.closest?.('.wt-list'); if (b && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { b.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive:false });
+
 render();
 </script>
 </body>
