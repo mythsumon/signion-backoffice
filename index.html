@@ -1433,12 +1433,190 @@ button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;wi
 .cs-q{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:13px;line-height:1.6;margin-bottom:12px;white-space:pre-wrap}
 .cs-q b{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
 @media (max-width:760px){.cs-two{grid-template-columns:1fr}}
+
+/* 댓글관리 */
+.rp-img{display:flex;align-items:center;gap:10px}
+.rp-img .ph-img{flex:0 0 180px;aspect-ratio:auto;min-height:90px}
+
+/* 상세 칸을 위까지: 제목 · 도구 막대는 목록 폭만, 오른쪽 상세는 맨 위부터 아래까지 (접속정보 패널을 켠 때는 기존 배치) */
+.po-main{--dw:minmax(420px,38%)}
+@media (max-width:1366px){.po-main{--dw:minmax(400px,36%)}}
+@media (min-width:1600px){.po-main{--dw:minmax(480px,34%)}}
+.po-main:has(> .po-body > .md-g){--dw:minmax(440px,36%)}
+.po-main:has(> .po-body > .ps-fee){--dw:minmax(460px,40%)}
+.po-main:has(> .po-body > .ps-conn){--dw:minmax(520px,46%)}
+@media (max-width:1366px){.po-main:has(> .po-body > .ps-conn){--dw:minmax(440px,46%)}}
+@media (min-width:1101px){
+  .po-main:not(.conn-on){grid-template-columns:minmax(0,1fr) var(--dw);grid-template-rows:auto auto minmax(0,1fr)}
+  .po-main:not(.conn-on) > .po-body,.po-main:not(.conn-on) > .po-body > .po-g{display:contents}
+  .po-main:not(.conn-on) > .po-h{grid-column:1;grid-row:1}
+  .po-main:not(.conn-on) > .po-tb{grid-column:1;grid-row:2}
+  .po-main:not(.conn-on) > .po-body > .po-g > .po-l{grid-column:1;grid-row:3}
+  .po-main:not(.conn-on) > .po-body > .po-g > .po-d{grid-column:2;grid-row:1 / -1}
+  .po-main:not(.conn-on):has(> .po-body > .po-adv){grid-template-rows:auto auto auto minmax(0,1fr)}
+  .po-main:not(.conn-on) > .po-body > .po-adv{grid-column:1;grid-row:3}
+  .po-main:not(.conn-on):has(> .po-body > .po-adv) > .po-body > .po-g > .po-l{grid-row:4}
+  .po-main:not(.conn-on) .po-q{flex:1 1 180px;width:auto;min-width:150px;max-width:340px}
+}
+
+/* Split View 손잡이 (목록 | 상세 경계) */
+.po-split{display:none}
+@media (min-width:1101px){
+  :root.dw-set .po-main:not(.conn-on){grid-template-columns:minmax(0,1fr) max(360px,min(var(--dwu),calc(100% - 452px)))}
+  .po-main:not(.conn-on) > .po-split{display:block;grid-column:2;grid-row:1 / -1;justify-self:start;width:12px;margin-left:-12px;position:relative;z-index:6;cursor:col-resize;touch-action:none;outline:0}
+  .po-split::before{content:'';position:absolute;top:0;bottom:0;left:5px;width:2px;border-radius:2px;background:transparent;transition:background .15s}
+  .po-split:hover::before,.po-split:focus-visible::before,.splitting > .po-split::before{background:var(--brand)}
+  .po-split-b{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:44px;padding:0;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  .po-split-b:hover,.po-split-b[aria-pressed="true"]{color:#fff;background:var(--brand);border-color:var(--brand)}
+  .po-split-b .i{width:14px;height:14px}
+  .splitting{cursor:col-resize;user-select:none}
+  .splitting .po-l,.splitting .po-d{pointer-events:none}
+}
+
+/* 제휴사 접속정보 관리 — 모달 */
+.pcscrim{z-index:66}
+.pcm{position:fixed;left:50%;top:50%;transform:translate(-50%,-47%);width:min(1120px,calc(100vw - 48px));height:min(780px,calc(100vh - 48px));display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--bg,var(--surface-2));border-radius:16px;box-shadow:var(--shadow-lg);z-index:67;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
+.pcm.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.pcm:not(.on){visibility:hidden}
+.pcm .pc-h{flex:none}
+.pcm .pc-h h2{font-size:17px;margin:0;letter-spacing:-.02em;white-space:nowrap;color:var(--brand)}
+.pcm .pc-tb{flex:none;margin:0;padding:10px 12px;gap:6px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.pcm .pc-tb .btn{padding-left:10px;padding-right:10px}
+.pcm .po-cn{flex:1;min-height:0}
+
+/* 자동 전환된 메뉴의 상세 */
+.md-auto-d .po-db > .tabs{position:sticky;top:-14px;z-index:2;background:var(--surface);margin:-14px -16px 12px;padding:6px 16px 0;overflow-x:auto;flex-wrap:nowrap}
+.md-auto-d .po-db > .tabs .tab{white-space:nowrap}
+.md-auto-d .po-dh h2 .badge{font-size:11.5px}
+.md-auto-d .kv{grid-template-columns:120px minmax(0,1fr)}
+
+.sms-mt table{table-layout:fixed;width:100%}.sms-mt th,.sms-mt td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sms-mt th,.sms-mt td{padding-left:6px!important;padding-right:6px!important}
+.sms-mt th.ck,.sms-mt td.ck{width:38px;overflow:visible;text-overflow:clip}.sms-mt th:nth-child(2){width:58px}.sms-mt th:nth-child(4){width:28%}.sms-mt th:nth-child(5){width:118px}
+.sms-pk .fld .hint{margin-bottom:6px}
+/* SMS전송관리 */
+.sms-msg{white-space:pre-wrap;min-height:120px}
+.modal.sms-modal{width:min(1180px,calc(100vw - 32px))}
+.sms-pk{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(220px,.7fr);gap:16px;align-items:start}
+.sms-pk.two{grid-template-columns:minmax(0,1.4fr) minmax(240px,.8fr)}
+.sms-pk > section{min-width:0}
+.sms-mq{display:flex;gap:6px;margin-bottom:8px}.sms-mq .sfield{flex:1;min-width:0}.sms-mq .select{width:auto}
+.sms-mt{height:360px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.sms-mt thead th{position:sticky;top:0;z-index:1}
+.sms-mt tbody tr{cursor:pointer}.sms-mt tbody tr.sel td{background:var(--brand-50)}
+.sms-mn{font-size:12.5px;margin-top:6px;display:flex;gap:8px;align-items:center}
+.sms-ml.err .sms-mt{border-color:var(--bad)}.sms-ml .err-t{display:none}.sms-ml.err .err-t{display:block}
+.sms-cp{display:flex;flex-direction:column;gap:10px}
+.sms-cp .pf{grid-template-columns:86px minmax(0,1fr) 0}
+.sms-cp .fld label,.sms-pk .fld > label{display:flex;align-items:center;gap:6px}
+.sms-cnt{font-size:12px;color:var(--muted);font-weight:500}.sms-cnt.over{color:var(--bad)}
+.sms-files{display:flex;gap:6px;flex-wrap:wrap}.sms-file{cursor:pointer;max-width:100%}.sms-file span{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sms-gd .pf{grid-template-columns:96px minmax(0,1fr) 0;margin-bottom:8px}
+.sms-gl{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto}
+.sms-gi{text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:3px;font:inherit;color:inherit}
+.sms-gi:hover{border-color:var(--brand);background:var(--brand-50)}
+.sms-gi b{font-size:12.5px}.sms-gi span{font-size:12px;color:var(--muted);white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.sms-book{max-height:260px;overflow:auto;right:0;left:auto;min-width:240px}
+@media(max-width:1100px){.sms-pk,.sms-pk.two{grid-template-columns:1fr}}
+
+/* SMS — 회원선택 · 전송메시지등록 (레거시 배치) */
+.modal.sms-modal .m-b{overflow:auto}
+.sms-mtb{display:flex;gap:8px;align-items:center;margin-bottom:10px}.sms-mtb .sfield{width:300px;max-width:100%}.sms-mtb .select{width:auto}
+.sms-mg{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.6fr);gap:14px;height:min(520px,calc(100vh - 290px))}
+.sms-md{overflow:auto;padding:4px 14px 12px;margin:0}
+.sms-dt{position:sticky;top:-4px;background:var(--surface);z-index:1;overflow-x:auto;flex-wrap:nowrap;margin:0 -14px 4px;padding:4px 10px 0}.sms-dt .tab{white-space:nowrap;padding-left:7px;padding-right:7px;font-size:12.5px}
+.sms-dl{display:flex;flex-direction:column}.sms-dr{display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.sms-dr span{color:var(--muted)}.sms-dr b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sms-ml{display:flex;flex-direction:column;min-height:0}.sms-lh{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.sms-pkm .sms-mt{flex:1;height:auto;min-height:0}
+.sms-pkm .sms-mt th:nth-child(2){width:72px}.sms-pkm .sms-mt th:nth-child(3){width:96px}.sms-pkm .sms-mt th:nth-child(4){width:72px}.sms-pkm .sms-mt th:nth-child(6),.sms-pkm .sms-mt th:nth-child(7){width:22%}
+.sms-mt tbody tr.cur td{background:var(--brand-50)!important;box-shadow:inset 0 0 0 0 transparent}.sms-mt tbody tr.cur td:first-child{box-shadow:inset 3px 0 0 var(--brand)}
+.sms-mt tbody tr.is-del td{color:var(--muted)}
+.sms-to{margin-bottom:12px}.sms-to label{display:flex;align-items:center;gap:6px}.sms-to textarea{width:100%}
+.sms-tn{font-size:12px;color:var(--brand);font-weight:600}
+.sms-it{width:100%;table-layout:fixed;border:1px solid var(--line);border-radius:10px;overflow:hidden}.sms-it th:first-child{width:34px}.sms-it th:last-child{width:128px}.sms-it td{padding-top:4px!important;padding-bottom:4px!important}.sms-it td.r{text-align:right;white-space:nowrap}.sms-it td.r > *{display:inline-flex;vertical-align:middle}.sms-it td.r .ibtn{width:28px;height:28px}
+.sms-fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
+.sms-vf{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:5px 6px 5px 12px}.sms-vf .sms-fn{flex:1;min-width:0}
+.sms-gw{border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:470px}
+.sms-gt{width:100%;table-layout:fixed}.sms-gt th:first-child{width:70px}.sms-gt th:nth-child(2){width:56px}.sms-gt thead th{position:sticky;top:0;z-index:1}
+.sms-gt tbody tr{cursor:pointer}.sms-gt tbody tr:hover td{background:var(--brand-50)}
+.sms-gc b{display:block;font-size:12.5px}.sms-gc span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;color:var(--muted);white-space:pre-wrap}
+@media(max-width:1100px){.sms-mg{grid-template-columns:1fr;height:auto}.sms-md{max-height:260px}}
+
+.sms-lab{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.sms-ic{font-size:12px;color:var(--muted);font-weight:500}
+.sms-iw{max-height:176px;overflow:auto;border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s}
+.sms-iw.drag{border-color:var(--brand);border-style:dashed;background:var(--brand-50)}
+.sms-iw .sms-it{border:0;border-radius:0}.sms-iw thead th{position:sticky;top:0;z-index:1}
+.sms-it th:nth-child(3){width:70px}.sms-it th:last-child{width:44px!important}
+.sms-ie td{color:var(--muted);font-size:12.5px;text-align:center;padding:14px 8px!important}.sms-ie .i{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+#sm_iab.disabled{opacity:.45;pointer-events:none}
+
+/* PUSH전송관리 */
+.pu-lv{display:flex;align-items:center;gap:8px;min-width:0}.pu-lv .mono{flex:1;min-width:0}
+.pu-img{min-height:220px}
+.pu-pk{display:grid;grid-template-columns:minmax(290px,.95fr) minmax(220px,.62fr) minmax(0,1.75fr);gap:14px;height:min(560px,calc(100vh - 230px))}
+.pu-pk > section{min-width:0;min-height:0}
+.pu-cp{overflow:auto;padding-right:4px}.pu-cp .pf{grid-template-columns:86px minmax(0,1fr) 0}
+.pu-dh{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;padding:10px 0 6px}.pu-dh .i{width:15px;height:15px;color:var(--brand)}
+.pu-pk .sms-ml{display:flex;flex-direction:column}.pu-pk .sms-mt{flex:1;min-height:0;height:auto}
+.pu-mt table{table-layout:fixed;width:100%}.pu-mt th,.pu-mt td{padding-left:6px!important;padding-right:6px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pu-mt th.ck,.pu-mt td.ck{width:36px;overflow:visible}.pu-mt th:nth-child(2){width:31%}.pu-mt th:nth-child(3){width:86px}.pu-mt th:nth-child(4){width:19%}.pu-mt th:nth-child(5){width:13%}.pu-mt th:nth-child(6){width:106px}
+.pu-dd .sms-dr{grid-template-columns:78px minmax(0,1fr)}.pu-dd .sms-dr b{white-space:normal;word-break:break-all}
+.pu-prev{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface-2);display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.pu-prev b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pu-prev > span{color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pu-pa{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}.pu-pa .i{width:13px;height:13px;color:var(--brand)}.pu-pa .muted{margin-left:auto}
+@media(max-width:1100px){.pu-pk{grid-template-columns:1fr;height:auto}}
+
+/* 이용안내관리 · 공지사항관리 */
+.gb-nw{display:flex;flex-direction:column;gap:8px}
+.gb-nw .pf{grid-template-columns:100px minmax(0,1fr) 0}
+.gb-area textarea{width:100%;min-height:150px}
+.gb-nw .pf-c > .gb-file{width:100%}.pu-lv > .mono{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gb-file{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:4px 6px 4px 12px}.gb-file .sms-fn{flex:1;min-width:0}
+.gb-pv{margin-top:6px;border:1px dashed var(--line);border-radius:10px;padding:8px;text-align:center;max-height:220px;overflow:auto}.gb-pv img{max-width:100%;max-height:200px;border-radius:6px}.gb-pv .ph-img{min-height:90px}
+.gb-img{display:block;max-width:100%;max-height:60vh;margin:0 auto;border-radius:8px}
+
+/* 직원관리 */
+.sf-chk{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;color:var(--muted);white-space:nowrap}.sf-chk .i{width:12px;height:12px}.sf-chk.on{color:var(--ok,#16a34a)}
+.sf-sep{height:1px;background:var(--line-2);margin:6px 0}
+.sf-docs{width:100%;table-layout:fixed}.sf-docs th:first-child{width:96px}.sf-docs th:last-child{width:78px}
+.sf-memos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.sf-memos li{border:1px solid var(--line-2);border-radius:10px;padding:8px 10px;font-size:13px}.sf-memos li > span{font-size:11.5px}
+.sf-perm{display:flex;flex-direction:column;gap:8px}
+.sf-pq{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.sf-pq .sfield{flex:1 1 160px;min-width:0}.sf-pq .select{width:auto;max-width:180px}
+.sf-pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.sf-ph{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:4px}.sf-ph .muted{font-size:12px}
+.sf-pt{border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:260px}.sf-pt table{width:100%;table-layout:fixed}.sf-pt thead th{position:sticky;top:0;z-index:1}
+.sf-pt th.ck,.sf-pt td.ck{width:34px}.sf-pt th:nth-child(2){width:48px}.sf-pt td,.sf-pt th{padding-left:6px!important;padding-right:6px!important}
+.sf-pt tbody tr{cursor:pointer}.sf-pt tbody tr.sel td{background:var(--brand-50)}
+.modal.sf-modal{width:min(760px,calc(100vw - 32px))}
+.sf-ftabs{padding:0 24px;margin:0;border-bottom:1px solid var(--line-2)}.sf-ftabs .tab{position:relative}
+.sf-dot{position:absolute;top:6px;right:2px;width:7px;height:7px;border-radius:50%;background:var(--bad)}
+.sf-fb{height:min(560px,calc(100vh - 250px));overflow:auto}
+.sf-nw{display:flex;flex-direction:column;gap:7px}.sf-nw .pf{grid-template-columns:196px minmax(0,1fr) 0}
+.sf-row{display:flex;align-items:center;gap:6px;width:100%}.sf-row .input{flex:1;min-width:0}.sf-row .select{width:auto;flex:none}.sf-row .num.sf-num{max-width:200px;text-align:right}
+.sf-cb{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;white-space:nowrap;cursor:pointer}
+.sf-ht{font-weight:700;font-size:13px;margin:6px 0 2px;color:var(--ink-2)}
+.sf-im-msg{color:var(--bad);font-size:12.5px;font-weight:600;margin:12px 0 0}.sf-im-msg.ok{color:var(--brand)}
+
+.sf-pmode{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;padding:8px 10px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--ink-2)}
+.sf-pmode .i{width:15px;height:15px;flex:none;margin-top:1px;color:var(--muted)}.sf-pmode.custom{background:var(--brand-50);border-color:var(--brand-100)}.sf-pmode.custom .i{color:var(--brand)}
+
+/* 서비스 권한 — 체크 · 끌어다 놓기로 이동 */
+.sf-perm{container-type:inline-size}
+.sf-pg{grid-template-columns:minmax(0,1fr)!important}.sf-pmid{display:none}
+@container (min-width:620px){.sf-pg{grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr)!important}.sf-pmid{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;color:var(--muted)}.sf-pmid span{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;display:grid;place-items:center;background:var(--surface)}.sf-pmid .i{width:13px;height:13px}.sf-pt{max-height:420px}}
+.sf-pt tr[draggable="true"]{cursor:grab}.sf-pt tr.dragging td{opacity:.45}
+.sf-pg.dnd .sf-pt[data-drop]{outline:2px dashed var(--line);outline-offset:-2px}
+.sf-pt.drop-on{outline:2px dashed var(--brand)!important;background:var(--brand-50)}
+.sf-pe td{color:var(--muted);text-align:center;padding:18px 8px!important;font-size:12.5px}
+.sf-pt tbody tr:hover td{background:var(--brand-50)}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="scrim pcscrim" id="pcscrim"></div><div class="pcm" id="pcm" role="dialog" aria-modal="true" aria-label="제휴사 접속정보 관리"></div>
 <div class="scrim mscrim" id="mscrim"></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
 <div class="toasts" id="toasts"></div>
@@ -1484,7 +1662,7 @@ const IC = {
   bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/>',
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   moon:'<path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.5 6.5 0 0 0 10 10z"/>',
-  chev:'<path d="M9 6l6 6-6 6"/>', up:'<path d="M6 15l6-6 6 6"/>', down:'<path d="M6 9l6 6 6-6"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>', chevl:'<path d="M15 6l-6 6 6 6"/>', up:'<path d="M6 15l6-6 6 6"/>', down:'<path d="M6 9l6 6 6-6"/>',
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
   download:'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
   upload:'<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
@@ -1722,7 +1900,7 @@ const MENU = [
   { sec:'운영' },
   { id:'code', label:'기초코드관리', icon:'db', children:[['nation','국가코드관리'],['bank','은행코드관리'],['cardco','카드사코드관리'],['zip','우편번호관리'],['vacct','가상계좌번호채번관리'],['vcard','가상카드번호채번관리']] },
   { id:'issue', label:'발급관리', icon:'card', children:[['card','카드번호발급관리'],['acct','계좌번호발급관리']] },
-  { id:'cs', label:'고객센터', icon:'headset', children:[['top','상단관리'],['comment','상담관리'],['bot','챗봇관리'],['sms','SMS전송관리'],['push','PUSH전송관리'],['notice','공지사항관리'],['guide','이용안내관리']] },
+  { id:'cs', label:'고객센터', icon:'headset', children:[['top','상단관리'],['comment','상담관리'],['reply','댓글관리'],['bot','챗봇관리'],['sms','SMS전송관리'],['push','PUSH전송관리'],['notice','공지사항관리'],['guide','이용안내관리']] },
   { id:'work', label:'작업관리', icon:'settings', children:[['staff','직원관리'],['prog','프로그램관리'],['memo','자료메모관리'],['datalog','데이터수정LOG'],['role','권한관리'],['audit','감사LOG']], newKids:['work/role','work/audit'] },
 ];
 function crumbOf(r) {
@@ -2042,25 +2220,122 @@ CFG['cs/top'] = { title:'상단관리', desc:'관리자/서비스 화면 상단 
     cols:[C('seq','전산코드','num',{ro:1}),C('dt','등록날짜','date'),C('mid','상담회원아이디','mono',{main:1}),C('mname','상담회원명','strong'),C('cid','상담자아이디','mono'),C('cname','상담자명'),C('ctype','상담종류'),C('title','상담제목'),C('done','처리'),C('st','상태')],
     opts:{ ctype:['1:1문의','인증','카드','계좌','요금','기타'], done:['미처리','처리완료'], mtype:['회원','가맹점','비회원'], st:['정상','중지'] }, filters:['ctype','done','mtype'], extra:[['check','처리결과등록']] };
 })();
+/* 댓글관리 (레거시 「댓글 관리」 — 가맹점 상품에 회원이 남긴 댓글 · 후기) */
+(() => {
+  const D = [['2026-10-02','kim.minsu','KIM MINSU','dcmud001','카페오','P1001','아메리카노','상품후기','커피가 진하고 맛있어요. 다음에도 올게요.','review_1001.jpg'],
+    ['2026-10-05','nguyen.an','NGUYEN VAN AN','dcmud002','보령머드_18','P2003','머드 체험권','상품후기','아이들이 정말 좋아했습니다!',''],['2026-10-09','siti.r','SITI RAHMAWATI','beauty01','뷰티마켓','P3100','수분 크림','상품문의','민감성 피부에도 사용할 수 있나요?',''],
+    ['2026-10-12','tran.hoa','TRAN THI HOA','dcmud004','미세스조김밥명가','P4002','참치김밥','상품후기','양이 많고 신선해요.','review_4002.jpg'],['2026-10-15','ram.thapa','RAM BAHADUR THAPA','waikiki','와이키키마켓','P5010','선크림 SPF50','상품후기','해변에서 쓰기 좋아요.',''],
+    ['2026-10-18','anon01','익명','dcmud006','대천본가','P6001','해물칼국수','신고','다른 가게 광고 글을 반복해서 올립니다.',''],['2026-10-21','budi.s','BUDI SANTOSO','dcmud007','가장맛있는족발(대천해수욕장)','P7003','족발 중','상품후기','포장도 깔끔하고 맛있었습니다.','review_7003.jpg'],
+    ['2026-10-25','le.tuan','LE MINH TUAN','newseoul','뉴서울호텔','P8001','스탠다드 룸','상품문의','체크인 시간이 언제인가요?',''],['2026-10-30','dewi.l','DEWI LESTARI','dcmud010','파레브회조개구이','P9002','조개구이 세트','상품후기','바다 보면서 먹으니 최고!','review_9002.jpg'],
+    ['2026-11-03','kim.minsu','KIM MINSU','dcmud001','카페오','P1002','카페라떼','상품후기','라떼 거품이 부드러워요.',''],['2026-11-06','pham.trang','PHAM THU TRANG','dream1','드림오브컴퍼니','P1201','기념품 세트','상품문의','해외 배송도 되나요?',''],['2026-11-09','bekzod.t','BEKZOD TOSHMATOV','dcmud015','오븐에 빠진닭','P1502','오븐구이 반반','상품후기','바삭하고 맛있어요.','']];
+  CFG['cs/reply'] = { title:'댓글관리', desc:'가맹점 상품에 회원이 남긴 댓글(후기 · 문의 · 신고)을 확인하고, 문제 있는 댓글을 삭제합니다. 댓글은 회원이 작성하므로 여기서 등록 · 수정하지 않습니다.', noCreate:true, noEditBtn:true, dateKey:'dt',
+    rows:D.map(([dt, uid, uname, sid, sname, pcode, pname, kind, txt, img], i) => ({ id:'rp' + i, seq:i + 1, dt, uid, uname, sid, sname, pcode, pname, kind, txt, img, st:'정상', chgAt:'', chgWhy:'', by:uid })),
+    cols:[C('seq','전산코드','num',{ro:1}),C('dt','등록날짜','date'),C('uid','댓글자아이디','mono',{main:1}),C('uname','댓글자명','strong'),C('sid','가맹점아이디','mono'),C('sname','가맹점명'),C('pcode','상품코드','mono'),C('pname','상품명'),C('kind','댓글종류'),C('txt','댓글')],
+    opts:{ kind:['상품후기','상품문의','신고'] }, filters:['kind'] };
+})();
 CFG['cs/bot'] = { title:'챗봇관리', desc:'인증 화면 챗봇 FAQ 시나리오',
   cols:[C('intent','인텐트','mono',{main:1}),C('q','대표 질문','strong'),C('a','답변'),C('lang','언어','mono'),C('use','사용','badge')],
   rows: rows(['intent','q','a','lang','use'],[['cam.denied','카메라가 켜지지 않아요','브라우저 설정에서 카메라 권한을 허용해 주세요.','KOR','사용'],['nfc.unsupported','NFC가 안 돼요','NFC 미지원 기기는 OCR+안면인식으로 진행됩니다.','KOR','사용'],['ocr.retry','여권 인식이 계속 실패해요','빛 반사가 없는 곳에서 여권 전체가 보이도록 촬영해 주세요.','KOR','사용']]), opts:{ use:['사용','미사용'], lang:['KOR','USA','VNM','IDN'] } };
-CFG['cs/sms'] = { title:'SMS전송관리', desc:'관리자 2FA 인증번호 · 안내 문자 발송 이력',
-  cols:[C('to','수신번호','mono',{main:1}),C('tpl','템플릿'),C('txt','내용'),C('dt','발송일시','date'),C('status','결과','badge')],
-  rows: rows(['to','tpl','txt','dt','status'],[['+62-812-****-3301','서류 보완 요청','[SIGNION] 가입신청서 3번째 장이 누락되었습니다.','2026-11-05 09:31','발송완료'],['+84-91-****-552','인증 URL 안내','[SIGNION] 여권인증을 진행해 주세요. https://signion.net/…','2026-11-05 09:12','발송완료'],['+977-98-****-110','인증 URL 안내','[SIGNION] 여권인증을 진행해 주세요.','2026-11-04 18:40','발송실패']]), opts:{ status:['발송완료','발송실패','예약'] } };
-CFG['cs/push'] = { title:'PUSH전송관리', desc:'APP PUSH 발송 관리',
-  cols:[C('target','대상','strong',{main:1}),C('title','제목'),C('dt','발송일시','date'),C('open','오픈율','num'),C('status','상태','badge')],
-  rows: rows(['target','title','dt','open','status'],[['전체 영업소 관리자','11월 정기 점검 안내','2026-11-05 09:00','62%','발송완료'],['HDINFINITY 서브','서류 검수 지연 안내','2026-11-06 09:00','—','예약']]), opts:{ status:['발송완료','예약','발송실패'] } };
-CFG['cs/notice'] = { title:'공지사항관리', desc:'관리자 공지사항',
-  cols:[C('title','제목','strong',{main:1}),C('target','대상'),C('who','작성자'),C('dt','등록일','date'),C('views','조회','num'),C('use','상태','badge')],
-  rows: rows(['title','target','who','dt','views','use'],[['[필독] 개인정보 보관 기간 정책 안내','전체','김시그','2026-11-03',182,'게시'],['KT 통합관리자 시스템 오픈 안내','KT · 대리점','김시그','2026-11-01',344,'게시'],['관리자 2단계 인증 의무화','전체','운영팀','2026-10-28',291,'게시']]), opts:{ use:['게시','숨김'] } };
-CFG['cs/guide'] = { title:'이용안내관리', desc:'관리자/고객 이용 가이드',
-  cols:[C('title','제목','strong',{main:1}),C('cat','분류'),C('lang','언어','mono'),C('dt','수정일','date'),C('use','상태','badge')],
-  rows: rows(['title','cat','lang','dt','use'],[['필수 서류 업로드 가이드','KT 관리자','KOR','2026-11-02','게시'],['여권 촬영 가이드','고객','KOR','2026-10-20','게시'],['Passport capture guide','고객','USA','2026-10-20','게시'],['Hướng dẫn chụp hộ chiếu','고객','VNM','2026-10-20','게시']]), opts:{ use:['게시','숨김'] } };
-CFG['work/staff'] = { title:'직원관리', desc:'SIGNION 본사 백오피스 직원 계정 · 권한',
-  cols:[C('uid','계정','mono',{main:1}),C('name','이름','strong'),C('dept','부서'),C('role','권한'),C('mail','이메일 (2FA)'),C('last','최근 접속','date'),C('status','상태','badge')],
-  rows: rows(['uid','name','dept','role','mail','last','status'],[['signion.admin','김시그','운영팀','SysAdmin','admin@signion.example','2026-11-05 10:12','정상'],['ops.choi','최운영','운영팀','운영 관리자','ops.choi@signion.example','2026-11-05 08:51','정상'],['lab.kim','김연구','연구소','연구소 개발자','lab.kim@signion.example','2026-11-05 09:02','정상'],['cs.park','박상담','CS','상담원 (CS)','cs.park@signion.example','2026-11-04 18:20','정상'],['cs.lee','이응대','CS','상담원 (CS)','cs.lee@signion.example','2026-11-04 17:42','정상'],['biz.jang','장사업','사업기획','조회 전용','biz@signion.example','2026-11-03 14:11','정상'],['old.lee','이퇴사','운영팀','상담원 (CS)','old@signion.example','2026-08-30 17:00','중지']]),
-  opts:{ status:['정상','중지'], role:[] }, filters:['role','status'] };
+/* SMS전송관리 (레거시 「SMS 전송 관리」 — 회원선택 · 수동입력 메시지 보내기, 전송내역) */
+const SMS_MEM = [['lordsystem','로드시스템_SA','SA','01033120001'],['lordmaster','로드마스터','회사','01033120002'],['lordshop','(주)로드시스템','가맹점','01049938226'],['nonuseraccount','미지정회원','회사','01032939871'],
+  ['pickerman','피커맨사무실','피커','01055120044'],['lordsystemsa_foreign','LORDSYSTEMSA_해외거래','회사','01055120045'],['ziongib','시온집','여행사','01055120046'],['waikiki','와이키키마켓','가맹점','01055120047'],
+  ['cknia','쿠이엔씨아','가맹점','01055120048'],['projectmc','프로젝트엠씨','가맹점','01055120049'],['dream1','드림오브컴퍼니','가맹점','01055120050'],['newseoul','뉴서울호텔','가맹점','01055120051'],
+  ['dcmud001','카페오','가맹점','01042498226'],['dcmud002','보령머드_18','가맹점','01042498227'],['dcmud004','미세스조김밥명가','가맹점','01042498228'],['dcmud006','대천본가','가맹점','01042498229'],
+  ['dcmud007','가장맛있는족발(대천해수욕장)','가맹점','01042498230'],['dcmud010','파레브회조개구이','가맹점','01042498231'],['dcmud015','오븐에 빠진닭','가맹점','01042498232'],['lordshoptest','로드샵_테스트3','가맹점','01042498226']];
+const SMS_TPL = [['인증','여권인증 안내','[SIGNION] 여권인증을 진행해 주세요.\nhttps://signion.net/v/'],['인증','인증번호','[SIGNION] 인증번호 [######] 를 3분 안에 입력하세요.'],
+  ['안내','가맹점 안내','가맹점 안내 메시지...\n가맹점=로드숍\n감사합니다.'],['보완','서류 보완 요청','[SIGNION] 제출하신 서류 중 보완이 필요한 항목이 있습니다. 관리자 화면에서 확인해 주세요.']];
+const smsBytes = t => [...String(t || '')].reduce((n, c) => n + (c.charCodeAt(0) > 127 ? 2 : 1), 0);
+const smsType = (txt, files) => files ? 'MMS' : smsBytes(txt) > 90 ? 'LMS' : 'SMS';
+(() => {
+  const M = Object.fromEntries(SMS_MEM.map(m => [m[0], m])), R = [];
+  const add = (dt, uid, title, msg, img, res = '성공', tel) => { const m = M[uid]; const imgs = img ? [img] : [];
+    R.push({ id:'sm' + R.length, seq:R.length + 1, mtype:smsType(msg, imgs.length), dt, tel:tel || m?.[3] || '', uid:m ? uid : '', uname:m ? m[1] : '', grade:m ? m[2] : '', res, title, msg, imgs, video:'', by:'lordsystem' }); };
+  for (let i = 0; i < 5; i++) add('2026-10-18', 'lordshop', '', '가맹점 안내 메시지...\n가맹점=로드숍\n감사합니다.', `PAPER1_2026101812244${i}_1.jpg`);
+  add('2026-10-18', '', '', '[SIGNION] 관리자 공지 — 11월 정기 점검은 11/10(화) 02:00~04:00 입니다. 점검 시간에는 인증 요청이 지연될 수 있습니다.', '', '성공', '01032939871');
+  for (let i = 0; i < 6; i++) add('2026-10-19', '', '', '가맹점 안내 메시지...\n감사합니다.', 'PAPER1_20261019090000_1.jpg', '성공', '01032939871');
+  add('2026-10-19', 'nonuseraccount', 'sigh', '[SIGNION] 인증번호 [482913] 를 3분 안에 입력하세요.');
+  add('2026-10-19', '', '', '[SIGNION] 인증번호 [117245]', '', '성공', '01032939871');
+  add('2026-10-20', 'lordshoptest', '', '[SIGNION] 여권인증을 진행해 주세요.\nhttps://signion.net/v/A1B2');
+  add('2026-10-20', '', '00', '[SIGNION] 테스트', '', '실패', '01032939871');
+  add('2026-10-21', 'lordshoptest', '00', '[SIGNION] 테스트 발송');
+  add('2026-10-21', 'nonuseraccount', '111', '[SIGNION] 제출하신 서류 중 보완이 필요한 항목이 있습니다. 관리자 화면에서 확인해 주세요.');
+  for (let i = 0; i < 5; i++) add('2026-10-23', 'lordshop', '456', '가맹점 안내 메시지...\n가맹점=로드숍\n감사합니다.', 'PAPER1_20261023101500_1.jpg');
+  ['dcmud001', 'dcmud002', 'dcmud004', 'dcmud006', 'dcmud007', 'dcmud010', 'dcmud015', 'waikiki', 'dream1', 'newseoul'].forEach((u, i) => add('2026-11-0' + (1 + i % 5), u, '567', '[SIGNION] 11월 정산서가 발행되었습니다. 관리자 화면에서 확인해 주세요.', i % 3 ? '' : 'NOTICE_202611.jpg', i === 6 ? '실패' : '성공'));
+  CFG['cs/sms'] = { title:'SMS전송관리', desc:'회원 · 가맹점에 보낸 SMS · LMS · MMS 전송 내역. 회원을 골라 보내거나 번호를 직접 입력해 보냅니다.', noCreate:true, noEdit:true, dateKey:'dt',
+    extra:[['users','회원선택 SMS메세지보내기'],['edit','수동입력 SMS메세지보내기']],
+    rows:R, cols:[C('seq','전산코드','num',{ro:1}),C('mtype','메세지타입'),C('dt','등록날짜','date'),C('tel','전화번호','mono',{main:1}),C('uname','수신자정보'),C('res','전송결과'),C('title','메세지제목'),C('grade','직급')],
+    opts:{ mtype:['SMS','LMS','MMS'], res:['성공','실패','예약'], grade:['SA','회사','가맹점','피커','여행사'] }, filters:['mtype','res','grade'] };
+})();
+/* PUSH전송관리 (레거시 「PUSH 전송 관리」 — 앱 설치 기기에 PUSH 메시지 보내기, 전송 내역) */
+const PUSH_APK = ['서울페이 IOS APP', '서울페이 AOS APP', 'Android TRIP-PASS (신버전)', 'Android-LORDPOS 스마트폰'];
+const PUSH_KIND = ['결제요청=1001', '공지사항=1002', '이벤트=1003', '인증안내=1004'];
+const PUSH_DEV = [['sinay03', '', '01011111111', 0, 'KOR'], ['sinay02', '', '01058227950', 1, 'KOR'], ['fwang@bossonf', '', '01088387614', 2, 'CHN'], ['sinay03', '', '01034808046', 1, 'KOR'], ['kukupuku7', '', '01042218917', 0, 'KOR'],
+  ['lordman', '소성곤', '01011111111', 1, 'KOR'], ['sunjoh007', '', '01054215570', 1, 'KOR'], ['f5cm49kq', 'LIU YUN', '01089886329', 0, 'CHN'], ['90cupidity', '', '01059438819', 1, 'KOR'], ['yichoi22', '', '01038828226', 1, 'KOR'],
+  ['yeon427', '', '01059438819', 0, 'KOR'], ['test0070', '', '01058227950', 1, 'KOR'], ['yichoi633', 'CHOI YUJEONG', '01029634318', 0, 'KOR'], ['sesh07', 'HONG KIL SOON', '01034808046', 1, 'KOR'], ['test0083', '', '01075246226', 1, 'KOR'],
+  ['test5678', '', '01056398226', 1, 'KOR'], ['seay03', 'BAI YUNZHE', '01034808046', 0, 'CHN'], ['test7890', '', '01056398226', 2, 'KOR'], ['test100', '', '01058227950', 1, 'KOR'], ['seay02', 'BAI YUNZHE', '01034808046', 0, 'CHN'],
+  ['testid', '테스트 아이디(내부용)', '01029632470', 3, 'KOR'], ['nguyen.an', 'NGUYEN VAN AN', '01077120011', 2, 'VNM'], ['siti.r', 'SITI RAHMAWATI', '01077120012', 2, 'IDN'], ['budi.s', 'BUDI SANTOSO', '01077120013', 3, 'IDN']]
+  .map(([uid, name, tel, a, nat], i) => ({ id:'pd' + i, seq:59 - i, uid, name, tel, apk:PUSH_APK[a], nat, rg:`2026-${String(8 + Math.floor(i / 8)).padStart(2, '0')}-${String(10 + (i * 3) % 18).padStart(2, '0')}`, live:![4, 14].includes(i) }));
+(() => {
+  const R = [], add = (dt, d, kind, title, msg, x = {}) => { const v = PUSH_DEV[d]; R.push({ id:'pu' + R.length, seq:R.length + 1, dt, nat:v.nat, apk:v.apk, mtype:kind, uid:v.uid, uname:v.name, tel:v.tel, title, msg, img:x.img || '', video:x.video || '', url:x.url || '', res:x.res || '성공', by:'lordsystem' }); };
+  [0, 1, 3, 5, 6].forEach((d, i) => add('2026-10-20', d, PUSH_KIND[1], '11월 정기 점검 안내', '11/10(화) 02:00~04:00 서비스 점검이 있습니다. 점검 시간에는 결제 · 인증이 지연될 수 있습니다.', { url:'https://signion.net/notice/1102' }));
+  [7, 12, 16, 19].forEach(d => add('2026-10-25', d, PUSH_KIND[2], '가을 이벤트', '여권인증 완료 고객 대상 커피 쿠폰을 드립니다.', { img:'EVENT_202610.jpg', url:'https://signion.net/event' }));
+  [9, 10, 11].forEach((d, i) => add('2026-11-01', d, PUSH_KIND[0], '결제 요청', '대천본가 해물칼국수 2인 · 24,000원 결제를 승인해 주세요.', { res:i === 2 ? '실패' : '성공' }));
+  [21, 22, 23].forEach(d => add('2026-11-03', d, PUSH_KIND[3], '여권인증 안내', '여권인증을 완료해야 서비스를 이용할 수 있습니다. 앱에서 인증을 진행해 주세요.', { video:'https://signion.net/guide/passport.mp4' }));
+  CFG['cs/push'] = { title:'PUSH전송관리', desc:'앱을 설치한 기기에 보낸 PUSH 메시지 내역. 「PUSH메세지보내기」로 기기를 골라 보냅니다.', noCreate:true, noEdit:true, dateKey:'dt',
+    extra:[['message','PUSH메세지보내기']], rows:R,
+    cols:[C('seq','전산코드','num',{ro:1}),C('dt','등록날짜','date'),C('nat','국가','mono'),C('apk','APK타입'),C('mtype','메세지타입'),C('uid','회원아이디','mono',{main:1}),C('uname','회원성명'),C('tel','전송전화번호','mono'),C('title','제목')],
+    opts:{ apk:PUSH_APK, mtype:PUSH_KIND, res:['성공','실패','예약'] }, filters:['apk','mtype','res'] };
+})();
+/* 이용안내관리 · 공지사항관리 (레거시 화면 — 앱 서비스별 이용안내 · 공지 게시) */
+const GB_SVC = ['Android-Passport Mobile', 'Android TRIP-PASS', 'Android-LORDPOS', '서울페이 IOS APP', '서울페이 AOS APP'];
+const GB_NAT = ['KOR', 'CHN', 'JPN', 'VNM', 'IDN'];
+(() => {
+  const G = [['2017-08-24', 0, 'TaxRefund 절차안내'], ['2017-08-24', 0, 'PASSPORT MOBILE 메인화면안내'], ['2017-08-24', 0, '여권등록 및 비밀번호 설정방법'], ['2017-08-24', 0, 'TaxRefund 退税手续'], ['2017-08-24', 0, 'PASSPORT MOBILE 初始画面', 'CHN'],
+    ['2017-08-24', 0, '密码注册、护照注册方法', 'CHN'], ['2017-08-24', 0, 'TaxRefund 退税手续程序', 'CHN'], ['2017-08-24', 0, 'PASSPORT MOBILE メイン画面機能', 'JPN'], ['2017-08-24', 0, 'パスワードとパスポートの登録方法', 'JPN'], ['2017-08-24', 0, 'TaxRefund functions and procedures'],
+    ['2017-08-24', 0, 'PASSPORT MOBILE Main Screen Function'], ['2019-06-18', 1, '여권등록 및 복원 방법'], ['2019-06-18', 1, 'TAXREFUND 절차안내'], ['2019-06-18', 1, 'TAXREFUND'], ['2019-10-29', 2, '로드페이 충전방법'],
+    ['2019-10-29', 2, '로드페이 회원결제'], ['2019-10-29', 2, '로드페이 가맹점결제'], ['2019-10-29', 2, '제로페이 이용안내'], ['2019-11-28', 1, '护照登记 & 护照恢复方法', 'CHN'], ['2019-11-28', 1, 'Passport registration & Passport restoration method'],
+    ['2019-11-28', 1, 'TAXREFUND procedure guidance'], ['2019-11-28', 1, 'パスポート登録 & パスポートの復元方法', 'JPN'], ['2019-11-28', 1, 'TAXREFUND 手続き案内', 'JPN'], ['2019-12-05', 1, '교통카드 사용안내'], ['2019-12-10', 2, '교통카드 사용안내'],
+    ['2021-06-11', 1, 'TAXREFUND 程序指示', 'CHN'], ['2022-03-07', 2, '현금결제방법 - 테스트']];
+  CFG['cs/guide'] = { title:'이용안내관리', desc:'앱 서비스별 이용안내(사용 방법 · 절차) 게시물. 앱의 「이용안내」 화면에 그대로 보입니다.', dateKey:'dt',
+    rows:G.map(([dt, sv, title, nat = 'KOR'], i) => ({ id:'gd' + i, seq:19 + i + (i > 10 ? 10 : 0), nat, dt, svc:GB_SVC[sv], title, body:`${title}\n\n1. 앱을 실행하고 메뉴에서 「이용안내」를 누릅니다.\n2. 화면의 안내에 따라 진행합니다.\n3. 문의는 고객센터(1588-0000)로 연락해 주세요.`,
+      img:`${dt.replace(/-/g, '')}${String(164716976 + i * 1373711).slice(0, 9)}.${i > 17 ? 'png' : 'jpg'}`, video:i % 6 === 2 ? 'https://signion.net/guide/v' + (i + 1) + '.mp4' : '', st:'정상', chgAt:'', chgWhy:'', by:'lordsystem' })),
+    cols:[C('seq','전산코드','num',{ro:1}),C('dt','등록날짜','date'),C('svc','APP서비스 명칭'),C('title','이용안내제목','strong',{main:1}),C('img','이미지파일','mono'),C('video','동영상주소','mono'),C('st','상태')],
+    opts:{ svc:GB_SVC, nat:GB_NAT }, filters:['svc'] };
+  const N = [['2026-11-03', '필수공지', 0, '[필독] 개인정보 보관 기간 정책 안내', 'icon_must.png', 'notice_privacy.jpg', '', 'https://signion.net/notice/privacy'],
+    ['2026-11-01', '필수공지', 3, '서울페이 앱 11월 정기 점검 안내', 'icon_must.png', '', '', 'https://signion.net/notice/1101'], ['2026-10-28', '일반공지', 1, 'TRIP-PASS 신버전 업데이트 안내', 'icon_info.png', 'update_tp.jpg', 'https://signion.net/v/tp.mp4', ''],
+    ['2026-10-20', '이벤트', 4, '가을 맞이 결제 이벤트', 'icon_event.png', 'event_fall.jpg', '', 'https://signion.net/event'], ['2026-10-15', '일반공지', 2, '로드페이 가맹점 수수료 변경 안내', 'icon_info.png', '', '', ''],
+    ['2026-10-02', '점검', 0, '여권인증 서버 점검 (10/05 02:00~04:00)', 'icon_check.png', '', '', ''], ['2026-09-21', '일반공지', 3, '교통카드 충전 한도 변경 안내', 'icon_info.png', 'card_limit.jpg', '', 'https://signion.net/notice/card']];
+  CFG['cs/notice'] = { title:'공지사항관리', desc:'앱 서비스별 공지사항 게시물. 필수공지는 앱을 열 때 팝업으로 보입니다.', dateKey:'dt',
+    rows:N.map(([dt, ntype, sv, title, icon, img, video, url], i) => ({ id:'nt' + i, seq:N.length - i, nat:'KOR', dt, ntype, svc:GB_SVC[sv], title, body:`${title}\n\n자세한 내용은 아래 홈페이지에서 확인해 주세요.\n감사합니다.`, icon, img, video, url, st:'정상', chgAt:'', chgWhy:'', by:'lordsystem' })),
+    cols:[C('seq','전산코드','num',{ro:1}),C('dt','등록날짜','date'),C('ntype','공지타입'),C('svc','APK서비스타입'),C('title','공지제목','strong',{main:1}),C('icon','공지아이콘','mono'),C('img','이미지공지파일','mono'),C('video','동영상공지주소','mono')],
+    opts:{ ntype:['필수공지','일반공지','이벤트','점검'], svc:GB_SVC, nat:GB_NAT }, filters:['ntype','svc'] };
+})();
+/* 직원관리 (레거시 「직원관리」 — 기본정보 · 세부정보 · 거래정보 · 기타정보 · 자료관리 · 서비스 권한) */
+const SF_COMP = [['lordsystem', '로드시스템_SA'], ['signion', 'SIGNION 본사'], ['ktglobal', 'KT 해외통신사업']];
+const SF_DEPT = ['운영팀', '연구소', 'CS', '영업팀', '기술연구소', '관리팀', '경영지원', '마케팅팀'];
+const SF_GRADE = ['대표', '이사', '부장', '차장', '과장', '대리', '주임', '직원'];
+const SF_BANK = ['기업', '신한', '국민', '하나', '우리', '농협', '로드은행'];
+const SF_DEAL = [['cpDisc', '쿠폰구매할인율', '%'], ['cpFee', '쿠폰환불수수료', '%'], null, ['dayLim', '일일구매한도', '원'], ['monLim', '월간구매한도', '원'], ['cc1', '쿠폰신용카드1회구매한도', '원'], ['ccSame', '쿠폰동일신용카드월간구매한도', '원'], ['ccMon', '쿠폰신용카드월간구매한도', '원'], ['inst', '쿠폰신용카드구입할부개월', '개월'], null, ['cash', '인슈머캐시백지급률', '%'], ['agent1', '에이전슈머1단계 수수료율', '%'], ['atm', 'ATM 출금 수수료', '원']];
+const SF_BLOCK = [['gift', '쿠폰선물', '선물불가'], ['acctGift', '전용계좌머니선물', '선물불가'], ['point', '포인트선물', '선물불가'], ['bank', '은행이체', '이체불가'], ['refund', '쿠폰환불', '환불불가'], ['mpass', '모바일패스포트발급대행', '발급 대행 합니다.'], ['shop', '가맹점결제', '결제불가']];
+(() => {
+  const P = [['signion.admin', '김시그', '운영팀', 'SysAdmin', 'admin@signion.example', '2026-11-05 10:12', '부장', 'signion', '2024-03-02'], ['ops.choi', '최운영', '운영팀', '운영 관리자', 'ops.choi@signion.example', '2026-11-05 08:51', '과장', 'signion', '2024-05-13'],
+    ['lab.kim', '김연구', '연구소', '연구소 개발자', 'lab.kim@signion.example', '2026-11-05 09:02', '차장', 'signion', '2024-06-03'], ['cs.park', '박상담', 'CS', '상담원 (CS)', 'cs.park@signion.example', '2026-11-04 18:20', '대리', 'signion', '2025-01-06'],
+    ['cs.lee', '이응대', 'CS', '상담원 (CS)', 'cs.lee@signion.example', '2026-11-04 17:42', '주임', 'signion', '2025-02-10'], ['biz.jang', '장영업', '영업팀', '조회 전용', 'biz.jang@signion.example', '2026-11-03 15:10', '과장', 'ktglobal', '2025-04-01'],
+    ['testman', '테스트맨', '기술연구소', '연구소 개발자', 'testman@lordsystem.co.kr', '2026-10-30 11:00', '직원', 'lordsystem', '2017-09-30'], ['test000', '관리팀', '관리팀', '조회 전용', 'test000@lordsystem.co.kr', '2026-10-21 09:40', '직원', 'lordsystem', '2018-10-17'],
+    ['yunlu', '루윈', '관리팀', '운영 관리자', 'yunlu@lordsystem.co.kr', '2026-11-02 14:05', '직원', 'lordsystem', '2023-07-17'], ['vickychoi', '최향숙', '경영지원', '조회 전용', 'vickychoi@lordsystem.co.kr', '2026-11-01 10:22', '직원', 'lordsystem', '2022-11-16'],
+    ['lord23', '김선영', '마케팅팀', '조회 전용', 'lord23@lordsystem.co.kr', '2026-10-28 16:30', '직원', 'lordsystem', '2023-06-22'], ['jylee', '이진용', '관리팀', '운영 관리자', 'jylee@lordsystem.co.kr', '2026-11-04 09:15', '직원', 'lordsystem', '2023-06-22'],
+    ['simkisoon', '심기순', '경영지원', '조회 전용', 'simkisoon@lordsystem.co.kr', '2026-10-11 13:00', '직원', 'lordsystem', '2023-10-11'], ['jhiang', '장지현', '관리팀', '운영 관리자', 'jhiang@lordsystem.co.kr', '2026-11-05 08:40', '직원', 'lordsystem', '2026-07-28'],
+    ['jerry', '이제리', '관리팀', 'SysAdmin', 'jerry@lordsystem.co.kr', '2026-11-05 09:58', '직원', 'lordsystem', '2026-07-28'], ['hyun1541', '김지현', '마케팅팀', '조회 전용', 'hyun1541@lordsystem.co.kr', '2026-11-03 17:45', '직원', 'lordsystem', '2026-09-28']];
+  CFG['work/staff'] = { title:'직원관리', desc:'SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 · 기타정보와 직원별 서비스 권한을 관리합니다.', dateKey:'rg', extra:[['lock','정지'],['upload','신분증(이미지)등록']],
+    rows:P.map(([uid, name, dept, role, mail, last, grade, comp, rg], i) => ({ id:'sf' + i, seq:[101, 102, 103, 104, 105, 106, 137, 138, 164366, 166522, 166722, 166723, 166798, 177649, 177650, 177868][i], uid, name, dept, role, mail, last, grade, comp, compName:SF_COMP.find(c => c[0] === comp)[1], rg, nat:'KOR',
+      tel:'0' + (2 + i % 3) + '-' + (3200 + i * 17) + '-' + String(1000 + i * 37).slice(-4), hp:i === 13 ? '01045207572' : i === 14 ? '01011112222' : i === 15 ? '01042131541' : '01042218917', smsOk:i % 4 !== 1, mailOk:i % 3 !== 2,
+      zip:'03992', addr1:'서울특별시 마포구 월드컵북로 30', addr2:(i + 1) + '층', card:`3811-0879-${String(7000 + i * 131).slice(-4)}-${String(9501 + i * 7).slice(-4)}`, cardType:'일반카드', cardMask:true, bank:SF_BANK[i % SF_BANK.length], acct:'8110' + String(2810946379 + i * 7177).slice(0, 8), vacct:i % 3 === 0, holder:name, group:'미지정',
+      docs:i % 5 === 0 ? [{ kind:'신분증', url:`ID_${uid}.jpg` }] : [], deal:{ cpDisc:0, cpFee:5, dayLim:0, monLim:0, cc1:500000, ccSame:1000000, ccMon:30000000, inst:0, cash:0, agent1:0, atm:1300 },
+      block:{ gift:false, acctGift:false, point:false, bank:false, refund:false, mpass:false, shop:false }, blockWhy:'', memo:'', memos:i === 13 ? [{ dt:'2026-08-01', txt:'신규 입사 — 관리팀 배치', by:'jerry' }] : [],
+      status:i === 9 ? '정지' : '정상', chgAt:i === 9 ? '2026-10-02' : '', chgWhy:i === 9 ? '휴직' : '', by:'testman' })),
+    cols:[C('seq','전산코드','num',{ro:1}),C('rg','등록날짜','date'),C('name','성명','strong'),C('uid','아이디','mono',{main:1}),C('hp','핸드폰번호','mono'),C('grade','직급'),C('dept','부서'),C('comp','소속회사','mono'),C('status','상태'),C('nat','국가명')],
+    opts:{ status:['정상','정지'], role:[], dept:SF_DEPT, grade:SF_GRADE }, filters:['dept','grade','status'] };
+})();
 CFG['work/prog'] = { title:'프로그램관리', desc:'메뉴(대메뉴·소메뉴)와 기능버튼 권한 정의 — ProgList_ 테이블 (mainMenu · subMenu · funcBtn)',
   cols:[C('main','대메뉴','strong',{main:1}),C('sub','소메뉴'),C('fn','기능버튼'),C('use','사용','badge')], rows:[], opts:{ use:['사용','미사용'] } };
 CFG['work/memo'] = { title:'자료메모관리', desc:'각 화면에서 등록한 메모 통합 조회',
@@ -2373,11 +2648,46 @@ function render() {
   if (r === 'trans') { permFilter($('.po-tb'), r); trFit(); }
   if (MDP[r]) { permFilter($('.po-tb'), r); mdFit(r); }
   if (r === 'partner/overview' || PSUB[r]) { permFilter($('.po-tb'), r); permFilter($('.po-h'), r); permFilter($('.po-d-empty'), r); poFit(); }
+  splitInit(); pcModal();
+  if (r !== lastR) S.mdTab = null; else if (S.mdTab && $(`.md-auto-d .pane[data-p="${S.mdTab}"]`)) switchTab(S.mdTab);
   if (r !== lastR) window.scrollTo(0, 0);
   lastR = r;
   if (S.pending && S.pending[0] === r) { const [k, id] = S.pending; S.pending = null; openDrawer(k, id); }
 }
 let lastR = '';
+/* Split View — 목록 | 상세 경계선을 끌어 상세를 넓게 · 좁게. 「크게 보기」 버튼은 상세를 최대 폭으로. 폭은 기억(모든 메뉴 공통), 두 번 누르면 기본 폭 */
+const SPLIT = { min:360, list:440, wide:false };
+try { const v = +localStorage.getItem('sg_dw'); if (v) SPLIT.w = v; SPLIT.wide = localStorage.getItem('sg_dw') === 'wide'; } catch (e) {}
+function splitApply() {
+  const R = document.documentElement;
+  if (SPLIT.wide) { R.classList.add('dw-set'); R.style.setProperty('--dwu', '9999px'); }
+  else if (SPLIT.w) { R.classList.add('dw-set'); R.style.setProperty('--dwu', SPLIT.w + 'px'); }
+  else { R.classList.remove('dw-set'); R.style.removeProperty('--dwu'); }
+  const b = $('.po-split-b'); if (b) { b.innerHTML = ic(SPLIT.wide ? 'chev' : 'chevl'); const t = SPLIT.wide ? '상세 원래 크기로' : '상세 크게 보기'; b.title = t; b.setAttribute('aria-label', t); b.setAttribute('aria-pressed', SPLIT.wide); }
+}
+function splitSave() { try { if (SPLIT.wide) localStorage.setItem('sg_dw', 'wide'); else if (SPLIT.w) localStorage.setItem('sg_dw', String(SPLIT.w)); else localStorage.removeItem('sg_dw'); } catch (e) {} }
+function splitRefit() { const r = route(); if (r === 'trans') trFit(); else if (MDP[r]) mdFit(r); else if (r === 'partner/overview' || PSUB[r]) poFit(); }
+function splitInit() {
+  splitApply();
+  const m = $('.po-main:not(.conn-on)'), d = m && $('.po-d', m); if (!d || innerWidth <= 1100) return;
+  const h = document.createElement('div'); h.className = 'po-split'; h.tabIndex = 0;
+  h.setAttribute('role', 'separator'); h.setAttribute('aria-orientation', 'vertical'); h.setAttribute('aria-label', '목록 · 상세 폭 조절');
+  h.title = '끌어서 상세 폭 조절 · ←→ 키 · 두 번 누르면 기본 폭';
+  h.innerHTML = `<button type="button" class="po-split-b"></button>`; m.appendChild(h); splitApply();
+  const setW = px => { const mr = m.getBoundingClientRect(); SPLIT.wide = false; SPLIT.w = Math.round(Math.max(SPLIT.min, Math.min(px, mr.width - SPLIT.list - 12))); splitApply(); };
+  h.querySelector('button').onclick = e => { e.stopPropagation(); SPLIT.wide = !SPLIT.wide; splitApply(); splitSave(); splitRefit(); $('.po-split-b')?.focus(); };
+  h.addEventListener('pointerdown', e => {
+    if (e.target.closest('button') || e.button) return; e.preventDefault(); h.setPointerCapture(e.pointerId); m.classList.add('splitting');
+    let moved = false; const mv = ev => { moved = true; setW(m.getBoundingClientRect().right - ev.clientX - 6); };
+    const up = () => { h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); m.classList.remove('splitting'); if (moved) { splitSave(); splitRefit(); } };
+    h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+  });
+  h.addEventListener('dblclick', e => { if (e.target.closest('button')) return; SPLIT.w = 0; SPLIT.wide = false; splitApply(); splitSave(); splitRefit(); });
+  h.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); e.stopPropagation();
+    setW(d.getBoundingClientRect().width + (e.key === 'ArrowLeft' ? 40 : -40)); splitSave(); splitRefit(); $('.po-split')?.focus();
+  });
+}
 /* 상태 변경 후 목록과 열린 상세(스크롤 · 탭 유지)를 함께 갱신 */
 function rerenderKeep() {
   const k = DR?.key, id = DR?.id, sp = DR?.split, sc = $(sp ? '.peek' : '.dr-b')?.scrollTop || 0, tab = $('.tab.on')?.dataset.t;
@@ -2392,7 +2702,7 @@ function Page(r) {
   if (r === 'work/prog') return ProgPage();
   if (r === 'dashboard') return Dashboard();
   if (r === 'trans') return Trans();
-  if (r === 'fee') return Fee();
+  if (r === 'fee' && MDP.fee) return Fee();
   if (r === 'bi') return BI();
   if (r === 'log') { location.replace('#/log/server'); return ''; }
   if (MDP[r]) return mdPage(r);
@@ -2450,7 +2760,7 @@ function Shell(r, body) {
           <button class="dd-i" data-act="logout">${ic('logout')}로그아웃</button>
           <div class="dd-copy" title="SIGNION BackOffice Prototype v0.2 · 2026.11">(R)(C)LORDMAN. 1997-2026. Allrights Reserved.</div></div></div>
     </header>
-    <main class="content">${S.preview ? `<div class="callout warn preview-bar">${ic('eye')}<div><b>권한 미리보기 중 — ${esc(roleName(S.preview))}</b> · 이 역할에게 보이는 메뉴와 버튼만 표시됩니다. 실제 계정 권한은 ${esc(roleName(ME.roleId))}입니다.</div><button class="btn btn-sm" data-act="preview" data-r="">미리보기 끝내기</button></div>` : ''}${body}</main>
+    <main class="content">${S.previewUid ? (() => { const u = CFG['work/staff'].rows.find(x => x.uid === S.previewUid); return `<div class="callout warn preview-bar">${ic('eye')}<div><b>직원 미리보기 중 — ${esc(u?.name || '')} (${esc(S.previewUid)})</b> · ${u?.status === '정지' ? '정지된 계정이라 어떤 메뉴도 쓸 수 없습니다.' : u?.fnsCustom ? '이 직원의 「서비스 권한」 목록대로' : `이 직원의 역할(${esc(u?.role || '')}) 권한대로`} 메뉴와 버튼이 보입니다.</div><button class="btn btn-sm" data-act="preview" data-r="">미리보기 끝내기</button></div>`; })() : ''}${S.preview ? `<div class="callout warn preview-bar">${ic('eye')}<div><b>권한 미리보기 중 — ${esc(roleName(S.preview))}</b> · 이 역할에게 보이는 메뉴와 버튼만 표시됩니다. 실제 계정 권한은 ${esc(roleName(ME.roleId))}입니다.</div><button class="btn btn-sm" data-act="preview" data-r="">미리보기 끝내기</button></div>` : ''}${body}</main>
   </div></div>`;
 }
 
@@ -2717,7 +3027,7 @@ function openForm(key, row) {
     } else {
       cfg.rows.unshift(Object.assign({ id:'n' + Date.now(), rg:TODAY, mods:['OCR','FACE'], cnt:0, children:0, cust:0, last:'—', ip:'—' }, o)); cfg.onSave?.(cfg.rows[0], null, null);
       audit('등록', fields.filter(c => o[c.k] !== '' && o[c.k] !== 0).slice(0, 4).map(c => `${c.l}=${o[c.k]}`).join(' · '), key, rowLabel(key, cfg.rows[0]));
-      closeModal(); render(); toast('등록되었습니다.'); if (next) openForm(key, null);
+      ls(key).cur = cfg.rows[0].id; ls(key).sel = new Set([cfg.rows[0].id]); closeModal(); render(); toast('등록되었습니다.'); if (next) openForm(key, null);
     }
   };
 }
@@ -3206,6 +3516,569 @@ Object.assign(MD_ACT, {
     openConfirm('상담 삭제', { sub:list.length === 1 ? esc(list[0].title) : `선택한 상담 ${list.length}건`, icon:'trash', q:list.length === 1 ? '이 상담을 삭제 하시겠습니까?' : `상담 ${list.length}건을 삭제 하시겠습니까?`, note:'삭제한 자료는 「삭제자료 표시」를 켜면 다시 볼 수 있습니다.' }, '삭제', () => {
       list.forEach(x => { x.stop = { date:TODAY, reason:'삭제', by:ME.id }; audit('삭제', `상담 ${x.title}`, 'cs/comment', x.mid || '비회원'); }); st.sel.clear(); render(); toast(`${list.length}건을 삭제했습니다.`); }, true); },
 });
+/* ── 댓글관리 ── */
+const rpKind = r => r.kind === '신고' ? `<span class="tr-res bad">${ic('alert')}신고</span>` : r.kind === '상품문의' ? `<span class="tr-res info">${ic('message')}상품문의</span>` : `<span class="tr-res ok">${ic('check')}상품후기</span>`;
+function rpDetail(r) {
+  const T = S.rpTab || 'a', tab = (id, l) => `<button class="tab ${T === id ? 'on' : ''}" data-act="rp-tab" data-t="${id}">${l}</button>`, K = 'cs/reply';
+  const pane = T === 'a'
+    ? dsec('rp1', '댓글 정보', '', mdRow('전산코드', `<span class="num">${r.seq}</span>`) + mdRow('등록날짜', `<span class="num">${esc(r.dt)}</span>`, 'dt') + mdRow('가맹점', `<span class="mono">${esc(r.sid)}</span> · ${esc(r.sname)}`, 'sid')
+        + mdRow('상품코드', `<span class="mono">${esc(r.pcode)}</span> · ${esc(r.pname)}`, 'pcode') + mdRow('댓글회원', `<span class="mono">${esc(r.uid)}</span> · ${esc(r.uname)}`, 'uid') + mdRow('댓글종류', rpKind(r), 'kind'), '', 'view')
+      + dsec('rp2', '댓글 내용', '', `<div class="cs-box"><div class="cs-bl">댓글</div><div class="cs-bv">${esc(r.txt)}</div></div>
+        <div class="cs-box"><div class="cs-bl">이미지파일</div>${r.img ? `<div class="rp-img"><div class="ph-img">${ic('file')}${esc(r.img)}</div><button type="button" class="btn btn-sm" data-act="rp-img">${ic('eye')}원본 보기</button></div>` : '<div class="cs-bv muted" style="min-height:0">첨부한 이미지가 없습니다.</div>'}</div>`, '', 'view')
+    : dsec('rp3', '기타정보', '', mdRow('상태', r.stop ? `<span class="tr-res bad">${ic('trash')}삭제</span>` : `<span class="tr-res ok">${ic('check')}정상</span>`) + mdRow('변동날짜', `<span class="num">${esc(r.chgAt || '')}</span>`) + mdRow('변동사유', esc(r.chgWhy || '')) + mdRow('자료등록자', `<span class="mono">${esc(r.by)}</span>`), '', 'view');
+  return `<aside class="po-d card" data-id="${r.id}" aria-label="댓글 상세"><div class="po-dh"><div style="min-width:0"><h2>${esc(r.pname)} ${rpKind(r)}${r.stop ? ' ' + badge('삭제', 'bad') : ''}</h2><p>${esc(r.uname)} · ${esc(r.sname)} · ${esc(r.dt)}</p></div></div>
+    <div class="tabs po-tabs">${tab('a', '댓글정보')}${tab('b', '기타정보')}</div><div class="po-db">${pane}</div></aside>`;
+}
+MDP['cs/reply'] = { sort:{ k:'seq', dir:-1 }, ph:'댓글자 · 가맹점 · 상품 · 댓글 내용 검색 후 Enter', tip:['txt', 'sname', 'pname'],
+  tools:key => `<button class="btn" disabled title="댓글은 회원이 작성합니다">${ic('plus')}등록</button><button class="btn" disabled title="댓글은 회원이 작성합니다">${ic('edit')}수정</button>${can(key, '삭제') ? `<button class="btn btn-d" data-act="rp-del">${ic('trash')}삭제</button>` : ''}`,
+  cols:[['seq', '전산코드', 'n num'], ['dt', '등록날짜', 'num'], ['uid', '댓글자아이디', 'mono'], ['uname', '댓글자명', 'c-name', r => `${r.stop ? '<span class="del-tag">삭제</span>' : ''}<span class="strong">${esc(r.uname)}</span>`], ['sid', '가맹점아이디', 'mono'], ['sname', '가맹점명', 'md-ell'],
+    ['pcode', '상품코드', 'mono'], ['pname', '상품명', 'md-ell'], ['kind', '댓글종류', '', rpKind], ['txt', '댓글', 'md-ell']],
+  detail:rpDetail };
+Object.assign(MD_ACT, {
+  'rp-tab': a => { S.rpTab = a.dataset.t; render(); },
+  'rp-img': () => toast('원본 이미지는 열람 기록과 함께 엽니다.'),
+  'rp-del': () => { const st = ls('cs/reply'), list = [...st.sel].map(id => CFG['cs/reply'].rows.find(x => x.id === id)).filter(x => x && !x.stop); if (!list.length) return toast('삭제할 댓글을 고르세요.', true);
+    openModal(MH('댓글 삭제', list.length === 1 ? `${esc(list[0].uname)} · ${esc(list[0].pname)}` : `선택한 댓글 ${list.length}건`) + `<div class="m-b"><div class="md-nw ic-nw rp-dl">
+        <div class="pf" data-fk="why"><label for="rpw">삭제 사유<span class="req">*</span></label><div class="pf-c"><select class="select" id="rpw"><option value="">선택</option>${['광고 · 스팸', '욕설 · 비방', '개인정보 노출', '허위 내용', '작성자 요청', '기타'].map(x => `<option>${x}</option>`).join('')}</select></div><span></span><div class="err-t" role="alert"></div></div></div>
+        <p class="muted" style="font-size:12.5px;margin:10px 0 0">삭제한 댓글은 회원 화면에서 사라지고, 여기서는 「삭제자료 표시」로 다시 볼 수 있습니다.</p></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-generic">${ic('trash')}삭제</button></div>`);
+    MD.onConfirm = () => { const w = $('#rpw').value; if (!w) return msgShowErr('.rp-dl', [['why', '삭제 사유를 고르세요.']]);
+      list.forEach(x => { x.stop = { date:TODAY, reason:w, by:ME.id }; Object.assign(x, { chgAt:TODAY, chgWhy:w }); audit('삭제', `댓글 · ${x.uid} · ${w}`, 'cs/reply', x.uid); }); st.sel.clear(); closeModal(); render(); toast(`댓글 ${list.length}건을 삭제했습니다.`); }; },
+});
+/* ── SMS전송관리 ── */
+const smsRes = r => r.res === '성공' ? `<span class="tr-res ok">${ic('check')}성공</span>` : r.res === '예약' ? `<span class="tr-res info">${ic('clock')}예약</span>` : `<span class="tr-res bad">${ic('x')}실패</span>`;
+const smsTel = t => String(t || '').replace(/^(01\d)(\d{3,4})(\d{4})$/, '$1-$2-$3');
+function smsDetail(r) {
+  const T = S.smsTab || 'a', tab = (id, l) => `<button class="tab ${T === id ? 'on' : ''}" data-act="sms-tab" data-t="${id}">${l}</button>`;
+  const f = i => r.imgs[i] ? `<span class="mono">${esc(r.imgs[i])}</span>` : '<span class="muted">없음</span>';
+  const pane = T === 'a'
+    ? dsec('sm1', '기본정보', '', mdRow('전산코드', `<span class="num">${r.seq}</span>`) + mdRow('발송날짜', `<span class="num">${esc(r.dt)}</span>`, 'dt')
+        + mdRow('회원아이디', r.uid ? `<span class="mono">${esc(r.uid)}</span>` : '<span class="muted">직접 입력한 번호</span>', r.uid ? 'uid' : '') + mdRow('회원이름', esc(r.uname || '—')) + mdRow('회원등급', esc(r.grade || '—'), r.grade ? 'grade' : '')
+        + mdRow('메세지타입', esc(r.mtype), 'mtype') + mdRow('수신전화번호', `<span class="mono">${esc(smsTel(r.tel))}</span>`, 'tel') + mdRow('메세지제목', esc(r.title || '—')) + mdRow('전송결과', smsRes(r), 'res') + mdRow('자료등록자', `<span class="mono">${esc(r.by)}</span>`), '', 'view')
+    : dsec('sm2', '전송내역', '', mdRow('이미지파일1', f(0)) + mdRow('이미지파일2', f(1)) + mdRow('이미지파일3', f(2)) + mdRow('동영상파일', r.video ? `<span class="mono">${esc(r.video)}</span>` : '<span class="muted">없음</span>')
+        + `<div class="cs-box"><div class="cs-bl">발송메시지 <span class="muted" style="font-weight:400">${smsBytes(r.msg)} byte</span></div><div class="cs-bv sms-msg">${esc(r.msg)}</div></div>`, '', 'view');
+  return `<aside class="po-d card" data-id="${r.id}" aria-label="SMS 전송 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(smsTel(r.tel))}</span> ${smsRes(r)}${r.stop ? ' ' + badge('삭제', 'bad') : ''}</h2><p>${esc(r.mtype)} · ${esc(r.uname || '직접 입력')} · ${esc(r.dt)}</p></div></div>
+    <div class="tabs po-tabs">${tab('a', '기본정보')}${tab('b', '전송내역')}</div><div class="po-db">${pane}</div></aside>`;
+}
+MDP['cs/sms'] = { sort:{ k:'seq', dir:-1 }, ph:'전화번호 · 수신자 · 메세지 검색 후 Enter', tip:['title', 'uname'],
+  tools:key => `${can(key, '회원선택 SMS메세지보내기') ? `<button class="btn btn-p" data-act="sms-pick">${ic('users')}회원선택 SMS메세지보내기</button>` : ''}${can(key, '수동입력 SMS메세지보내기') ? `<button class="btn" data-act="sms-manual">${ic('edit')}수동입력 SMS메세지보내기</button>` : ''}`,
+  cols:[['seq', '전산코드', 'n num'], ['mtype', '메세지타입'], ['dt', '등록날짜', 'num'], ['tel', '전화번호', 'mono', r => esc(smsTel(r.tel))], ['uname', '수신자정보', 'md-ell', r => `${r.stop ? '<span class="del-tag">삭제</span>' : ''}${r.uid ? `${esc(r.uid)}(${esc(r.uname)})` : ''}`],
+    ['res', '전송결과', '', smsRes], ['title', '메세지제목', 'md-ell'], ['grade', '직급']],
+  detail:smsDetail };
+/* 회원 상세 (회원선택 창 왼쪽) — 레거시 「회원선택」 기본정보 · 거래정보 · 사업자정보 · 안내정보 · 기타정보 */
+const SMS_REC = ['', 'lordsystem', 'lordsystem', 'lordsystem', 'lordsystem', 'lordsystem', 'lordsystem', 'lordsystem', 'lordshop', 'lordshop', 'lordshop', 'lordshop'];
+const SMS_MEMD = SMS_MEM.map(([uid, name, grade, tel], i) => ({ uid, name, grade, tel, seq:i + 1,
+  rg:['2016-03-21', '2014-12-05', '2016-03-21', '2017-07-06', '2018-02-23', '2018-02-27', '2018-03-26', '2018-03-30', '2018-05-10', '2018-05-10', '2018-06-08', '2018-06-28'][i] || '2018-07-03',
+  rec:SMS_REC[i] ?? 'lordsystem', nat:'대한민국', fax:'0104221' + String(8917 + i), card:`3811-0879-****-${String(4398 + i * 7).slice(-4)}`, bank:['로드은행', '신한', '국민', '하나'][i % 4], acct:`811049****${String(1748 + i).slice(-4)}`, holder:name,
+  shop:grade === '가맹점' ? '3819000' + String(i + 1).padStart(5, '0') : '', stype:grade === '가맹점' ? (i % 3 ? 'OFF-LINE가맹점' : 'ON-LINE가맹점') : '', biz:grade === '가맹점' ? ['음식점', '카페', '숙박', '소매'][i % 4] : '', sgrade:grade === '가맹점' ? '일반가맹점' : '',
+  rep:grade === '가맹점' ? 'lordmaster' : '', regst:'등록완료', group:'미지정', agree:![5, 9].includes(i),
+  bno:`${String(100 + i * 7).slice(-3)}-${String(81 + i % 7)}-${String(10000 + i * 731).slice(-5)}`, ceo:['이영호', '박현수', '정민재', '최서윤', '한지우'][i % 5], addr:['충남 보령시 대천해수욕장길', '서울 중구 세종대로', '부산 해운대구 해운대로'][i % 3] + ' ' + (10 + i),
+  fee:(1.8 + (i % 4) * 0.2).toFixed(1) + '%', cycle:['D+1', 'D+2', '주 1회'][i % 3], last:'2026-11-0' + (1 + i % 5), cnt:(i * 37) % 210 }));
+function smsMemDetail(m) {
+  if (!m) return `<div class="empty" style="padding:24px">${ic('users')}<div>오른쪽 목록에서 회원을 누르면<br>상세가 보입니다.</div></div>`;
+  const T = S.smsDT || 'a', tab = (id, l) => `<button type="button" class="tab ${T === id ? 'on' : ''}" data-dt="${id}">${l}</button>`, row = (l, v, cls = '') => `<div class="sms-dr"><span>${l}</span><b class="${cls}">${v === '' || v == null ? '<span class="muted">—</span>' : esc(v)}</b></div>`;
+  const P = { a:[['전산코드', m.seq, 'num'], ['국가코드', m.nat], ['등록날짜', m.rg, 'num'], ['회원구분', m.grade], ['이름', m.name], ['전화번호', smsTel(m.tel), 'mono'], ['FAX번호', m.fax, 'mono'], ['아이디', m.uid, 'mono'], ['카드번호', m.card, 'mono'], ['거래은행', m.bank], ['계좌번호', m.acct, 'mono'], ['예금주', m.holder],
+      ['가맹점코드', m.shop, 'mono'], ['가맹점종류', m.stype], ['가맹점업종', m.biz], ['가맹점등급', m.sgrade], ['대표가맹점', m.rep, 'mono'], ['추천인', m.rec, 'mono'], ['가맹점등록상태', m.regst], ['서비스그룹', m.group]],
+    b:[['수수료율', m.fee, 'num'], ['정산주기', m.cycle], ['최근거래일', m.last, 'num'], ['이번달 거래', m.cnt + '건', 'num']],
+    c:[['사업자번호', m.bno, 'mono'], ['상호', m.name], ['대표자', m.ceo], ['업태 · 종목', m.biz || '서비스'], ['주소', m.addr]],
+    d:[['문자수신동의', m.agree ? '동의' : '수신거부'], ['안내 수신번호', smsTel(m.tel), 'mono']],
+    e:[['상태', '정상'], ['변동날짜', ''], ['자료등록자', 'lordsystem', 'mono']] }[T];
+  return `<div class="tabs sms-dt">${tab('a', '기본정보')}${tab('b', '거래정보')}${tab('c', '사업자정보')}${tab('d', '안내정보')}${tab('e', '기타정보')}</div>
+    ${m.agree ? '' : `<div class="callout warn" style="margin:8px 0">${ic('alert')}<div>문자 수신을 거부한 회원이라 고를 수 없습니다.</div></div>`}<div class="sms-dl">${P.map(x => row(...x)).join('')}</div>`;
+}
+/* 전송메시지등록 (수동입력 · 회원선택 후 공통) — 레거시 「전송메시지등록」 */
+const SMS_IMG_MAX = 5; let SMS_IMGS = [], smsImgDraw = () => {};
+const smsTels = v => [...new Set(String(v || '').split(/[,\n]/).map(x => x.trim()).filter(Boolean))];
+function smsGuideRows() {
+  const k = S.smsTpl || '전체', list = SMS_TPL.map((t, i) => [i, t]).filter(([, t]) => k === '전체' || t[0] === k);
+  return list.map(([i, t]) => `<tr data-act="sms-tpl" data-i="${i}" title="누르면 메세지내용에 넣습니다"><td class="n num">${i + 1}</td><td>${esc(t[0])}</td><td class="sms-gc"><b>${esc(t[1])}</b><span>${esc(t[2])}</span></td></tr>`).join('') || '<tr><td colspan="3"><div class="empty">가이드문자가 없습니다.</div></td></tr>';
+}
+function smsOpen(tels, how) {
+  const pick = how === '회원선택 SMS메세지보내기';
+  openModal(MH('전송메시지등록', pick ? `회원선택 · <b>${tels.length}명</b>에게 보냅니다` : '전화번호를 직접 입력해 보냅니다') + `<div class="m-b sms-w">
+      <div class="fld sms-to" data-fk="tel"><label for="sm_tel">수신전화번호<span class="req">*</span><span class="sms-tn" id="sm_tn"></span><span class="grow"></span>
+          <label class="btn btn-sm" title="엑셀(xlsx) · CSV · TXT 에서 전화번호를 읽어옵니다"><input type="file" id="sm_xls" accept=".xlsx,.xls,.csv,.txt" hidden>${ic('download')}전화번호 엑셀</label>
+          <span class="dd-wrap"><button type="button" class="btn btn-sm" data-act="dd">${ic('users')}전화부</button><div class="dd sms-book">${SMS_MEMD.filter(m => m.agree).map(m => `<button type="button" class="dd-i" data-act="sms-book" data-t="${m.tel}">${esc(m.name)} <span class="mono muted">${smsTel(m.tel)}</span></button>`).join('')}</div></span></label>
+        <textarea class="input mono" id="sm_tel" rows="3" placeholder="010-1234-5678, 010-2345-6789">${tels.map(smsTel).join(', ')}</textarea>
+        <div class="hint">전화번호를 「,」로 구분해서 입력하면 다중으로 전송할 수 있습니다.</div><div class="err-t" role="alert"></div></div>
+      <div class="sms-pk two"><section class="sms-cp">
+        <div class="pf" data-fk="dt"><label for="sm_dt">등록날짜<span class="req">*</span></label><div class="pf-c"><input class="input num" id="sm_dt" value="${TODAY}" autocomplete="off"></div><span></span><div class="err-t" role="alert"></div></div>
+        <div class="pf" data-fk="title"><label for="sm_t">메세지제목</label><div class="pf-c"><input class="input" id="sm_t" maxlength="40" placeholder="LMS · MMS 일 때 제목 (선택)" autocomplete="off"></div><span></span><div class="err-t"></div></div>
+        <div class="fld" data-fk="msg"><label for="sm_m">메세지내용<span class="req">*</span><span class="grow"></span><span class="sms-cnt" id="sm_cnt">0 byte · SMS</span></label><textarea class="input" id="sm_m" rows="5" placeholder="보낼 내용을 입력하거나 오른쪽 가이드문자를 누르세요"></textarea><div class="err-t" role="alert"></div></div>
+        <div class="fld" data-fk="img"><div class="sms-lab">전송이미지<span class="sms-ic" id="sm_ic"></span><span class="grow"></span><label class="btn btn-sm" id="sm_iab"><input type="file" accept="image/jpeg,.jpg,.jpeg" id="sm_iadd" multiple hidden>${ic('plus')}이미지 추가</label></div>
+          <div class="sms-iw" id="sm_iw"><table class="tbl compact sms-it"><thead><tr><th class="n">#</th><th>이미지 파일명</th><th class="r">크기</th><th></th></tr></thead><tbody id="sm_ib"></tbody></table></div>
+          <div class="hint">각각의 파일 크기가 300KB 이하(jpg)인 것만 전송 가능합니다. 최대 ${SMS_IMG_MAX}장 · 여러 장을 한 번에 고르거나 여기로 끌어다 놓아도 됩니다.</div><div class="err-t" role="alert"></div></div>
+        <div class="fld" data-fk="video"><label>전송동영상</label><div class="sms-vf"><span class="sms-fn" id="sm_fnv"><span class="muted">선택한 파일 없음</span></span><label class="btn btn-sm"><input type="file" accept="video/mp4,video/3gpp" id="sm_v" hidden>${ic('upload')}선택</label><button type="button" class="ibtn" data-act="sms-fx" data-i="v" aria-label="동영상 지우기" title="지우기">${ic('x')}</button></div>
+          <div class="hint">모바일 동영상 규격 및 300KB 이하 파일만 전송 가능합니다.</div><div class="err-t" role="alert"></div></div></section>
+        <section class="sms-gd"><div class="pf"><label for="sm_gk">가이드문자종류</label><div class="pf-c"><select class="select" id="sm_gk">${['전체', ...new Set(SMS_TPL.map(t => t[0]))].map(x => `<option ${x === (S.smsTpl || '전체') ? 'selected' : ''}>${x}</option>`).join('')}</select></div><span></span></div>
+          <div class="sms-gw"><table class="tbl compact sms-gt"><thead><tr><th class="n">등록코드</th><th>종류</th><th>등록내용</th></tr></thead><tbody id="sm_gb">${smsGuideRows()}</tbody></table></div></section></div></div>
+    <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('message')}메시지 전송</button></div>`, { xwide:true });
+  $('#modal').classList.add('sms-modal');
+  const up = () => { const n = SMS_IMGS.length + ($('#sm_v')?.files.length ? 1 : 0), t = $('#sm_m').value, b = smsBytes(t), c = $('#sm_cnt');
+    c.textContent = `${b} byte · ${smsType(t, n)}`; c.classList.toggle('over', b > 2000); };
+  const tn = () => { const k = smsTels($('#sm_tel').value).length; $('#sm_tn').textContent = k ? `${k}건` : ''; };
+  $('#sm_m').addEventListener('input', up); $('#sm_tel').addEventListener('input', () => { tn(); $('.sms-to').classList.remove('err'); });
+  $('#sm_gk').onchange = e => { S.smsTpl = e.target.value; $('#sm_gb').innerHTML = smsGuideRows(); };
+  const fname = inp => inp.id === 'sm_v' ? '#sm_fnv' : '#sm_fn' + inp.id.slice(-1);
+  SMS_IMGS = [];
+  smsImgDraw = () => { const L = SMS_IMGS, full = L.length >= SMS_IMG_MAX;
+    $('#sm_ib').innerHTML = L.length ? L.map((f, i) => `<tr><td class="n num">${i + 1}</td><td class="sms-fn" title="${esc(f.name)}"><span class="mono">${esc(f.name)}</span></td><td class="r num muted">${Math.ceil(f.size / 1024)}KB</td>
+        <td class="r"><button type="button" class="ibtn" data-act="sms-fx" data-i="${i}" aria-label="${esc(f.name)} 빼기" title="빼기">${ic('x')}</button></td></tr>`).join('')
+      : `<tr class="sms-ie"><td colspan="4">${ic('upload')}「이미지 추가」를 누르거나 jpg 파일을 여기로 끌어다 놓으세요</td></tr>`;
+    $('#sm_ic').textContent = `${L.length} / ${SMS_IMG_MAX}`; $('#sm_iab').classList.toggle('disabled', full); $('#sm_iadd').disabled = full;
+    $('#sm_iab').title = full ? `이미지는 ${SMS_IMG_MAX}장까지 보낼 수 있습니다` : '이미지 추가'; up(); };
+  const addImgs = files => { const fld = $('.sms-cp .fld[data-fk="img"]'), er = []; fld.classList.remove('err');
+    [...files].forEach(f => { if (!/\.jpe?g$/i.test(f.name) && f.type !== 'image/jpeg') return er.push(`${f.name} — jpg 파일만 보낼 수 있습니다`);
+      if (f.size > 300 * 1024) return er.push(`${f.name} — 300KB 이하만 보낼 수 있습니다 (${Math.ceil(f.size / 1024)}KB)`);
+      if (SMS_IMGS.some(x => x.name === f.name && x.size === f.size)) return er.push(`${f.name} — 이미 넣은 파일입니다`);
+      if (SMS_IMGS.length >= SMS_IMG_MAX) return er.push(`${f.name} — 이미지는 ${SMS_IMG_MAX}장까지입니다`);
+      SMS_IMGS.push(f); });
+    if (er.length) { fld.classList.add('err'); fld.querySelector('.err-t').textContent = er.slice(0, 2).join(' · ') + (er.length > 2 ? ` 외 ${er.length - 2}건` : ''); }
+    smsImgDraw(); };
+  $('#sm_iadd').addEventListener('change', e => { addImgs(e.target.files); e.target.value = ''; });
+  const iw = $('#sm_iw'); ['dragenter', 'dragover'].forEach(t => iw.addEventListener(t, e => { e.preventDefault(); iw.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach(t => iw.addEventListener(t, e => { e.preventDefault(); iw.classList.remove('drag'); if (t === 'drop' && e.dataTransfer?.files.length) addImgs(e.dataTransfer.files); }));
+  $$('#sm_v').forEach(inp => inp.addEventListener('change', () => { const f = inp.files[0], fld = inp.closest('.fld'); fld.classList.remove('err');
+    if (f && f.size > 300 * 1024) { inp.value = ''; fld.classList.add('err'); fld.querySelector('.err-t').textContent = `${f.name} — 300KB 이하만 보낼 수 있습니다 (${Math.ceil(f.size / 1024)}KB).`; }
+    $(fname(inp)).innerHTML = inp.files.length ? `<span class="mono">${esc(inp.files[0].name)}</span> <span class="muted">${Math.ceil(inp.files[0].size / 1024)}KB</span>` : '<span class="muted">선택한 파일 없음</span>'; up(); }));
+  $('#sm_xls').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try { let txt; if (/\.(csv|txt)$/i.test(f.name)) txt = await f.text(); else { const X = await loadXLSX(), wb = X.read(await f.arrayBuffer()); txt = wb.SheetNames.map(n => X.utils.sheet_to_csv(wb.Sheets[n])).join('\n'); }
+      const got = (txt.match(/\+?\d[\d\s-]{7,18}\d/g) || []).map(x => x.replace(/[^\d+]/g, '')).filter(x => x.replace(/\D/g, '').length >= 9);
+      if (!got.length) return toast('파일에서 전화번호를 찾지 못했습니다.', true);
+      const cur = smsTels($('#sm_tel').value).map(x => x.replace(/[^\d+]/g, '')), add = [...new Set(got)].filter(x => !cur.includes(x));
+      $('#sm_tel').value = [...smsTels($('#sm_tel').value), ...add.map(smsTel)].join(', '); tn(); $('.sms-to').classList.remove('err'); toast(`전화번호 ${add.length}개를 넣었습니다${got.length - add.length ? ` (중복 ${got.length - add.length}개 제외)` : ''}.`);
+    } catch (x) { toast('엑셀 파일을 읽지 못했습니다. CSV 로 저장해서 다시 올려 주세요.', true); } });
+  smsImgDraw(); tn(); setTimeout(() => (tels.length ? $('#sm_m') : $('#sm_tel'))?.focus(), 80);
+  MD.onConfirm = () => { const f = $('.sms-to'), raw = smsTels($('#sm_tel').value), dt = $('#sm_dt').value.trim(), v = smsRead(); let er = false;
+    const bad = raw.filter(x => !/^\+?[\d\s-]{9,20}$/.test(x) || x.replace(/\D/g, '').length < 9), tels = [...new Set(raw.map(x => x.replace(/[^\d+]/g, '')))];
+    f.classList.remove('err'); $('.sms-cp .pf[data-fk="dt"]').classList.remove('err');
+    if (!raw.length) { f.classList.add('err'); f.querySelector('.err-t').textContent = '수신전화번호를 입력하세요.'; er = true; }
+    else if (bad.length) { f.classList.add('err'); f.querySelector('.err-t').textContent = `전화번호 형식이 아닙니다: ${bad.slice(0, 3).join(', ')}`; er = true; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dt) || dt < TODAY) { msgShowErr('.sms-cp', [['dt', dt < TODAY && /^\d{4}-\d{2}-\d{2}$/.test(dt) ? '지난 날짜로는 보낼 수 없습니다.' : 'YYYY-MM-DD 형식으로 입력하세요.']]); er = true; }
+    if (smsMsgErr(v) || er) { if (er) (f.classList.contains('err') ? $('#sm_tel') : $('#sm_dt')).focus(); return; }
+    v.dt = dt; const later = dt > TODAY, byTel = Object.fromEntries(SMS_MEM.map(m => [m[3], m]));
+    openConfirm('메시지 전송', { sub:`${v.mtype} · ${tels.length}건${later ? ' · ' + dt + ' 예약' : ''}`, icon:'message', q:`${tels.length}개 번호로 ${v.mtype} 를 ${later ? dt + ' 에 예약 전송' : '전송'} 하시겠습니까?`, note:tels.slice(0, 3).map(smsTel).join(', ') + (tels.length > 3 ? ` 외 ${tels.length - 3}개` : '') }, '전송', () => smsSend(tels.map(t => [t, byTel[t]]), v, how));
+  };
+}
+function smsRead() {
+  const imgs = SMS_IMGS.map(f => f.name), video = $('#sm_v')?.files[0]?.name || '', msg = $('#sm_m').value.trim();
+  return { title:$('#sm_t').value.trim(), msg, imgs, video, mtype:smsType(msg, imgs.length + (video ? 1 : 0)) };
+}
+function smsMsgErr(v) { const f = $('.sms-cp .fld[data-fk="msg"]'); f.classList.remove('err'); if (v.msg) return false; f.classList.add('err'); f.querySelector('.err-t').textContent = '메세지내용을 입력하세요.'; $('#sm_m').focus(); return true; }
+function smsSend(list, v, how) {
+  const Rw = CFG['cs/sms'].rows, res = v.dt > TODAY ? '예약' : '성공'; let seq = Math.max(0, ...Rw.map(x => x.seq)), last;
+  list.forEach(([tel, m]) => { last = { id:'smn' + Date.now() + Rw.length, seq:++seq, mtype:v.mtype, dt:v.dt || TODAY, tel, uid:m?.[0] || '', uname:m?.[1] || '', grade:m?.[2] || '', res, title:v.title, msg:v.msg, imgs:v.imgs, video:v.video, by:ME.id }; Rw.push(last); });
+  audit(how, `${v.mtype} ${list.length}건${res === '예약' ? ' · ' + v.dt + ' 예약' : ''} · ${v.msg.slice(0, 20)}`, 'cs/sms', list.length === 1 ? list[0][0] : `${list.length}명`);
+  closeModal(); const st = ls('cs/sms'); st.q = ''; st.f = {}; st.cur = last.id; st.sel = new Set([last.id]); S.smsTab = 'a'; render(); toast(`${v.mtype} ${list.length}건을 ${res === '예약' ? v.dt + ' 에 예약했습니다' : '보냈습니다'}.`);
+}
+Object.assign(MD_ACT, {
+  'sms-tab': a => { S.smsTab = a.dataset.t; render(); },
+  'sms-tpl': a => { const t = SMS_TPL[+a.dataset.i], m = $('#sm_m'); if (!m) return; m.value = m.value ? m.value + '\n' + t[2] : t[2]; if (!$('#sm_t').value) $('#sm_t').value = t[1]; m.dispatchEvent(new Event('input')); $('.sms-cp .fld[data-fk="msg"]').classList.remove('err'); m.focus(); },
+  'sms-fx': a => { if (a.dataset.i !== 'v') { SMS_IMGS.splice(+a.dataset.i, 1); $('.sms-cp .fld[data-fk="img"]')?.classList.remove('err'); return smsImgDraw(); } const inp = $('#sm_v'); if (!inp) return; inp.value = ''; inp.dispatchEvent(new Event('change')); },
+  /* 회원선택 — 레거시 「회원선택」 창: 왼쪽 회원 상세 | 오른쪽 회원 목록, 체크 후 「선택완료」 → 전송메시지등록 */
+  'sms-pick': () => {
+    S.smsSel = new Set(); S.smsQ = ''; S.smsG = ''; S.smsDT = 'a'; S.smsCur = SMS_MEMD[0].uid;
+    const list = () => { const q = (S.smsQ || '').toLowerCase(); return SMS_MEMD.filter(m => (!S.smsG || m.grade === S.smsG) && (!q || [m.uid, m.name, m.tel, m.rec].join(' ').toLowerCase().includes(q))); };
+    const draw = () => { const L = list(), ok = L.filter(m => m.agree), all = ok.length && ok.every(m => S.smsSel.has(m.uid));
+      $('#sm_ml').innerHTML = `<table class="tbl compact"><thead><tr><th class="ck"><input type="checkbox" class="cbox" id="sm_all" ${all ? 'checked' : ''} aria-label="보이는 회원 모두 선택"></th><th class="n">전산코드</th><th>등록날짜</th><th>회원구분</th><th>회원명</th><th>아이디</th><th>추천인</th></tr></thead>
+        <tbody>${L.map(m => `<tr data-uid="${m.uid}" class="${m.uid === S.smsCur ? 'cur' : ''} ${S.smsSel.has(m.uid) ? 'sel' : ''} ${m.agree ? '' : 'is-del'}" ${m.agree ? '' : 'title="문자 수신 거부"'}><td class="ck"><input type="checkbox" class="cbox" ${S.smsSel.has(m.uid) ? 'checked' : ''} ${m.agree ? '' : 'disabled'} aria-label="${esc(m.name)} 선택"></td>
+          <td class="n num">${m.seq}</td><td class="num">${m.rg}</td><td>${esc(m.grade)}</td><td class="strong">${esc(m.name)}${m.agree ? '' : ' <span class="del-tag">수신거부</span>'}</td><td class="mono">${esc(m.uid)}</td><td class="mono">${esc(m.rec)}</td></tr>`).join('') || '<tr><td colspan="7"><div class="empty">조건에 맞는 회원이 없습니다.</div></td></tr>'}</tbody></table>`;
+      $('#sm_n').innerHTML = S.smsSel.size ? `<b>${S.smsSel.size}명</b> 선택됨 <button type="button" class="linkbtn" id="sm_clr">선택 해제</button>` : '<span class="muted">받을 회원을 체크하세요</span>';
+      $('#sm_ok').innerHTML = `${ic('check')}선택완료${S.smsSel.size ? ` (${S.smsSel.size}명)` : ''}`;
+      $('#sm_md').innerHTML = smsMemDetail(SMS_MEMD.find(m => m.uid === S.smsCur)); $('#sm_lc').textContent = `조회 ${L.length}건`; };
+    openModal(MH('회원선택', '받을 회원을 체크한 뒤 「선택완료」를 누르면 메시지를 작성합니다') + `<div class="m-b"><div class="sms-mtb"><label class="sfield">${ic('search')}<input id="sm_q" placeholder="회원명 · 아이디 · 전화번호 · 추천인" autocomplete="off"></label>
+          <select class="select" id="sm_g" aria-label="회원구분"><option value="">회원구분 전체</option>${[...new Set(SMS_MEM.map(m => m[2]))].map(x => `<option>${x}</option>`).join('')}</select><span class="grow"></span><span class="sms-mn" id="sm_n"></span></div>
+        <div class="sms-mg"><section class="sms-md card" id="sm_md"></section>
+          <section class="sms-ml"><div class="sms-lh" id="sm_lc"></div><div class="sms-mt" id="sm_ml"></div><div class="err-t sms-merr" role="alert"></div></section></div></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" id="sm_ok" data-act="confirm-generic"></button></div>`, { xwide:true });
+    $('#modal').classList.add('sms-modal', 'sms-pkm'); draw(); setTimeout(() => $('#sm_q')?.focus(), 80);
+    $('#sm_q').addEventListener('input', e => { S.smsQ = e.target.value; draw(); });
+    $('#sm_g').addEventListener('change', e => { S.smsG = e.target.value; draw(); });
+    $('#sm_md').addEventListener('click', e => { const t = e.target.closest('[data-dt]'); if (t) { S.smsDT = t.dataset.dt; draw(); } });
+    $('#sm_ml').addEventListener('click', e => {
+      if (e.target.id === 'sm_all') { list().filter(m => m.agree).forEach(m => e.target.checked ? S.smsSel.add(m.uid) : S.smsSel.delete(m.uid)); $('.sms-ml').classList.remove('err'); return draw(); }
+      const tr = e.target.closest('tr[data-uid]'); if (!tr) return; const u = tr.dataset.uid, m = SMS_MEMD.find(x => x.uid === u); S.smsCur = u;
+      if (e.target.closest('.ck')) { if (!m.agree) { toast('문자 수신을 거부한 회원입니다.', true); return draw(); } S.smsSel.has(u) ? S.smsSel.delete(u) : S.smsSel.add(u); $('.sms-ml').classList.remove('err'); return draw(); }
+      $$('#sm_ml tr.cur').forEach(x => x.classList.remove('cur')); tr.classList.add('cur'); $('#sm_md').innerHTML = smsMemDetail(m); });
+    $('#sm_ml').addEventListener('dblclick', e => { const tr = e.target.closest('tr[data-uid]'); if (!tr || e.target.closest('.ck')) return; const m = SMS_MEMD.find(x => x.uid === tr.dataset.uid); if (!m.agree) return; S.smsSel.has(m.uid) ? S.smsSel.delete(m.uid) : S.smsSel.add(m.uid); draw(); });
+    $('#sm_n').addEventListener('click', e => { if (e.target.id === 'sm_clr') { S.smsSel.clear(); draw(); } });
+    MD.onConfirm = () => { if (!S.smsSel.size) { $('.sms-ml').classList.add('err'); $('.sms-merr').textContent = '받을 회원을 한 명 이상 체크하세요.'; return; }
+      const tels = [...new Set(SMS_MEMD.filter(m => S.smsSel.has(m.uid)).map(m => m.tel))]; smsOpen(tels, '회원선택 SMS메세지보내기'); }; },
+  'sms-manual': () => smsOpen([], '수동입력 SMS메세지보내기'),
+  'sms-book': a => { const t = $('#sm_tel'); if (!t) return; const cur = smsTels(t.value).map(x => x.replace(/\D/g, '')); if (!cur.includes(a.dataset.t)) t.value = [...smsTels(t.value), smsTel(a.dataset.t)].join(', '); t.dispatchEvent(new Event('input')); $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); t.focus(); },
+});
+/* ── PUSH전송관리 ── */
+const pushRes = r => r.res === '성공' ? `<span class="tr-res ok">${ic('check')}성공</span>` : r.res === '예약' ? `<span class="tr-res info">${ic('clock')}예약</span>` : `<span class="tr-res bad">${ic('x')}실패</span>`;
+const pushNat = c => c ? `${c}=${NAT[c] || ''}` : '';
+function pushDetail(r) {
+  const T = S.puTab || 'a', tab = (id, l) => `<button class="tab ${T === id ? 'on' : ''}" data-act="push-tab" data-t="${id}">${l}</button>`;
+  const link = (k, l, v) => mdRow(l, v ? `<span class="pu-lv"><span class="mono md-ell">${esc(v)}</span><button type="button" class="btn btn-sm" data-act="push-view" data-k="${k}">${ic('eye')}보기</button></span>` : '<span class="muted">없음</span>');
+  const pane = T === 'a'
+    ? dsec('pu1', '기본정보', '', mdRow('전산코드', `<span class="num">${r.seq}</span>`) + mdRow('국가코드', esc(pushNat(r.nat)), 'nat') + mdRow('발송날짜', `<span class="num">${esc(r.dt)}</span>`, 'dt')
+        + mdRow('회원아이디', `<span class="mono">${esc(r.uid)}</span>`, 'uid') + mdRow('회원이름', esc(r.uname || '—')) + mdRow('APP 서비스', esc(r.apk), 'apk') + mdRow('메세지 타입', esc(r.mtype), 'mtype')
+        + mdRow('수신전화번호', `<span class="mono">${esc(smsTel(r.tel))}</span>`, 'tel') + mdRow('메세지제목', esc(r.title)) + mdRow('전송결과', pushRes(r), 'res'), '', 'view')
+      + dsec('pu2', '발송메시지', '', `<div class="cs-box"><div class="cs-bv sms-msg" style="min-height:90px">${esc(r.msg)}</div></div>`, '', 'view')
+    : dsec('pu3', '부가메세지', '', link('img', '이미지파일', r.img) + link('video', '동영상주소', r.video) + link('url', '홈페이지주소', r.url), '', 'view');
+  return `<aside class="po-d card" data-id="${r.id}" aria-label="PUSH 전송 상세"><div class="po-dh"><div style="min-width:0"><h2>${esc(r.title)} ${pushRes(r)}${r.stop ? ' ' + badge('삭제', 'bad') : ''}</h2><p>${esc(r.apk)} · <span class="mono">${esc(r.uid)}</span> · ${esc(r.dt)}</p></div></div>
+    <div class="tabs po-tabs">${tab('a', '기본정보')}${tab('b', '부가메세지')}</div><div class="po-db">${pane}</div></aside>`;
+}
+MDP['cs/push'] = { sort:{ k:'seq', dir:-1 }, ph:'회원아이디 · 성명 · 전화번호 · 제목 검색 후 Enter', tip:['title', 'apk'],
+  tools:key => can(key, 'PUSH메세지보내기') ? `<button class="btn btn-p" data-act="push-send">${ic('message')}PUSH메세지보내기</button>` : '',
+  cols:[['seq', '전산코드', 'n num'], ['dt', '등록날짜', 'num'], ['nat', '국가', 'mono'], ['apk', 'APK타입', 'md-ell'], ['mtype', '메세지타입', 'md-ell'], ['uid', '회원아이디', 'mono', r => `${r.stop ? '<span class="del-tag">삭제</span>' : ''}${esc(r.uid)}`], ['uname', '회원성명', 'md-ell'],
+    ['tel', '전송전화번호', 'mono', r => esc(smsTel(r.tel))], ['title', '제목', 'md-ell']],
+  detail:pushDetail };
+function pushDevDetail(d) {
+  if (!d) return `<div class="empty" style="padding:24px">${ic('users')}<div>오른쪽 목록에서 기기를 누르면<br>정보가 보입니다.</div></div>`;
+  const row = (l, v, cls = '') => `<div class="sms-dr"><span>${l}</span><b class="${cls}">${v ? esc(v) : '<span class="muted">—</span>'}</b></div>`;
+  return `<div class="pu-dh">${ic('users')}기기 정보</div>${d.live ? '' : `<div class="callout warn" style="margin:8px 0">${ic('alert')}<div>앱을 삭제했거나 PUSH 토큰이 만료된 기기라 보낼 수 없습니다.</div></div>`}
+    <div class="sms-dl">${row('전산코드', String(d.seq), 'num')}${row('국가코드', pushNat(d.nat))}${row('등록날짜', d.rg, 'num')}${row('APP 서비스', d.apk)}${row('회원아이디', d.uid, 'mono')}${row('회원이름', d.name)}${row('수신전화번호', smsTel(d.tel), 'mono')}${row('PUSH 수신', d.live ? '가능' : '불가 (토큰 만료)')}</div>`;
+}
+Object.assign(MD_ACT, {
+  'push-tab': a => { S.puTab = a.dataset.t; render(); },
+  'push-view': a => { const r = CFG['cs/push'].rows.find(x => x.id === ls('cs/push').cur), v = r?.[a.dataset.k]; if (!v) return;
+    if (a.dataset.k === 'img') return openModal(MH('이미지파일', esc(v)) + `<div class="m-b"><div class="ph-img pu-img">${ic('file')}${esc(v)}</div><p class="muted" style="font-size:12.5px;margin:10px 0 0">실제 서버 연결 시 원본 이미지를 보여 줍니다.</p></div><div class="m-f"><button class="btn" data-act="close-modal">닫기</button></div>`);
+    if (!/^https?:\/\//.test(v)) return toast('주소 형식이 올바르지 않습니다.', true); window.open(v, '_blank', 'noopener'); },
+  /* PUSH메세지보내기 — 레거시 「PUSH 전송메시지등록」: 왼쪽 작성 | 가운데 기기 정보 | 오른쪽 앱 설치 기기 목록 */
+  'push-send': () => {
+    S.puSel = new Set(); S.puQ = ''; S.puA = ''; S.puCur = PUSH_DEV[0].id; let IMG = null;
+    const list = () => { const q = (S.puQ || '').toLowerCase(); return PUSH_DEV.filter(d => (!S.puA || d.apk === S.puA) && (!q || [d.uid, d.name, d.tel].join(' ').toLowerCase().includes(q))); };
+    const draw = () => { const L = list(), ok = L.filter(d => d.live), all = ok.length && ok.every(d => S.puSel.has(d.id));
+      $('#pu_dl').innerHTML = `<table class="tbl compact"><thead><tr><th class="ck"><input type="checkbox" class="cbox" id="pu_all" ${all ? 'checked' : ''} aria-label="보이는 기기 모두 선택"></th><th>APK 타입</th><th>등록일자</th><th>회원아이디</th><th>회원명</th><th>전화번호</th></tr></thead>
+        <tbody>${L.map(d => `<tr data-id="${d.id}" class="${d.id === S.puCur ? 'cur' : ''} ${S.puSel.has(d.id) ? 'sel' : ''} ${d.live ? '' : 'is-del'}"><td class="ck"><input type="checkbox" class="cbox" ${S.puSel.has(d.id) ? 'checked' : ''} ${d.live ? '' : 'disabled'} aria-label="${esc(d.uid)} 선택"></td>
+          <td class="md-ell" title="${esc(d.apk)}">${esc(d.apk)}</td><td class="num">${d.rg}</td><td class="mono">${esc(d.uid)}${d.live ? '' : ' <span class="del-tag">만료</span>'}</td><td>${esc(d.name)}</td><td class="mono">${esc(smsTel(d.tel))}</td></tr>`).join('') || '<tr><td colspan="6"><div class="empty">조건에 맞는 기기가 없습니다.</div></td></tr>'}</tbody></table>`;
+      $('#pu_n').innerHTML = S.puSel.size ? `<b>${S.puSel.size}대</b> 선택됨 <button type="button" class="linkbtn" id="pu_clr">선택 해제</button>` : '<span class="muted">받을 기기를 체크하세요</span>';
+      $('#pu_ok').innerHTML = `${ic('message')}메시지 전송${S.puSel.size ? ` (${S.puSel.size}대)` : ''}`; $('#pu_lc').textContent = `조회 ${L.length}건`;
+      $('#pu_dd').innerHTML = pushDevDetail(PUSH_DEV.find(d => d.id === S.puCur)); };
+    openModal(MH('PUSH 전송메시지등록', '앱을 설치한 기기를 골라 PUSH 메시지를 보냅니다') + `<div class="m-b"><div class="pu-pk">
+        <section class="sms-cp pu-cp">
+          <div class="pf" data-fk="kind"><label for="pu_k">메세지구분<span class="req">*</span></label><div class="pf-c"><select class="select" id="pu_k">${PUSH_KIND.map(x => `<option>${x}</option>`).join('')}</select></div><span></span><div class="err-t"></div></div>
+          <div class="pf" data-fk="dt"><label for="pu_dt">등록날짜<span class="req">*</span></label><div class="pf-c"><input class="input num" id="pu_dt" value="${TODAY}" autocomplete="off"></div><span></span><div class="err-t" role="alert"></div></div>
+          <div class="fld" data-fk="title"><label for="pu_t">메세지제목<span class="req">*</span><span class="grow"></span><span class="sms-cnt" id="pu_tc">0 / 40</span></label><input class="input" id="pu_t" maxlength="40" autocomplete="off" placeholder="알림에 굵게 보이는 제목"><div class="err-t" role="alert"></div></div>
+          <div class="fld" data-fk="msg"><label for="pu_m">메세지내용<span class="req">*</span><span class="grow"></span><span class="sms-cnt" id="pu_mc">0 / 1000</span></label><textarea class="input" id="pu_m" rows="6" maxlength="1000" placeholder="알림 본문"></textarea><div class="err-t" role="alert"></div></div>
+          <div class="fld" data-fk="img"><label>전송이미지</label><div class="sms-vf"><span class="sms-fn" id="pu_fn"><span class="muted">선택한 파일 없음</span></span><label class="btn btn-sm"><input type="file" accept="image/jpeg,image/png" id="pu_i" hidden>${ic('upload')}선택</label><button type="button" class="ibtn" id="pu_ix" aria-label="이미지 지우기" title="지우기">${ic('x')}</button></div><div class="hint">jpg · png, 300KB 이하 1장</div><div class="err-t" role="alert"></div></div>
+          <div class="pf" data-fk="video"><label for="pu_v">동영상주소</label><div class="pf-c"><input class="input mono" id="pu_v" placeholder="https://" autocomplete="off"></div><span></span><div class="err-t" role="alert"></div></div>
+          <div class="pf" data-fk="url"><label for="pu_u">홈페이지주소</label><div class="pf-c"><input class="input mono" id="pu_u" placeholder="https://" autocomplete="off"></div><span></span><div class="err-t" role="alert"></div></div>
+          <div class="pu-prev" aria-label="알림 미리보기"><div class="pu-pa">${ic('message')}<span id="pu_pk">${esc(PUSH_KIND[0].split('=')[0])}</span><span class="muted">지금</span></div><b id="pu_pt">메세지제목</b><span id="pu_pm">메세지내용이 여기에 보입니다.</span></div>
+        </section>
+        <section class="sms-md card pu-dd" id="pu_dd"></section>
+        <section class="sms-ml"><div class="sms-mtb"><label class="sfield">${ic('search')}<input id="pu_q" placeholder="회원아이디 · 성명 · 전화번호" autocomplete="off"></label>
+            <select class="select" id="pu_a" aria-label="APP 서비스"><option value="">APP 서비스 전체</option>${PUSH_APK.map(x => `<option>${x}</option>`).join('')}</select></div>
+          <div class="sms-lh"><span id="pu_lc"></span> · <span id="pu_n"></span></div><div class="sms-mt pu-mt" id="pu_dl"></div><div class="err-t sms-merr" role="alert"></div></section></div></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" id="pu_ok" data-act="confirm-generic"></button></div>`, { xwide:true });
+    $('#modal').classList.add('sms-modal', 'pu-modal'); draw(); setTimeout(() => $('#pu_t')?.focus(), 80);
+    const prev = () => { $('#pu_tc').textContent = `${$('#pu_t').value.length} / 40`; $('#pu_mc').textContent = `${$('#pu_m').value.length} / 1000`; $('#pu_pk').textContent = $('#pu_k').value.split('=')[0];
+      $('#pu_pt').textContent = $('#pu_t').value || '메세지제목'; $('#pu_pm').textContent = $('#pu_m').value || '메세지내용이 여기에 보입니다.'; };
+    ['#pu_t', '#pu_m'].forEach(x => $(x).addEventListener('input', e => { prev(); e.target.closest('.fld').classList.remove('err'); })); $('#pu_k').addEventListener('change', prev);
+    $('#pu_q').addEventListener('input', e => { S.puQ = e.target.value; draw(); }); $('#pu_a').addEventListener('change', e => { S.puA = e.target.value; draw(); });
+    $('#pu_i').addEventListener('change', e => { const f = e.target.files[0], fld = e.target.closest('.fld'); fld.classList.remove('err'); e.target.value = ''; if (!f) return;
+      if (!/\.(jpe?g|png)$/i.test(f.name)) { fld.classList.add('err'); fld.querySelector('.err-t').textContent = `${f.name} — jpg · png 만 보낼 수 있습니다.`; return; }
+      if (f.size > 300 * 1024) { fld.classList.add('err'); fld.querySelector('.err-t').textContent = `${f.name} — 300KB 이하만 보낼 수 있습니다 (${Math.ceil(f.size / 1024)}KB).`; return; }
+      IMG = f; $('#pu_fn').innerHTML = `<span class="mono">${esc(f.name)}</span> <span class="muted">${Math.ceil(f.size / 1024)}KB</span>`; });
+    $('#pu_ix').addEventListener('click', () => { IMG = null; $('#pu_fn').innerHTML = '<span class="muted">선택한 파일 없음</span>'; $('.pu-cp .fld[data-fk="img"]').classList.remove('err'); });
+    $('#pu_dl').addEventListener('click', e => {
+      if (e.target.id === 'pu_all') { list().filter(d => d.live).forEach(d => e.target.checked ? S.puSel.add(d.id) : S.puSel.delete(d.id)); $('.pu-pk .sms-ml').classList.remove('err'); return draw(); }
+      const tr = e.target.closest('tr[data-id]'); if (!tr) return; const d = PUSH_DEV.find(x => x.id === tr.dataset.id); S.puCur = d.id;
+      if (e.target.closest('.ck')) { if (!d.live) { toast('PUSH 토큰이 만료된 기기입니다.', true); return draw(); } S.puSel.has(d.id) ? S.puSel.delete(d.id) : S.puSel.add(d.id); $('.pu-pk .sms-ml').classList.remove('err'); return draw(); }
+      $$('#pu_dl tr.cur').forEach(x => x.classList.remove('cur')); tr.classList.add('cur'); $('#pu_dd').innerHTML = pushDevDetail(d); });
+    $('#pu_dl').addEventListener('dblclick', e => { const tr = e.target.closest('tr[data-id]'); if (!tr || e.target.closest('.ck')) return; const d = PUSH_DEV.find(x => x.id === tr.dataset.id); if (!d.live) return; S.puSel.has(d.id) ? S.puSel.delete(d.id) : S.puSel.add(d.id); $('.pu-pk .sms-ml').classList.remove('err'); draw(); });
+    $('#pu_n').parentElement.addEventListener('click', e => { if (e.target.id === 'pu_clr') { S.puSel.clear(); draw(); } });
+    MD.onConfirm = () => { const g = id => $('#' + id).value.trim(), v = { kind:g('pu_k'), dt:g('pu_dt'), title:g('pu_t'), msg:g('pu_m'), video:g('pu_v'), url:g('pu_u'), img:IMG?.name || '' }, er = [];
+      $$('.pu-cp .fld').forEach(x => x.classList.remove('err'));
+      const fe = (k, m) => { const f = $(`.pu-cp .fld[data-fk="${k}"]`); f.classList.add('err'); f.querySelector('.err-t').textContent = m; };
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(v.dt)) er.push(['dt', 'YYYY-MM-DD 형식으로 입력하세요.']); else if (v.dt < TODAY) er.push(['dt', '지난 날짜로는 보낼 수 없습니다.']);
+      if (v.video && !/^https?:\/\/\S+$/.test(v.video)) er.push(['video', 'http:// 또는 https:// 로 시작하는 주소를 입력하세요.']);
+      if (v.url && !/^https?:\/\/\S+$/.test(v.url)) er.push(['url', 'http:// 또는 https:// 로 시작하는 주소를 입력하세요.']);
+      let bad = !!er.length; msgShowErr('.pu-cp', er);
+      if (!v.title) { fe('title', '메세지제목을 입력하세요.'); bad = true; } if (!v.msg) { fe('msg', '메세지내용을 입력하세요.'); bad = true; }
+      if (!S.puSel.size) { $('.pu-pk .sms-ml').classList.add('err'); $('.pu-pk .sms-merr').textContent = '받을 기기를 한 대 이상 체크하세요.'; bad = true; }
+      if (bad) return $('.pu-cp .err input, .pu-cp .err textarea, .pu-cp .err select')?.focus();
+      const sel = PUSH_DEV.filter(d => S.puSel.has(d.id)), later = v.dt > TODAY;
+      openConfirm('PUSH 메시지 전송', { sub:`${esc(v.kind)} · ${sel.length}대${later ? ' · ' + v.dt + ' 예약' : ''}`, icon:'message', q:`${sel.length}대 기기로 PUSH 를 ${later ? v.dt + ' 에 예약 전송' : '전송'} 하시겠습니까?`, note:esc(v.title) }, '전송', () => {
+        const Rw = CFG['cs/push'].rows; let seq = Math.max(0, ...Rw.map(x => x.seq)), last;
+        sel.forEach(d => { last = { id:'pun' + Date.now() + Rw.length, seq:++seq, dt:v.dt, nat:d.nat, apk:d.apk, mtype:v.kind, uid:d.uid, uname:d.name, tel:d.tel, title:v.title, msg:v.msg, img:v.img, video:v.video, url:v.url, res:later ? '예약' : '성공', by:ME.id }; Rw.push(last); });
+        audit('PUSH메세지보내기', `${v.kind} · ${sel.length}대${later ? ' · ' + v.dt + ' 예약' : ''} · ${v.title}`, 'cs/push', sel.length === 1 ? sel[0].uid : `${sel.length}대`);
+        closeModal(); const st = ls('cs/push'); st.q = ''; st.f = {}; st.cur = last.id; st.sel = new Set([last.id]); S.puTab = 'a'; render(); toast(`PUSH ${sel.length}건을 ${later ? v.dt + ' 에 예약했습니다' : '보냈습니다'}.`); });
+    }; },
+});
+/* ── 이용안내관리 · 공지사항관리 (공통) ── */
+const GB = {
+  'cs/guide': { name:'이용안내', newT:'이용안내등록', editT:'이용안내수정', saveL:'이용안내저장', tbl:'_guide',
+    F:[['nat', '국가코드', 'nat', 1], ['dt', '등록날짜', 'date', 1], ['svc', '서비스 타입', 'svc', 1], ['title', '이용안내제목', 'text', 1], ['body', '이용안내', 'area', 1], ['img', '이미지파일', 'file'], ['video', '동영상주소', 'url']] },
+  'cs/notice': { name:'공지사항', newT:'게시판등록', editT:'게시판수정', saveL:'공지사항등록', tbl:'_notice',
+    F:[['nat', '국가코드', 'nat', 1], ['dt', '등록날짜', 'date', 1], ['ntype', '공지타입', 'ntype', 1], ['svc', '서비스 타입', 'svc', 1], ['title', '공지사항제목', 'text', 1], ['body', '공지내용', 'area', 1], ['icon', '공지아이콘', 'file'], ['img', '이미지파일', 'file'], ['video', '동영상주소', 'url'], ['url', '홈페이지주소', 'url']] } };
+let GB_FILES = {};
+const gbSt = r => r.stop ? `<span class="tr-res bad">${ic('trash')}삭제</span>` : `<span class="tr-res ok">${ic('check')}정상</span>`;
+const gbNt = t => t ? `<span class="badge ${t === '필수공지' ? 'bad' : t === '이벤트' ? 'ok' : t === '점검' ? 'warn' : ''}">${esc(t)}</span>` : '';
+function gbDetail(key, r) {
+  const D = GB[key], L = k => D.F.find(f => f[0] === k)[1];
+  const fileRow = (k, l) => mdRow(l, r[k] ? `<span class="pu-lv"><span class="mono md-ell">${esc(r[k])}</span><button type="button" class="btn btn-sm" data-act="gb-view" data-k="${k}">${ic('eye')}보기</button></span>` : '<span class="muted">없음</span>');
+  const urlRow = (k, l) => mdRow(l, r[k] ? `<span class="pu-lv"><span class="mono md-ell">${esc(r[k])}</span><button type="button" class="btn btn-sm" data-act="gb-view" data-k="${k}">${ic('eye')}보기</button></span>` : '<span class="muted">없음</span>');
+  return `<aside class="po-d card" data-id="${r.id}" aria-label="${D.name} 상세"><div class="po-dh"><div style="min-width:0"><h2>${esc(r.title)} ${r.ntype ? gbNt(r.ntype) : ''}${r.stop ? ' ' + badge('삭제', 'bad') : ''}</h2><p>${esc(r.svc)} · ${esc(r.dt)}</p></div></div>
+    <div class="po-db">${dsec('gb1', '기본정보', '', mdRow('전산코드', `<span class="num">${r.seq}</span>`) + mdRow('국가코드', esc(pushNat(r.nat)), 'nat') + mdRow('등록날짜', `<span class="num">${esc(r.dt)}</span>`, 'dt')
+        + (r.ntype !== undefined ? mdRow('공지타입', gbNt(r.ntype), 'ntype') : '') + mdRow('서비스 타입', esc(r.svc), 'svc') + mdRow(key === 'cs/notice' ? '게시판제목' : L('title'), esc(r.title)), '', 'view')
+      + dsec('gb2', L('body'), '', `<div class="cs-box"><div class="cs-bv sms-msg">${esc(r.body)}</div></div>`, '', 'view')
+      + dsec('gb3', '첨부', '', D.F.filter(f => f[2] === 'file').map(f => fileRow(f[0], f[1])).join('') + D.F.filter(f => f[2] === 'url').map(f => urlRow(f[0], f[1])).join(''), '', 'view')
+      + dsec('gb4', '관리 정보', '', mdRow('상태', gbSt(r)) + mdRow('변동날짜', `<span class="num">${esc(r.chgAt || '')}</span>`) + mdRow('변동이유', esc(r.chgWhy || '')) + mdRow('자료등록자', `<span class="mono">${esc(r.by)}</span>`), '', 'view')}</div></aside>`;
+}
+const gbTools = key => `${can(key, '등록') ? `<button class="btn" data-act="gb-new">${ic('plus')}등록</button>` : ''}${can(key, '수정') ? `<button class="btn" data-act="gb-edit">${ic('edit')}수정</button>` : ''}${can(key, '삭제') ? `<button class="btn btn-d" data-act="gb-del">${ic('trash')}삭제</button>` : ''}`;
+const gbStCol = ['st', '상태', '', r => gbSt(r)];
+MDP['cs/guide'] = { sort:{ k:'seq', dir:1 }, ph:'이용안내제목 · 내용 · 파일명 검색 후 Enter', tip:['title', 'img'], tools:gbTools,
+  cols:[['seq', '전산코드', 'n num'], ['dt', '등록날짜', 'num'], ['svc', 'APP서비스 명칭', 'md-ell'], ['title', '이용안내제목', 'md-ell', r => `${r.stop ? '<span class="del-tag">삭제</span>' : ''}<span class="strong">${esc(r.title)}</span>`], ['img', '이미지파일', 'mono md-ell'], ['video', '동영상주소', 'mono md-ell'], gbStCol],
+  detail:r => gbDetail('cs/guide', r) };
+MDP['cs/notice'] = { sort:{ k:'seq', dir:-1 }, ph:'공지제목 · 내용 검색 후 Enter', tip:['title'], tools:gbTools,
+  cols:[['seq', '전산코드', 'n num'], ['dt', '등록날짜', 'num'], ['ntype', '공지타입', '', r => gbNt(r.ntype)], ['svc', 'APK서비스타입', 'md-ell'], ['title', '공지제목', 'md-ell', r => `${r.stop ? '<span class="del-tag">삭제</span>' : ''}<span class="strong">${esc(r.title)}</span>`], ['icon', '공지아이콘', 'mono md-ell'], ['img', '이미지공지파일', 'mono md-ell'], ['video', '동영상공지주소', 'mono md-ell']],
+  detail:r => gbDetail('cs/notice', r) };
+/* 등록 · 수정 창 (레거시 「이용안내등록 / 수정」 · 「게시판등록」) */
+function gbForm(key, r) {
+  const D = GB[key], cfg = CFG[key], v = r || { nat:'KOR', dt:TODAY, svc:'', ntype:cfg.opts.ntype?.[0] || '', title:'', body:'' };
+  GB_FILES = {}; D.F.filter(f => f[2] === 'file').forEach(([k]) => { if (r?.[k]) GB_FILES[k] = { name:r[k], url:r[k + 'Url'] || '' }; });
+  const req = f => f[3] ? '<span class="req">*</span>' : '';
+  const ctl = ([k, l, t]) => t === 'nat' ? `<select class="select" id="gb_${k}">${GB_NAT.map(c => `<option value="${c}" ${v[k] === c ? 'selected' : ''}>${c}=${NAT[c] || ''}</option>`).join('')}</select>`
+    : t === 'svc' ? `<select class="select" id="gb_${k}"><option value="">선택</option>${GB_SVC.map(c => `<option ${v[k] === c ? 'selected' : ''}>${c}</option>`).join('')}</select>`
+    : t === 'ntype' ? `<select class="select" id="gb_${k}">${cfg.opts.ntype.map(c => `<option ${v[k] === c ? 'selected' : ''}>${c}</option>`).join('')}</select>`
+    : t === 'date' ? `<input class="input num" id="gb_${k}" value="${esc(v[k] || '')}" placeholder="YYYY-MM-DD" autocomplete="off">`
+    : t === 'file' ? `<div class="gb-file"><span class="sms-fn" id="gbn_${k}">${v[k] ? `<span class="mono">${esc(v[k])}</span>` : '<span class="muted">선택한 파일 없음</span>'}</span><label class="btn btn-sm"><input type="file" accept="image/jpeg,image/png,image/gif" id="gb_${k}" hidden>${ic('upload')}선택</label><button type="button" class="btn btn-sm" data-act="gb-pv" data-k="${k}">${ic('eye')}이미지보기</button><button type="button" class="ibtn" data-act="gb-fx" data-k="${k}" aria-label="${l} 지우기" title="지우기">${ic('x')}</button></div><div class="gb-pv" id="gbp_${k}" hidden></div>`
+    : t === 'url' ? `<input class="input mono" id="gb_${k}" value="${esc(v[k] || '')}" placeholder="https://" autocomplete="off">`
+    : `<input class="input" id="gb_${k}" value="${esc(v[k] || '')}" maxlength="80" autocomplete="off">`;
+  const rows = D.F.map(f => f[2] === 'area'
+    ? `<div class="fld gb-area" data-fk="${f[0]}"><label for="gb_${f[0]}">${f[1]}${req(f)}</label><textarea class="input" id="gb_${f[0]}" rows="8">${esc(v[f[0]] || '')}</textarea><div class="err-t" role="alert"></div></div>`
+    : `<div class="pf" data-fk="${f[0]}"><label for="gb_${f[0]}">${f[1]}${req(f)}</label><div class="pf-c">${ctl(f)}</div><span></span><div class="err-t" role="alert"></div></div>`).join('');
+  openModal(MH(r ? D.editT : D.newT, r ? `${esc(r.title)} · 바꾼 항목은 데이터수정LOG에 남습니다` : '<span class="req">*</span> 표시는 필수 항목입니다') + `<div class="m-b"><div class="md-nw gb-nw">${rows}</div></div>
+    <div class="m-f"><span class="m-warn" hidden>${ic('alert')}저장하지 않은 변경 내용이 있습니다. 한 번 더 누르면 닫힙니다.</span><button class="btn" data-act="form-cancel">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('check')}${r ? D.name + '수정저장' : D.saveL}</button></div>`, { wide:true });
+  MD.form = true; MD.dirty = false;
+  $('#modal').classList.add('gb-modal');
+  $('.gb-nw').addEventListener('input', () => { if (MD) MD.dirty = true; }); $('.gb-nw').addEventListener('change', e => { if (MD) MD.dirty = true; if (e.target.type !== 'file') e.target.closest('.pf, .fld')?.classList.remove('err'); });
+  D.F.filter(f => f[2] === 'file').forEach(([k, l]) => $('#gb_' + k).addEventListener('change', e => { const f = e.target.files[0], pf = e.target.closest('.pf'); e.target.value = ''; if (!f) return; pf.classList.remove('err');
+    if (!/\.(jpe?g|png|gif)$/i.test(f.name)) { pf.classList.add('err'); pf.querySelector('.err-t').textContent = `${f.name} — jpg · png · gif 이미지만 올릴 수 있습니다.`; return; }
+    if (f.size > 1024 * 1024) { pf.classList.add('err'); pf.querySelector('.err-t').textContent = `${f.name} — 1MB 이하만 올릴 수 있습니다 (${Math.ceil(f.size / 1024)}KB).`; return; }
+    GB_FILES[k] = { name:f.name, url:URL.createObjectURL(f) }; $('#gbn_' + k).innerHTML = `<span class="mono">${esc(f.name)}</span> <span class="muted">${Math.ceil(f.size / 1024)}KB</span>`; const pv = $('#gbp_' + k); if (!pv.hidden) MD_ACT['gb-pv']({ dataset:{ k } }, null, null, true); }));
+  setTimeout(() => $('#gb_title')?.focus(), 80);
+  MD.onConfirm = () => {
+    const o = {}; D.F.forEach(([k, , t]) => { o[k] = t === 'file' ? (GB_FILES[k]?.name || '') : $('#gb_' + k).value.trim(); });
+    const er = []; D.F.forEach(([k, l, t, rq]) => { if (rq && !o[k]) er.push([k, `${l}을(를) ${['svc', 'ntype', 'nat'].includes(t) ? '고르세요' : '입력하세요'}.`]); });
+    if (o.dt && !/^\d{4}-\d{2}-\d{2}$/.test(o.dt)) er.push(['dt', 'YYYY-MM-DD 형식으로 입력하세요.']);
+    D.F.filter(f => f[2] === 'url').forEach(([k]) => { if (o[k] && !/^https?:\/\/\S+$/.test(o[k])) er.push([k, 'http:// 또는 https:// 로 시작하는 주소를 입력하세요.']); });
+    if (o.title && o.svc && cfg.rows.some(x => !x.stop && x.id !== r?.id && x.svc === o.svc && x.nat === o.nat && x.title === o.title)) er.push(['title', '같은 서비스 · 국가에 같은 제목이 이미 있습니다.']);
+    $$('.gb-nw .pf.err, .gb-nw .fld.err').forEach(x => x.classList.remove('err'));
+    if (er.length) { er.forEach(([k, m]) => { const f = $(`.gb-nw [data-fk="${k}"]`); f.classList.add('err'); f.querySelector('.err-t').textContent = m; }); $('#gb_' + er[0][0])?.focus(); return toast(`입력 항목 ${er.length}개를 확인하세요.`, true); }
+    D.F.filter(f => f[2] === 'file').forEach(([k]) => { o[k + 'Url'] = GB_FILES[k]?.url || ''; });
+    const st = ls(key);
+    if (r) { const ch = D.F.filter(([k]) => String(r[k] ?? '') !== String(o[k] ?? ''));
+      if (!ch.length) { closeModal(); return toast('바뀐 항목이 없습니다.'); }
+      ch.forEach(([k, l], i) => CFG['work/datalog'].rows.unshift({ id:'d' + Date.now() + i, dt:fDT(new Date()).slice(0, 16), tbl:D.tbl, key:String(r.seq), field:l, before:String(r[k] ?? ''), after:String(o[k] ?? ''), who:ME.id }));
+      Object.assign(r, o, { chgAt:TODAY, chgWhy:'수정: ' + ch.map(f => f[1]).join(', ') }); audit('수정', `${D.name} ${r.title} · ${ch.map(f => f[1]).join(', ')}`, key, String(r.seq));
+      closeModal(); render(); toast(`${ch.length}개 항목을 수정했습니다 · 데이터수정LOG에 기록`);
+    } else { const n = { id:'gbn' + Date.now(), seq:Math.max(0, ...cfg.rows.map(x => x.seq)) + 1, ...o, st:'정상', chgAt:TODAY, chgWhy:'신규 등록', by:ME.id }; cfg.rows.push(n);
+      audit('등록', `${D.name} ${o.title}`, key, String(n.seq)); closeModal(); st.q = ''; st.f = {}; st.cur = n.id; st.sel = new Set([n.id]); render(); toast(`${D.name}을(를) 등록했습니다.`); }
+  };
+}
+Object.assign(MD_ACT, {
+  'gb-new': (a, e, key) => gbForm(key, null),
+  'gb-edit': (a, e, key) => { const r = CFG[key].rows.find(x => x.id === ls(key).cur); if (!r) return toast('수정할 자료를 고르세요.', true); if (r.stop) return toast('삭제된 자료는 수정할 수 없습니다.', true); gbForm(key, r); },
+  'gb-del': (a, e, key) => { const st = ls(key), D = GB[key], list = [...st.sel].map(id => CFG[key].rows.find(x => x.id === id)).filter(x => x && !x.stop); if (!list.length) return toast('삭제할 자료를 고르세요.', true);
+    openModal(MH(`${D.name} 삭제`, list.length === 1 ? esc(list[0].title) : `선택한 ${list.length}건`) + `<div class="m-b"><div class="md-nw ic-nw gb-dl">
+        <div class="pf" data-fk="why"><label for="gbw">변동이유<span class="req">*</span></label><div class="pf-c"><select class="select" id="gbw"><option value="">선택</option>${['내용 변경 · 새 글로 대체', '서비스 종료', '잘못 등록', '기간 만료', '기타'].map(x => `<option>${x}</option>`).join('')}</select></div><span></span><div class="err-t" role="alert"></div></div></div>
+        <p class="muted" style="font-size:12.5px;margin:10px 0 0">삭제하면 앱 화면에서 바로 사라지고, 여기서는 「삭제자료 표시」로 다시 볼 수 있습니다.</p></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-generic">${ic('trash')}삭제</button></div>`);
+    MD.onConfirm = () => { const w = $('#gbw').value; if (!w) return msgShowErr('.gb-dl', [['why', '변동이유를 고르세요.']]);
+      list.forEach(x => { x.stop = { date:TODAY, reason:w, by:ME.id }; Object.assign(x, { st:'삭제', chgAt:TODAY, chgWhy:w }); audit('삭제', `${D.name} ${x.title} · ${w}`, key, String(x.seq)); }); st.sel.clear(); closeModal(); render(); toast(`${list.length}건을 삭제했습니다.`); }; },
+  'gb-view': (a, e, key) => { const r = CFG[key].rows.find(x => x.id === ls(key).cur), k = a.dataset.k, v = r?.[k]; if (!v) return;
+    if (['video', 'url'].includes(k)) { if (!/^https?:\/\//.test(v)) return toast('주소 형식이 올바르지 않습니다.', true); return window.open(v, '_blank', 'noopener'); }
+    openModal(MH(GB[key].F.find(f => f[0] === k)[1], esc(v)) + `<div class="m-b">${r[k + 'Url'] ? `<img class="gb-img" src="${r[k + 'Url']}" alt="${esc(v)}">` : `<div class="ph-img pu-img">${ic('file')}${esc(v)}</div><p class="muted" style="font-size:12.5px;margin:10px 0 0">실제 서버 연결 시 원본 이미지를 보여 줍니다.</p>`}</div><div class="m-f"><button class="btn" data-act="close-modal">닫기</button></div>`); },
+  'gb-pv': (a, e, key, keep) => { const k = a.dataset.k, pv = $('#gbp_' + k), f = GB_FILES[k]; if (!pv) return;
+    if (!keep && !pv.hidden) { pv.hidden = true; return; }
+    pv.hidden = false; pv.innerHTML = f?.url ? `<img src="${f.url}" alt="${esc(f.name)}">` : f ? `<div class="ph-img">${ic('file')}${esc(f.name)}</div>` : '<span class="muted">선택한 이미지가 없습니다.</span>'; },
+  'gb-fx': a => { const k = a.dataset.k; delete GB_FILES[k]; $('#gbn_' + k).innerHTML = '<span class="muted">선택한 파일 없음</span>'; const pv = $('#gbp_' + k); if (pv) { pv.hidden = true; pv.innerHTML = ''; } if (MD) MD.dirty = true; },
+});
+/* ── 직원관리 ── */
+const sfSt = r => r.status === '정지' ? `<span class="tr-res bad">${ic('lock')}정지</span>` : `<span class="tr-res ok">${ic('check')}정상</span>`;
+const sfNat = c => `${c}=${NAT[c] || c}`;
+const sfCardFmt = c => String(c || '').replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1-');
+const sfMaskCard = c => { const d = String(c || '').replace(/\D/g, ''); return d.length < 9 ? sfCardFmt(d) : (d.slice(0, 4) + '*'.repeat(d.length - 8) + d.slice(-4)).replace(/(.{4})(?=.)/g, '$1-'); };
+/* 서비스 기능 LIST — 프로그램관리(메뉴 · 기능버튼)에서 만듦 */
+let SF_FN = null;
+function sfFns() { if (SF_FN) return SF_FN; let code = 1; SF_FN = []; PROG_LIST.forEach(p => { const { acts, btns } = progOf(p.route); [...acts, ...btns].forEach(a => SF_FN.push({ code:code++, route:p.route, main:p.main, sub:p.sub === '—' ? p.main : p.sub, fn:a })); }); return SF_FN; }
+function sfGrants(r) { if (!r.fns) { const rid = (ROLES_.find(x => x.name === r.role) || {}).id, g = GRANT[rid] || new Set(); r.fns = sfFns().filter(f => g.has(`${f.route}|${f.fn}`)).map(f => f.code); } return r.fns; }
+function sfDetail(r) {
+  const T = S.sfTab || 'a', K = 'work/staff', tab = (id, l) => `<button class="tab ${T === id ? 'on' : ''}" data-act="sf-tab" data-t="${id}">${l}</button>`, chk = (on, l) => `<span class="sf-chk ${on ? 'on' : ''}">${ic(on ? 'check' : 'x')}${l}</span>`;
+  let pane;
+  if (T === 'a') pane = dsec('sf1', '기본정보', '', mdRow('전산코드', `<span class="num">${r.seq}</span>`) + mdRow('국가코드', esc(sfNat(r.nat)), 'nat') + mdRow('등록날짜', `<span class="num">${esc(r.rg)}</span>`, 'rg') + mdRow('직원명', esc(r.name), 'name')
+      + mdRow('전화번호', `<span class="mono">${esc(r.tel)}</span>`) + mdRow('핸드폰', `<span class="mono">${esc(smsTel(r.hp))}</span>`, 'hp') + mdRow('문자메시지수신', chk(r.smsOk, r.smsOk ? '받음' : '안 받음')) + mdRow('E-MAIL', esc(r.mail)) + mdRow('E-MAIL수신', chk(r.mailOk, r.mailOk ? '받음' : '안 받음'))
+      + mdRow('주소', `<span class="num">${esc(r.zip)}</span> ${esc(r.addr1)} ${esc(r.addr2)}`) + mdRow('아이디', `<span class="mono">${esc(r.uid)}</span>`, 'uid'), '', 'view')
+    + dsec('sf2', '카드 · 계좌', '', mdRow('카드번호', `<span class="mono">${esc(r.cardMask ? sfMaskCard(r.card) : sfCardFmt(r.card))}</span>`) + mdRow('카드종류', esc(r.cardType)) + mdRow('거래은행', esc(r.bank), 'bank')
+      + mdRow('계좌번호', `<span class="mono">${esc(r.acct)}</span>`) + mdRow('가상계좌', chk(r.vacct, r.vacct ? '가상계좌' : '일반 계좌')) + mdRow('예금주', esc(r.holder)) + mdRow('서비스그룹', esc(r.group), 'group'), '', 'view');
+  else if (T === 'b') pane = dsec('sf3', '회사정보', '', mdRow('소속회사', `<span class="mono">${esc(r.comp)}</span> · ${esc(r.compName)}`, 'comp') + mdRow('부서', esc(r.dept), 'dept') + mdRow('직급', esc(r.grade), 'grade') + mdRow('권한 역할', esc(r.role)), '', 'view')
+    + dsec('sf4', '등록서류', '', `<table class="tbl compact sf-docs"><thead><tr><th>등록서류종류</th><th>등록서류주소</th><th></th></tr></thead><tbody>${r.docs.length ? r.docs.map((d, i) => `<tr><td>${esc(d.kind)}</td><td class="mono md-ell">${esc(d.title ? d.title + ' · ' : '')}${esc(d.url)}</td><td class="r"><button type="button" class="btn btn-sm" data-act="sf-doc" data-i="${i}">${ic('eye')}보기</button></td></tr>`).join('') : '<tr><td colspan="3" class="muted" style="text-align:center;padding:14px">등록한 서류가 없습니다 — 「신분증(이미지)등록」으로 올리세요.</td></tr>'}</tbody></table>`, '', 'view');
+  else if (T === 'c') pane = dsec('sf5', '거래 한도 · 수수료', '', SF_DEAL.map(d => d ? mdRow(d[1], `<span class="num">${fmt(r.deal[d[0]] || 0)}</span> <span class="muted">${d[2]}</span>`) : '<div class="sf-sep"></div>').join(''), '', 'view')
+    + dsec('sf6', '거래 제한', '', SF_BLOCK.map(([k, l, t]) => mdRow(l, r.block[k] ? `<span class="tr-res bad">${ic('lock')}${t}</span>` : '<span class="muted">제한 없음</span>')).join('') + mdRow('사유', esc(r.blockWhy || '')), '', 'view');
+  else if (T === 'd') pane = dsec('sf7', '기타정보', '', `<div class="cs-box"><div class="cs-bl">비고</div><div class="cs-bv sms-msg" style="min-height:70px">${esc(r.memo || '')}</div></div>` + mdRow('상태', sfSt(r), 'status') + mdRow('변동날짜', `<span class="num">${esc(r.chgAt || '')}</span>`) + mdRow('변동사유', esc(r.chgWhy || '')) + mdRow('자료등록자', `<span class="mono">${esc(r.by)}</span>`), '', 'view');
+  else if (T === 'e') pane = dsec('sf8', '메모등록 LIST', can(K, '수정') ? `<button type="button" class="btn btn-sm" data-act="sf-memo">${ic('memo')}메모등록</button>` : '', r.memos.length ? `<ul class="sf-memos">${r.memos.slice().reverse().map(m => `<li><span class="num muted">${esc(m.dt)} · ${esc(m.by)}</span><div>${esc(m.txt)}</div></li>`).join('')}</ul>` : '<p class="muted" style="margin:6px 0">등록한 메모가 없습니다.</p>', '', 'view');
+  else pane = sfPerm(r);
+  return `<aside class="po-d card" data-id="${r.id}" aria-label="직원 상세"><div class="po-dh"><div style="min-width:0"><h2>${esc(r.name)} <span class="mono" style="font-weight:500;font-size:13px">${esc(r.uid)}</span> ${sfSt(r)}${r.stop ? ' ' + badge('삭제', 'bad') : ''}</h2><p>${esc(r.compName)} · ${esc(r.dept)} · ${esc(r.grade)} · ${esc(r.role)}</p></div>
+      ${can(K, '수정') && !r.stop ? `<button type="button" class="btn btn-sm" data-act="sf-memo">${ic('memo')}메모등록</button>` : ''}</div>
+    <div class="tabs po-tabs">${tab('a', '기본정보')}${tab('b', '세부정보')}${tab('c', '거래정보')}${tab('d', '기타정보')}${tab('e', '자료관리')}${tab('f', '서비스 권한')}</div><div class="po-db">${pane}</div></aside>`;
+}
+/* 서비스 권한 — 레거시 「서비스 기능 LIST」 ↔ 「서비스 권한 선택 LIST」 */
+function sfPerm(r) {
+  const g = new Set(sfGrants(r)), F = sfFns(), q = (S.sfQ || '').toLowerCase(), m = S.sfM || '', edit = can('work/staff', '수정') && !r.stop;
+  const hit = f => (!m || f.main === m) && (!q || [f.main, f.sub, f.fn].join(' ').toLowerCase().includes(q));
+  const A = F.filter(f => !g.has(f.code) && hit(f)), B = F.filter(f => g.has(f.code) && hit(f));
+  const tb = (L, side) => `<div class="sf-pt" data-side="${side}" ${edit ? 'data-drop="1"' : ''}><table class="tbl compact"><thead><tr><th class="ck">${edit && L.length ? `<input type="checkbox" class="cbox" data-act="sf-pall" data-s="${side}" title="보이는 ${L.length}개 모두 ${side === 'a' ? '권한으로 옮기기' : '권한에서 빼기'}" aria-label="모두 옮기기">` : ''}</th><th class="n">${side === 'a' ? '코드' : '메뉴코드'}</th><th>메인메뉴</th><th>서브메뉴</th><th>기능버튼</th></tr></thead>
+    <tbody>${L.slice(0, 400).map(f => `<tr data-act="sf-prow" data-s="${side}" data-c="${f.code}" ${edit ? 'draggable="true"' : ''} title="${edit ? (side === 'a' ? '체크하거나 오른쪽으로 끌어 놓으면 권한에 추가' : '체크하거나 왼쪽으로 끌어 놓으면 권한에서 빼기') : ''}"><td class="ck">${edit ? `<input type="checkbox" class="cbox" tabindex="-1" aria-label="${esc(f.sub)} ${esc(f.fn)} ${side === 'a' ? '추가' : '빼기'}">` : ''}</td><td class="n num">${f.code}</td><td class="md-ell">${esc(f.main)}</td><td class="md-ell">${esc(f.sub)}</td><td class="md-ell">${esc(f.fn)}</td></tr>`).join('') || `<tr class="sf-pe"><td colspan="5">${side === 'a' ? '추가할 기능이 없습니다' : '부여한 기능이 없습니다'}${edit ? ' — 여기로 끌어다 놓으세요' : ''}</td></tr>`}</tbody></table></div>`;
+  return `<div class="sf-perm"><div class="sf-pq"><label class="sfield">${ic('search')}<input id="sf_pq" value="${esc(S.sfQ || '')}" placeholder="메뉴 · 기능버튼 검색" autocomplete="off"></label>
+      <select class="select" id="sf_pm" aria-label="메인메뉴"><option value="">메인메뉴 전체</option>${[...new Set(F.map(f => f.main))].map(x => `<option ${x === m ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select>
+      ${edit ? `<button type="button" class="btn btn-sm" data-act="sf-preset" ${r.fnsCustom ? '' : 'disabled'} title="이 직원의 권한 역할(${esc(r.role)}) 기본값으로 되돌립니다">${ic('refresh')}역할 기본값</button>` : ''}
+      ${r.uid !== ME.id && !r.stop ? `<button type="button" class="btn btn-sm" data-act="sf-preview" title="이 직원이 로그인하면 보이는 메뉴 · 버튼으로 미리 봅니다">${ic('eye')}이 직원으로 미리보기</button>` : ''}</div>
+    <div class="sf-pmode ${r.fnsCustom ? 'custom' : ''}">${ic(r.fnsCustom ? 'lock' : 'users')}<span>${r.fnsCustom ? `<b>직원별 권한 적용 중</b> — 이 직원은 오른쪽 「서비스 권한 선택 LIST」에 있는 메뉴 · 버튼만 쓸 수 있습니다 (역할 「${esc(r.role)}」 권한은 쓰지 않음).` : `<b>역할 권한 적용 중</b> — 권한관리의 「${esc(r.role)}」 역할 권한을 그대로 씁니다. 목록을 바꾸면 이 직원에게만 따로 적용됩니다.`}</span></div>
+    <div class="sf-pg"><section><div class="sf-ph"><b>서비스 기능 LIST</b><span class="muted">추가 가능 ${F.length - g.size}개</span></div>${tb(A, 'a')}</section>
+      <div class="sf-pmid" aria-hidden="true"><span>${ic('chev')}</span><span>${ic('chevl')}</span></div>
+      <section><div class="sf-ph"><b>서비스 권한 선택 LIST</b><span class="muted">${g.size}개 부여</span></div>${tb(B, 'b')}</section></div>
+    ${edit ? `<p class="hint" style="margin:8px 0 0">${ic('info')} 행을 <b>체크</b>하거나 반대쪽 표로 <b>끌어다 놓으면</b> 바로 옮겨집니다. 머리글 체크는 지금 보이는 행을 모두 옮깁니다. 바꿀 때마다 감사LOG에 남고 즉시 적용됩니다.</p>` : ''}</div>`;
+}
+const sfCur = () => CFG['work/staff'].rows.find(x => x.id === ls('work/staff').cur);
+MDP['work/staff'] = { sort:{ k:'seq', dir:1 }, ph:'성명 · 아이디 · 핸드폰 · 부서 검색 후 Enter', tip:['name', 'comp'],
+  tools:key => `${can(key, '등록') ? `<button class="btn" data-act="sf-new">${ic('plus')}등록</button>` : ''}${can(key, '수정') ? `<button class="btn" data-act="sf-edit">${ic('edit')}수정</button>` : ''}${can(key, '정지') ? `<button class="btn btn-d" data-act="sf-stop">${ic('lock')}${sfCur()?.status === '정지' ? '정지해제' : '정지'}</button>` : ''}${can(key, '신분증(이미지)등록') ? `<button class="btn" data-act="sf-img">${ic('upload')}신분증(이미지)등록</button>` : ''}`,
+  cols:[['seq', '전산코드', 'n num'], ['rg', '등록날짜', 'num'], ['name', '성명', 'c-name', r => `${r.stop ? '<span class="del-tag">삭제</span>' : ''}<span class="strong">${esc(r.name)}</span>`], ['uid', '아이디', 'mono'], ['hp', '핸드폰번호', 'mono', r => esc(smsTel(r.hp))], ['grade', '직급'], ['dept', '부서'], ['comp', '소속회사', 'mono'], ['status', '상태', '', sfSt], ['nat', '국가명', '', r => esc(NAT[r.nat] || r.nat)]],
+  detail:sfDetail };
+/* 직원등록 · 직원수정 창 — 기본정보 · 세부정보 · 거래정보 · 기타정보 */
+let SF_FORM = {};
+function sfForm(r) {
+  const R = CFG['work/staff'].rows, v = r || { nat:'KOR', rg:TODAY, name:'', tel:'', hp:'', smsOk:true, mail:'', mailOk:true, zip:'', addr1:'', addr2:'', uid:'', card:'', cardType:'일반카드', cardMask:true, bank:'', acct:'', vacct:false, holder:'', group:'미지정', comp:'signion', dept:'', grade:'', role:'',
+    deal:{ cpDisc:0, cpFee:5, dayLim:0, monLim:0, cc1:500000, ccSame:1000000, ccMon:30000000, inst:0, cash:0, agent1:0, atm:1300 }, block:{}, blockWhy:'', memo:'' };
+  SF_FORM = { uidOk:r ? r.uid : '', cardStock:null, acctStock:null, img:null };
+  const pf = (k, l, ctl, req, after = '') => `<div class="pf" data-fk="${k}"><label for="sf_${k}">${l}${req ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl}</div><span></span><div class="err-t" role="alert"></div>${after}</div>`;
+  const inp = (k, val, x = '') => `<input class="input" id="sf_${k}" value="${esc(val ?? '')}" autocomplete="off" ${x}>`, sel = (k, list, val, ph = '선택') => `<select class="select" id="sf_${k}">${ph ? `<option value="">${ph}</option>` : ''}${list.map(o => Array.isArray(o) ? `<option value="${o[0]}" ${o[0] === val ? 'selected' : ''}>${o[1]}</option>` : `<option ${o === val ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
+  const cb = (k, on, l) => `<label class="sf-cb"><input type="checkbox" class="cbox" id="sf_${k}" ${on ? 'checked' : ''}>${l}</label>`;
+  const A = pf('nat', '국가코드', sel('nat', GB_NAT.map(c => [c, sfNat(c)]), v.nat, ''), 1) + pf('rg', '등록날짜', inp('rg', v.rg, 'placeholder="YYYY-MM-DD"'), 1) + pf('name', '직원명', inp('name', v.name, 'maxlength="30"'), 1) + pf('tel', '전화번호', inp('tel', v.tel, 'placeholder="02-1234-5678"'))
+    + pf('hp', '핸드폰', `<div class="sf-row">${inp('hp', smsTel(v.hp), 'placeholder="010-1234-5678"')}${cb('smsOk', v.smsOk, '문자메시지수신')}</div>`, 1) + pf('mail', 'E-MAIL', `<div class="sf-row">${inp('mail', v.mail, 'placeholder="name@company.com"')}${cb('mailOk', v.mailOk, 'E-MAIL수신')}</div>`, 1)
+    + pf('addr1', '주소', `<div class="sf-row">${inp('zip', v.zip, 'placeholder="우편번호" style="width:96px;flex:none"')}${inp('addr1', v.addr1, 'placeholder="주소"')}</div>`) + pf('addr2', '상세주소', inp('addr2', v.addr2))
+    + '<div class="sf-sep"></div>' + pf('uid', '아이디', `<div class="sf-row">${inp('uid', v.uid, `placeholder="영문 · 숫자 4~20자" ${r ? 'readonly' : ''}`)}${r ? '<span class="muted" style="font-size:12px;white-space:nowrap">아이디는 바꿀 수 없습니다</span>' : `<button type="button" class="btn btn-sm" data-act="sf-uidchk">${ic('search')}아이디중복검사</button>`}</div>`, 1)
+    + (r ? '' : pf('pw', '비밀번호', `<input class="input" type="password" id="sf_pw" autocomplete="new-password" placeholder="영문 + 숫자 8자 이상">`, 1))
+    + '<div class="sf-sep"></div>' + pf('card', '카드번호', `<div class="sf-row">${sel('cardType', ['일반카드', '선불카드'], v.cardType, '')}${inp('card', sfCardFmt(v.card), 'placeholder="____-____-____-____" class="input mono"')}<button type="button" class="btn btn-sm" data-act="sf-cardauto">${ic('refresh')}자동발급</button></div>`)
+    + (r ? '' : pf('cpw', '카드비밀번호', `<input class="input" type="password" id="sf_cpw" maxlength="4" inputmode="numeric" placeholder="숫자 4자리" style="width:140px">`))
+    + '<div class="sf-sep"></div>' + pf('bank', '거래은행', sel('bank', SF_BANK, v.bank)) + pf('acct', '계좌번호', `<div class="sf-row">${inp('acct', v.acct, 'class="input mono" placeholder="숫자만"')}${cb('vacct', v.vacct, '가상계좌')}<button type="button" class="btn btn-sm" data-act="sf-acctauto">${ic('refresh')}자동발급</button></div>`)
+    + pf('holder', '예금주', inp('holder', v.holder)) + (r ? '' : pf('apw', '계좌비밀번호', `<input class="input" type="password" id="sf_apw" maxlength="4" inputmode="numeric" placeholder="숫자 4자리" style="width:140px">`))
+    + pf('group', '서비스그룹', sel('group', ['미지정', '일반', 'VIP', '테스트'], v.group, '')) + pf('cardMask', '카드번호보호', cb('cardMask', !v.cardMask, '카드 번호 보호 마스크 표시 해제'));
+  const B = '<div class="sf-ht">회사정보</div>' + pf('comp', '소속회사', sel('comp', SF_COMP.map(c => [c[0], `${c[0]} · ${c[1]}`]), v.comp, ''), 1) + pf('dept', '부서', sel('dept', SF_DEPT, v.dept), 1) + pf('grade', '직급', sel('grade', SF_GRADE, v.grade), 1) + pf('role', '권한 역할', sel('role', ROLES_.map(x => x.name), v.role), 1)
+    + '<div class="sf-ht">이미지정보</div>' + pf('imgT', '타이틀', inp('imgT', '', 'placeholder="예) 신분증 앞면"')) + pf('img', '신분증(이미지)', `<div class="gb-file"><span class="sms-fn" id="sf_imgn"><span class="muted">선택한 파일 없음</span></span><label class="btn btn-sm"><input type="file" id="sf_imgf" accept="image/jpeg,image/png" hidden>${ic('upload')}선택</label></div><div class="gb-pv" id="sf_imgp" hidden></div>`);
+  const C2 = SF_DEAL.map(d => d ? pf('d_' + d[0], d[1], `<div class="sf-row"><input class="input num sf-num" id="sf_d_${d[0]}" value="${esc(v.deal[d[0]] ?? 0)}" inputmode="numeric" autocomplete="off"><span class="muted">${d[2]}</span></div>`) : '<div class="sf-sep"></div>').join('')
+    + '<div class="sf-sep"></div>' + SF_BLOCK.map(([k, l, t]) => pf('b_' + k, l, cb('b_' + k, v.block[k], t))).join('') + pf('blockWhy', '사유', inp('blockWhy', v.blockWhy, 'placeholder="제한을 걸면 사유를 적으세요"'));
+  const D = `<div class="fld" data-fk="memo"><label for="sf_memo">비고</label><textarea class="input" id="sf_memo" rows="6">${esc(v.memo || '')}</textarea></div>`;
+  const tab = (id, l) => `<button type="button" class="tab ${id === 'a' ? 'on' : ''}" data-ft="${id}">${l}<i class="sf-dot" hidden></i></button>`;
+  openModal(MH(r ? '직원수정' : '직원등록', r ? `${esc(r.name)} · <span class="mono">${esc(r.uid)}</span> · 바꾼 항목은 데이터수정LOG에 남습니다` : '<span class="req">*</span> 표시는 필수 항목입니다 · 빨간 점이 있는 탭에 확인할 칸이 있습니다')
+    + `<div class="tabs sf-ftabs">${tab('a', '기본정보')}${tab('b', '세부정보')}${tab('c', '거래정보')}${tab('d', '기타정보')}</div><div class="m-b sf-fb"><div class="md-nw sf-nw" data-p="a">${A}</div><div class="md-nw sf-nw" data-p="b" hidden>${B}</div><div class="md-nw sf-nw" data-p="c" hidden>${C2}</div><div class="md-nw sf-nw" data-p="d" hidden>${D}</div></div>
+    <div class="m-f"><span class="m-warn" hidden>${ic('alert')}저장하지 않은 변경 내용이 있습니다. 한 번 더 누르면 닫힙니다.</span><button class="btn" data-act="form-cancel">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('check')}${r ? '직원수정저장' : '직원등록저장'}</button></div>`, { wide:true });
+  MD.form = true; MD.dirty = false; $('#modal').classList.add('sf-modal');
+  const show = t => { $$('.sf-ftabs .tab').forEach(x => x.classList.toggle('on', x.dataset.ft === t)); $$('.sf-nw').forEach(x => x.hidden = x.dataset.p !== t); };
+  $('.sf-ftabs').addEventListener('click', e => { const t = e.target.closest('[data-ft]'); if (t) show(t.dataset.ft); }); SF_FORM.show = show;
+  $('.sf-fb').addEventListener('input', e => { if (MD) MD.dirty = true; if (e.target.id === 'sf_uid' && !r) SF_FORM.uidOk = ''; if (e.target.id === 'sf_card') SF_FORM.cardStock = null; if (e.target.id === 'sf_acct') SF_FORM.acctStock = null; e.target.closest('.pf, .fld')?.classList.remove('err'); });
+  $('.sf-fb').addEventListener('change', () => { if (MD) MD.dirty = true; });
+  $('#sf_imgf').addEventListener('change', e => { const f = e.target.files[0], pfe = e.target.closest('.pf'); e.target.value = ''; if (!f) return; pfe.classList.remove('err');
+    if (!/\.(jpe?g|png)$/i.test(f.name) || f.size > 2 * 1024 * 1024) { pfe.classList.add('err'); pfe.querySelector('.err-t').textContent = `${f.name} — jpg · png 2MB 이하만 올릴 수 있습니다.`; return; }
+    SF_FORM.img = { name:f.name, url:URL.createObjectURL(f) }; $('#sf_imgn').innerHTML = `<span class="mono">${esc(f.name)}</span>`; const pv = $('#sf_imgp'); pv.hidden = false; pv.innerHTML = `<img src="${SF_FORM.img.url}" alt="">`; });
+  setTimeout(() => $('#sf_name')?.focus(), 80);
+  MD.onConfirm = () => {
+    const g = k => $('#sf_' + k)?.value.trim() ?? '', c = k => !!$('#sf_' + k)?.checked, er = [];
+    const o = { nat:g('nat'), rg:g('rg'), name:g('name'), tel:g('tel'), hp:g('hp').replace(/\D/g, ''), smsOk:c('smsOk'), mail:g('mail'), mailOk:c('mailOk'), zip:g('zip'), addr1:g('addr1'), addr2:g('addr2'), uid:r ? r.uid : g('uid'),
+      cardType:g('cardType'), card:g('card'), cardMask:!c('cardMask'), bank:g('bank'), acct:g('acct').replace(/\D/g, ''), vacct:c('vacct'), holder:g('holder'), group:g('group'), comp:g('comp'), dept:g('dept'), grade:g('grade'), role:g('role'),
+      deal:{}, block:{}, blockWhy:g('blockWhy'), memo:$('#sf_memo').value.trim() };
+    o.compName = (SF_COMP.find(x => x[0] === o.comp) || [, ''])[1];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(o.rg)) er.push(['rg', 'YYYY-MM-DD 형식으로 입력하세요.', 'a']);
+    if (!o.name) er.push(['name', '직원명을 입력하세요.', 'a']);
+    if (!/^01\d{8,9}$/.test(o.hp)) er.push(['hp', '핸드폰 번호를 바르게 입력하세요 (예: 010-1234-5678).', 'a']);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o.mail)) er.push(['mail', '이메일 형식이 아닙니다 (2단계 인증 메일을 받는 주소입니다).', 'a']);
+    if (!r) { if (!/^[a-z0-9._]{4,20}$/i.test(o.uid)) er.push(['uid', '아이디는 영문 · 숫자 · . _ 로 4~20자입니다.', 'a']);
+      else if (R.some(x => x.uid.toLowerCase() === o.uid.toLowerCase())) er.push(['uid', '이미 쓰는 아이디입니다.', 'a']);
+      else if (SF_FORM.uidOk !== o.uid) er.push(['uid', '「아이디중복검사」를 눌러 확인하세요.', 'a']);
+      const pw = $('#sf_pw').value; if (pw.length < 8 || !/[a-z]/i.test(pw) || !/\d/.test(pw)) er.push(['pw', '비밀번호는 영문과 숫자를 섞어 8자 이상입니다.', 'a']);
+      const cpw = $('#sf_cpw').value, apw = $('#sf_apw').value; if (o.card && !/^\d{4}$/.test(cpw)) er.push(['cpw', '카드비밀번호 숫자 4자리를 입력하세요.', 'a']); if (o.acct && !/^\d{4}$/.test(apw)) er.push(['apw', '계좌비밀번호 숫자 4자리를 입력하세요.', 'a']); }
+    if (o.card && !/^\d{10,19}$/.test(o.card.replace(/[\s-]/g, ''))) er.push(['card', '카드번호는 숫자 10~19자리입니다 (- 는 있어도 됩니다).', 'a']); o.card = o.card ? sfCardFmt(o.card) : '';
+    if (o.acct && !o.bank) er.push(['bank', '계좌번호가 있으면 거래은행을 고르세요.', 'a']); if (o.acct && !/^\d{10,14}$/.test(o.acct)) er.push(['acct', '계좌번호는 숫자 10~14자리입니다.', 'a']); if (o.acct && !o.holder) er.push(['holder', '예금주를 입력하세요.', 'a']);
+    ['comp', 'dept', 'grade', 'role'].forEach(k => { if (!o[k]) er.push([k, '선택하세요.', 'b']); });
+    SF_DEAL.forEach(d => { if (!d) return; const x = g('d_' + d[0]).replace(/,/g, ''); if (!/^\d+(\.\d+)?$/.test(x)) return er.push(['d_' + d[0], '숫자만 입력하세요.', 'c']); const n = +x;
+      if (d[2] === '%' && n > 100) er.push(['d_' + d[0], '0~100 사이로 입력하세요.', 'c']); else if (d[0] === 'inst' && n > 36) er.push(['d_' + d[0], '할부는 36개월까지입니다.', 'c']); o.deal[d[0]] = n; });
+    SF_BLOCK.forEach(([k]) => { o.block[k] = c('b_' + k); }); if (Object.values(o.block).some(Boolean) && !o.blockWhy) er.push(['blockWhy', '거래를 제한하면 사유를 적으세요.', 'c']);
+    $$('.sf-fb .pf.err').forEach(x => x.classList.remove('err')); $$('.sf-dot').forEach(x => x.hidden = true);
+    if (er.length) { er.forEach(([k, m, t]) => { const f = $(`.sf-fb [data-fk="${k}"]`); if (f) { f.classList.add('err'); f.querySelector('.err-t').textContent = m; } $(`.sf-ftabs [data-ft="${t}"] .sf-dot`).hidden = false; }); show(er[0][2]); $('#sf_' + er[0][0])?.focus(); return toast(`입력 항목 ${er.length}개를 확인하세요.`, true); }
+    if (SF_FORM.cardStock) SF_FORM.cardStock.issue = '발급'; if (SF_FORM.acctStock) SF_FORM.acctStock.issue = '발급';
+    const img = SF_FORM.img ? { kind:'신분증', title:g('imgT'), url:SF_FORM.img.name, blob:SF_FORM.img.url } : null, st = ls('work/staff');
+    if (r) { const L = { name:'직원명', hp:'핸드폰', mail:'E-MAIL', tel:'전화번호', addr1:'주소', addr2:'상세주소', card:'카드번호', bank:'거래은행', acct:'계좌번호', holder:'예금주', group:'서비스그룹', comp:'소속회사', dept:'부서', grade:'직급', role:'권한 역할', memo:'비고', blockWhy:'사유', nat:'국가코드', rg:'등록날짜' };
+      const ch = Object.keys(L).filter(k => String(r[k] ?? '') !== String(o[k] ?? '')); if (JSON.stringify(r.deal) !== JSON.stringify(o.deal)) ch.push('deal'); if (JSON.stringify(r.block) !== JSON.stringify(o.block)) ch.push('block');
+      if (!ch.length && !img && r.smsOk === o.smsOk && r.mailOk === o.mailOk && r.vacct === o.vacct && r.cardMask === o.cardMask && r.cardType === o.cardType) { closeModal(); return toast('바뀐 항목이 없습니다.'); }
+      ch.forEach((k, i) => CFG['work/datalog'].rows.unshift({ id:'d' + Date.now() + i, dt:fDT(new Date()).slice(0, 16), tbl:'ProgUser', key:r.uid, field:L[k] || (k === 'deal' ? '거래정보' : '거래 제한'), before:k === 'deal' || k === 'block' ? JSON.stringify(r[k]) : String(r[k] ?? ''), after:k === 'deal' || k === 'block' ? JSON.stringify(o[k]) : String(o[k] ?? ''), who:ME.id }));
+      if (o.role !== r.role && !r.fnsCustom) r.fns = null; Object.assign(r, o, { chgAt:TODAY, chgWhy:'수정: ' + ch.map(k => L[k] || (k === 'deal' ? '거래정보' : '거래 제한')).join(', ') }); if (img) r.docs.push(img);
+      audit('수정', `직원 ${r.name} · ${ch.map(k => L[k] || k).join(', ')}`, 'work/staff', r.uid); closeModal(); render(); toast(`직원 정보를 저장했습니다${ch.length ? ' · 데이터수정LOG에 기록' : ''}.`);
+    } else { const n = { id:'sfn' + Date.now(), seq:Math.max(0, ...R.map(x => x.seq)) + 1, ...o, last:'—', docs:img ? [img] : [], memos:[], status:'정상', chgAt:TODAY, chgWhy:'신규 등록', by:ME.id }; R.push(n);
+      audit('등록', `직원 ${n.name} (${n.uid}) · ${n.role}`, 'work/staff', n.uid); closeModal(); st.q = ''; st.f = {}; st.cur = n.id; st.sel = new Set([n.id]); S.sfTab = 'a'; render(); toast(`직원 ${n.name}을(를) 등록했습니다.`); }
+  };
+}
+Object.assign(MD_ACT, {
+  'sf-tab': a => { S.sfTab = a.dataset.t; S.sfSelA = new Set(); S.sfSelB = new Set(); render(); },
+  'sf-new': () => sfForm(null),
+  'sf-edit': () => { const r = sfCur(); if (!r) return toast('수정할 직원을 고르세요.', true); if (r.stop) return toast('삭제된 자료는 수정할 수 없습니다.', true); sfForm(r); },
+  'sf-uidchk': () => { const v = $('#sf_uid').value.trim(), f = $('.sf-fb [data-fk="uid"]'); f.classList.remove('err');
+    if (!/^[a-z0-9._]{4,20}$/i.test(v)) { f.classList.add('err'); f.querySelector('.err-t').textContent = '아이디는 영문 · 숫자 · . _ 로 4~20자입니다.'; return; }
+    if (CFG['work/staff'].rows.some(x => x.uid.toLowerCase() === v.toLowerCase())) { f.classList.add('err'); f.querySelector('.err-t').textContent = '이미 쓰는 아이디입니다.'; return; }
+    SF_FORM.uidOk = v; toast(`「${v}」는 쓸 수 있는 아이디입니다.`); },
+  'sf-cardauto': () => { const used = new Set([...CFG['issue/card'].rows.map(x => x.cardNo), ...CFG['work/staff'].rows.map(x => String(x.card).replace(/\D/g, ''))]), s0 = CFG['code/vcard'].rows.find(x => x.issue === '대기' && !x.stop && !used.has(x.cardNo));
+    if (!s0) return toast('가상카드번호채번관리에 발급할 번호가 없습니다.', true); SF_FORM.cardStock = s0; $('#sf_card').value = sfCardFmt(s0.cardNo); $('.sf-fb [data-fk="card"]').classList.remove('err'); if (MD) MD.dirty = true; toast('가상카드번호채번관리의 대기 번호를 넣었습니다 (저장하면 발급 처리).'); },
+  'sf-acctauto': () => { const b = $('#sf_bank').value, used = new Set([...CFG['issue/acct'].rows.map(x => x.acctNo), ...CFG['work/staff'].rows.map(x => x.acct)]);
+    if (!b) { const f = $('.sf-fb [data-fk="bank"]'); f.classList.add('err'); f.querySelector('.err-t').textContent = '거래은행을 먼저 고르세요.'; return $('#sf_bank').focus(); }
+    const s0 = CFG['code/vacct'].rows.find(x => x.bank === b && x.issue === '대기' && !used.has(x.vacct) && !used.has(String(x.vacct).replace(/\D/g, '')));
+    if (!s0) return toast(`가상계좌번호채번관리에 ${b} 은행 대기 번호가 없습니다.`, true); SF_FORM.acctStock = s0; $('#sf_acct').value = String(s0.vacct).replace(/\D/g, ''); $('#sf_vacct').checked = true; $('.sf-fb [data-fk="acct"]').classList.remove('err'); if (MD) MD.dirty = true; toast('가상계좌 대기 번호를 넣었습니다 (저장하면 발급 처리).'); },
+  'sf-stop': () => { const r = sfCur(); if (!r) return toast('직원을 고르세요.', true); if (r.stop) return;
+    if (r.uid === ME.id) return toast('지금 로그인한 본인 계정은 정지할 수 없습니다.', true);
+    if (r.status === '정지') return openConfirm('정지 해제', { sub:`${esc(r.name)} · <span class="mono">${esc(r.uid)}</span>`, icon:'check', q:'정지를 해제하고 다시 로그인할 수 있게 하시겠습니까?' }, '해제', () => { Object.assign(r, { status:'정상', chgAt:TODAY, chgWhy:'정지 해제' }); audit('정지 해제', `직원 ${r.name}`, 'work/staff', r.uid); render(); toast('정지를 해제했습니다.'); });
+    openModal(MH('직원 정지', `${esc(r.name)} · <span class="mono">${esc(r.uid)}</span>`) + `<div class="m-b"><div class="callout warn">${ic('alert')}<div>정지하면 이 직원은 바로 로그아웃되고 다시 로그인할 수 없습니다. 「정지해제」로 되돌릴 수 있습니다.</div></div>
+        <div class="md-nw ic-nw sf-st" style="margin-top:12px"><div class="pf" data-fk="why"><label for="sfw">정지사유<span class="req">*</span></label><div class="pf-c"><select class="select" id="sfw"><option value="">선택</option>${['퇴사', '휴직', '보안 사고 조사', '장기 미사용', '기타'].map(x => `<option>${x}</option>`).join('')}</select></div><span></span><div class="err-t" role="alert"></div></div></div></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-df" data-act="confirm-generic">${ic('lock')}정지</button></div>`);
+    MD.onConfirm = () => { const w = $('#sfw').value; if (!w) return msgShowErr('.sf-st', [['why', '정지사유를 고르세요.']]); Object.assign(r, { status:'정지', chgAt:TODAY, chgWhy:w }); audit('정지', `직원 ${r.name} · ${w}`, 'work/staff', r.uid); closeModal(); render(); toast(`${r.name} 계정을 정지했습니다.`); }; },
+  'sf-img': () => { const r = sfCur(); if (!r) return toast('직원을 고르세요.', true); let F = null;
+    openModal(MH('회원이미지 등록', `${esc(r.name)} · <span class="mono">${esc(r.uid)}</span>`) + `<div class="m-b"><div class="md-nw ic-nw sf-im">
+        <div class="pf" data-fk="t"><label for="sfi_t">타이틀<span class="req">*</span></label><div class="pf-c"><input class="input" id="sfi_t" placeholder="예) 신분증 앞면" autocomplete="off"></div><span></span><div class="err-t" role="alert"></div></div>
+        <div class="pf" data-fk="f"><label>이미지URL<span class="req">*</span></label><div class="pf-c"><div class="gb-file"><span class="sms-fn" id="sfi_n"><span class="muted">선택한 파일 없음</span></span><label class="btn btn-sm"><input type="file" id="sfi_f" accept="image/jpeg,image/png" hidden>${ic('upload')}선택</label></div></div><span></span><div class="err-t" role="alert"></div></div></div>
+        <div class="gb-pv" id="sfi_p" hidden></div><p class="sf-im-msg" id="sfi_m">등록할 이미지 정보를 입력하세요</p></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('check')}등록완료</button></div>`);
+    const msg = () => { $('#sfi_m').textContent = !$('#sfi_t').value.trim() ? '등록할 이미지 정보를 입력하세요' : !F ? '이미지 파일을 고르세요' : '「등록완료」를 누르면 세부정보 › 등록서류에 추가됩니다'; $('#sfi_m').classList.toggle('ok', !!(F && $('#sfi_t').value.trim())); };
+    $('#sfi_t').addEventListener('input', () => { $('.sf-im [data-fk="t"]').classList.remove('err'); msg(); });
+    $('#sfi_f').addEventListener('change', e => { const f = e.target.files[0], pfe = $('.sf-im [data-fk="f"]'); e.target.value = ''; if (!f) return; pfe.classList.remove('err');
+      if (!/\.(jpe?g|png)$/i.test(f.name) || f.size > 2 * 1024 * 1024) { pfe.classList.add('err'); pfe.querySelector('.err-t').textContent = `${f.name} — jpg · png 2MB 이하만 올릴 수 있습니다.`; return msg(); }
+      F = { name:f.name, url:URL.createObjectURL(f) }; $('#sfi_n').innerHTML = `<span class="mono">${esc(f.name)}</span>`; const pv = $('#sfi_p'); pv.hidden = false; pv.innerHTML = `<img src="${F.url}" alt="">`; msg(); });
+    MD.onConfirm = () => { const t = $('#sfi_t').value.trim(), er = []; if (!t) er.push(['t', '타이틀을 입력하세요.']); if (!F) er.push(['f', '이미지 파일을 고르세요.']); if (er.length) { msgShowErr('.sf-im', er); return msg(); }
+      r.docs.push({ kind:'신분증', title:t, url:F.name, blob:F.url }); audit('신분증(이미지)등록', `직원 ${r.name} · ${t}`, 'work/staff', r.uid); closeModal(); S.sfTab = 'b'; render(); toast('이미지를 등록했습니다 · 세부정보 › 등록서류'); }; },
+  'sf-doc': a => { const r = sfCur(), d = r?.docs[+a.dataset.i]; if (!d) return; audit('개인정보 보기', `직원 ${r.name} · ${d.kind}`, 'work/staff', r.uid);
+    openModal(MH(esc(d.title || d.kind), esc(d.url)) + `<div class="m-b">${d.blob ? `<img class="gb-img" src="${d.blob}" alt="">` : `<div class="ph-img pu-img">${ic('file')}${esc(d.url)}</div><p class="muted" style="font-size:12.5px;margin:10px 0 0">실제 서버 연결 시 원본 이미지를 보여 줍니다 · 열람 기록이 감사LOG에 남았습니다.</p>`}</div><div class="m-f"><button class="btn" data-act="close-modal">닫기</button></div>`); },
+  'sf-memo': () => { const r = sfCur(); if (!r) return;
+    openModal(MH('메모등록', `${esc(r.name)} · <span class="mono">${esc(r.uid)}</span>`) + `<div class="m-b"><div class="fld" data-fk="m"><label for="sfm">메모<span class="req">*</span></label><textarea class="input" id="sfm" rows="5" style="width:100%"></textarea><div class="err-t" role="alert"></div></div></div>
+      <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('check')}메모등록</button></div>`);
+    MD.onConfirm = () => { const v = $('#sfm').value.trim(); if (!v) { const f = $('.fld[data-fk="m"]'); f.classList.add('err'); f.querySelector('.err-t').textContent = '메모를 입력하세요.'; return $('#sfm').focus(); }
+      r.memos.push({ dt:TODAY, txt:v, by:ME.id }); audit('메모등록', `직원 ${r.name}`, 'work/staff', r.uid); closeModal(); S.sfTab = 'e'; render(); toast('메모를 등록했습니다.'); }; },
+  'sf-prow': (a, e) => { const r = sfCur(); if (!r || !can('work/staff', '수정') || r.stop) return; const c = +a.dataset.c, side = a.dataset.s;
+    if (e.target.closest('.ck') || e.detail >= 2) sfMove(r, side === 'a' ? 'in' : 'out', [c]); },
+  'sf-pall': a => { const r = sfCur(); if (!r) return; const side = a.dataset.s, g = new Set(sfGrants(r)), q = (S.sfQ || '').toLowerCase(), m = S.sfM || '';
+    const L = sfFns().filter(f => (side === 'b') === g.has(f.code) && (!m || f.main === m) && (!q || [f.main, f.sub, f.fn].join(' ').toLowerCase().includes(q))).map(f => f.code);
+    a.checked = false; if (!L.length) return; const go = () => sfMove(r, side === 'a' ? 'in' : 'out', L);
+    if (L.length > 20) return openConfirm(side === 'a' ? '모두 추가' : '모두 빼기', { sub:`${esc(r.name)} · 보이는 ${L.length}개`, icon:side === 'a' ? 'plus' : 'trash', q:`보이는 기능 ${L.length}개를 모두 ${side === 'a' ? '권한에 추가' : '권한에서 빼기'} 하시겠습니까?`, note:q || m ? '검색 · 메인메뉴로 걸러진 행만 옮깁니다.' : '검색으로 먼저 걸러서 일부만 옮길 수도 있습니다.' }, side === 'a' ? '추가' : '빼기', go, side === 'b');
+    go(); },
+  'sf-preview': () => { const r = sfCur(); if (!r || r.uid === ME.id) return; S.preview = null; S.previewUid = r.uid; audit('권한 미리보기', `직원 ${r.name} (${r.uid})`, 'work/staff', r.uid);
+    if (!can('work/staff')) location.hash = '#/dashboard'; render(); toast(`${r.name} 직원 화면으로 미리 봅니다 — 위 막대의 「미리보기 끝내기」로 돌아옵니다.`); },
+  'sf-preset': () => { const r = sfCur(); openConfirm('역할 기본값으로', { sub:`${esc(r.name)} · ${esc(r.role)}`, icon:'refresh', q:`서비스 권한을 「${esc(r.role)}」 역할 기본값으로 되돌리시겠습니까?`, note:'직원별로 추가 · 빼기한 기능은 사라집니다.' }, '되돌리기', () => { r.fns = null; r.fnsCustom = false; sfGrants(r); audit('권한 변경', `직원 ${r.name} · 역할 기본값으로`, 'work/staff', r.uid); render(); toast('역할 기본값으로 되돌렸습니다.'); }, true); },
+});
+const SF_LOCK = ['work/staff|조회', 'work/staff|수정', 'work/role|조회', 'work/role|수정'];
+function sfMove(r, d, codes) { if (!codes.length) return;
+  if (r.uid === ME.id && d === 'out') { const F = sfFns(), keep = codes.filter(c => { const f = F.find(x => x.code === c); return SF_LOCK.includes(`${f.route}|${f.fn}`); });
+    if (keep.length) { codes = codes.filter(c => !keep.includes(c)); toast('본인 계정의 직원관리 · 권한관리 조회 · 수정 권한은 뺄 수 없습니다 (잠김 방지).', true); if (!codes.length) return render(); } }
+  const g = new Set(sfGrants(r)); codes.forEach(c => d === 'in' ? g.add(c) : g.delete(c)); r.fns = [...g].sort((x, y) => x - y); r.fnsCustom = true;
+  const F = sfFns(), lab = codes.slice(0, 2).map(c => { const f = F.find(x => x.code === c); return `${f.sub} ${f.fn}`; }).join(', ') + (codes.length > 2 ? ` 외 ${codes.length - 2}` : '');
+  audit('권한 변경', `직원 ${r.name} · ${d === 'in' ? '추가' : '빼기'} ${lab}`, 'work/staff', r.uid); render(); toast(codes.length === 1 ? `「${lab}」 ${d === 'in' ? '추가' : '빼기'} — 반대쪽 표에서 체크하면 되돌립니다.` : `${codes.length}개 기능을 ${d === 'in' ? '추가했습니다' : '뺐습니다'}.`); }
+document.addEventListener('input', e => { if (e.target.id === 'sf_pq') { S.sfQ = e.target.value; clearTimeout(sfMove.t); sfMove.t = setTimeout(() => { render(); const i = $('#sf_pq'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 250); } });
+document.addEventListener('change', e => { if (e.target.id === 'sf_pm') { S.sfM = e.target.value; render(); } });
+let SF_DRAG = null;
+document.addEventListener('dragstart', e => { const tr = e.target.closest?.('.sf-pt tr[data-c][draggable="true"]'); if (!tr) return; SF_DRAG = { c:+tr.dataset.c, side:tr.dataset.s }; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', tr.dataset.c); tr.classList.add('dragging'); document.querySelector('.sf-pg')?.classList.add('dnd'); });
+document.addEventListener('dragend', () => { SF_DRAG = null; $$('.sf-pt.drop-on, .sf-pt tr.dragging').forEach(x => x.classList.remove('drop-on', 'dragging')); document.querySelector('.sf-pg')?.classList.remove('dnd'); });
+document.addEventListener('dragover', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (!z || !SF_DRAG || z.dataset.side === SF_DRAG.side) return; e.preventDefault(); e.dataTransfer.dropEffect = 'move'; z.classList.add('drop-on'); });
+document.addEventListener('dragleave', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('drop-on'); });
+document.addEventListener('drop', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (!z || !SF_DRAG || z.dataset.side === SF_DRAG.side) return; e.preventDefault(); const d = SF_DRAG; SF_DRAG = null; const r = sfCur(); if (r && can('work/staff', '수정')) sfMove(r, d.side === 'a' ? 'in' : 'out', [d.c]); });
 /* ── 인증요청 LOG ── */
 MDP['log/api'] = { sort:{ k:'idx', dir:-1 }, ph:'제휴사 · cmd · 승인번호 검색 후 Enter',
   cols:[['idx', 'IDX', 'n num'], ['rg', '등록일', 'num', r => esc(r.rg.replace(/-/g, ''))], ['pid', '제휴사ID', 'mono'], ['pname', '제휴사명', 'c-name', r => r.pname ? `<span class="strong">${esc(r.pname)}</span>` : '<span class="muted">—</span>'],
@@ -3488,7 +4361,7 @@ cell = function (c, r) {
   return _cell2(c, r);
 };
 const Fee = () => {
-  return ListPage('fee').replace('</h1>', ` <span class="chip" style="vertical-align:middle;margin-left:6px">2026년 10월분</span></h1>`);
+  return mdPage('fee').replace('</h1>', ` <span class="chip" style="vertical-align:middle;margin-left:6px">2026년 10월분</span></h1>`);
 };
 
 /* ---------- Details ---------- */
@@ -3656,6 +4529,7 @@ function genericDetail(key, r) {
 /* ---------- Drawer / Modal / Toast ---------- */
 let DR = null;
 function openDrawer(key, id, force) {
+  if (!force && MDP[key] && route() === key && CFG[key]?.rows.some(x => x.id === id)) { const st = ls(key); st.cur = id; st.sel = new Set([id]); render(); return; }
   const cfg = CFG[key]; const r = cfg.rows.find(x => x.id === id); if (!r) return;
   let nav = '';
   if (route() === key) { const st = ls(key), all = listView(key).all, i = all.findIndex(x => x.id === id);
@@ -3831,12 +4705,12 @@ $('#cq').addEventListener('keydown', e => {
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-act]');
   if (!e.target.closest('.dd-wrap') || (a && a.dataset.act !== 'dd')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open'));
-  if (!a) { if (e.target.id === 'scrim') closeDrawer(); if (e.target.id === 'mscrim') closeModal(); if (e.target.id === 'cscrim') closeCmdk(); if (!e.target.closest('.sb') && !e.target.closest('.burger')) $('#sb')?.classList.remove('open'); return; }
+  if (!a) { if (e.target.id === 'scrim') closeDrawer(); if (e.target.id === 'mscrim') closeModal(); if (e.target.id === 'pcscrim') PO_ACT['po-conn'](); if (e.target.id === 'cscrim') closeCmdk(); if (!e.target.closest('.sb') && !e.target.closest('.burger')) $('#sb')?.classList.remove('open'); return; }
   const act = a.dataset.act, key = curKey(), st = CFG[key] ? ls(key) : null;
   { const gk = act === 'extra' ? a.dataset.l : guardOf(act, key), rk = a.dataset.k || (DR && ['edit-one', 'status-change', 'extra', 'unmask', 'upload', 'rmfile', 'inspect', 'merge', 'complete'].includes(act) ? DR.key : key);
     if (gk && rk && PROG_BY[rk] && !can(rk, gk)) { e.preventDefault(); e.stopPropagation(); deny(rk, gk); return; } }
   switch (act) {
-    case 'preview': S.preview = a.dataset.r && a.dataset.r !== ME.roleId ? a.dataset.r : null; S.rd = null; location.hash = PROG_BY[route()] && !can(route()) ? '#/dashboard' : location.hash; render(); toast(S.preview ? `권한 미리보기: ${roleName(S.preview)}` : '미리보기를 끝냈습니다.'); break;
+    case 'preview': S.previewUid = null; S.preview = a.dataset.r && a.dataset.r !== ME.roleId ? a.dataset.r : null; S.rd = null; location.hash = PROG_BY[route()] && !can(route()) ? '#/dashboard' : location.hash; render(); toast(S.preview ? `권한 미리보기: ${roleName(S.preview)}` : '미리보기를 끝냈습니다.'); break;
     case 'split': st.split = !st.split; persist(key); render(); break;
     case 'split-pop': if (DR) openDrawer(DR.key, DR.id, true); break;
     case 'prole': { if (S.rd && !eqSet(S.rd.set, GRANT[S.rd.rid]) && a.dataset.r !== S.rd.rid) { toast('저장하지 않은 권한 변경이 있습니다. 저장하거나 되돌린 뒤 이동하세요.', true); break; } S.roleSel = a.dataset.r; render(); break; }
@@ -3914,7 +4788,7 @@ document.addEventListener('click', e => {
     case 'peek-close': st.peek = null; render(); $(`tr[data-id="${st.cur}"]`)?.focus?.(); break;
     case 'close-drawer': closeDrawer(); break;
     case 'close-modal': if (MD?.form) formCancel(); else closeModal(); break;
-    case 'tab': switchTab(a.dataset.t); break;
+    case 'tab': switchTab(a.dataset.t); if (a.closest('.md-auto-d')) S.mdTab = a.dataset.t; break;
     case 'create': openForm(key, null); break;
     case 'create-in': openForm(a.dataset.k, null); break;
     case 'edit': { const id = [...st.sel][0]; openForm(key, CFG[key].rows.find(r => r.id === id)); break; }
@@ -3953,6 +4827,7 @@ document.addEventListener('change', e => {
   if (e.target.matches('[data-size]')) { const k = curKey(), st = ls(k); st.size = +e.target.value; st.pg = 1; persist(k); render(); }
   if (e.target.id === 'fpick' && UP) { addFiles(UP[0], UP[1], [...e.target.files]); UP = null; }
 });
+window.addEventListener('keydown', e => { if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && $('#pcm.on') && !MD) e.stopImmediatePropagation(); }, true);
 document.addEventListener('keydown', e => {
   const t = e.target instanceof Element ? e.target : null;
   const typing = !!t?.matches('input, textarea, select');
@@ -3968,7 +4843,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && MD?.form) { e.preventDefault(); $('#frm')?.requestSubmit(); return; }
   if (e.key === 'Enter' && t?.matches('[data-dq]')) { e.preventDefault(); applyQ(curKey()); setTimeout(() => { const q = $('#dq'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }); return; }
   if (e.key === 'Enter' && MD?.onConfirm && t?.matches('#qsn')) { e.preventDefault(); MD.onConfirm(); return; }
-  if (e.key === 'Escape') { if ($('#sessWarn')) return; if ($('#cmdk').classList.contains('on')) closeCmdk(); else if ($('.dd-wrap.open')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); else if (MD) (MD.form ? formCancel() : closeModal()); else if ($('#drawer.on')) closeDrawer(); else if (CFG[curKey()] && ls(curKey()).peek) { ls(curKey()).peek = null; render(); } }
+  if (e.key === 'Escape') { if ($('#sessWarn')) return; if ($('#cmdk').classList.contains('on')) closeCmdk(); else if ($('.dd-wrap.open')) $$('.dd-wrap.open').forEach(x => x.classList.remove('open')); else if (MD) (MD.form ? formCancel() : closeModal()); else if ($('#pcm.on')) PO_ACT['po-conn'](); else if ($('#drawer.on')) closeDrawer(); else if (CFG[curKey()] && ls(curKey()).peek) { ls(curKey()).peek = null; render(); } }
   if (e.key === 'Enter' && t?.matches('[data-q]')) { const st = ls(curKey()); st.q = e.target.value; st.pg = 1; render(); setTimeout(() => { const q = $('[data-q]'); q?.focus(); q?.setSelectionRange(q.value.length, q.value.length); }, 0); }
 });
 let qT = null;
@@ -4291,17 +5166,25 @@ const GRANT = {};
     if (g !== 'work') add('ro', ['조회']);
   });
 })();
-GRANT.ops?.delete('msg|메세지코드초기화');
+GRANT.ops?.delete('msg|메세지코드초기화'); GRANT.cs?.add('cs/sms|회원선택 SMS메세지보내기'); GRANT.cs?.add('cs/sms|수동입력 SMS메세지보내기'); GRANT.cs?.add('cs/push|PUSH메세지보내기');
 GRANT.cs?.add('cs/comment|처리결과등록');   /* 상담원은 상담 처리결과를 남길 수 있음 */   /* 전체 초기화는 SysAdmin · 연구소 개발자만 */
 /* 과금 근거 이력 · 정산 — 접근권한 분리: SysAdmin · 운영 관리자만 */
 ['agency/hist', 'agency/bill', 'srv/acctuse'].forEach(r => ['cs', 'dev', 'ro'].forEach(rid => [...GRANT[rid]].forEach(k => k.startsWith(r + '|') && GRANT[rid].delete(k))));
 const PROG_OFF = new Set();   // 프로그램관리에서 「중지」한 메뉴 · 버튼 (모든 역할에 적용)
 const roleName = id => ROLES_.find(r => r.id === id)?.name || id;
 const myRole = () => S.preview || ME.roleId;
+/* 권한 적용 대상 직원: 직원 미리보기 중이면 그 직원, 역할 미리보기가 아니면 로그인한 본인 */
+function permStaff() { const R = CFG['work/staff']?.rows; if (!R) return null; if (S.previewUid) return R.find(x => x.uid === S.previewUid) || null; if (S.preview) return null; return R.find(x => x.uid === ME.id && !x.stop) || null; }
+/* 직원관리 › 서비스 권한을 바꾼 직원(fnsCustom)은 그 목록, 아니면 그 직원(또는 미리보기 역할)의 역할 권한 */
+function permSet() { const u = permStaff();
+  if (u?.fnsCustom && u.fns) { if (u._kref !== u.fns) { const set = new Set(u.fns); u._keys = new Set(sfFns().filter(f => set.has(f.code)).map(f => `${f.route}|${f.fn}`)); u._kref = u.fns; } return u._keys; }
+  if (S.previewUid && u) return GRANT[(ROLES_.find(x => x.name === u.role) || {}).id];
+  return GRANT[myRole()]; }
 function can(route, act = '조회') {
   if (route === 'bi' || route === 'login') return true;
   if (PROG_OFF.has(route) || PROG_OFF.has(`${route}|${act}`)) return false;
-  const g = GRANT[myRole()]; if (!g) return false;
+  if (S.previewUid && CFG['work/staff']?.rows.find(x => x.uid === S.previewUid)?.status === '정지') return false;
+  const g = permSet(); if (!g) return false;
   return g.has(`${route}|${act}`) && (act === '조회' || g.has(`${route}|조회`));
 }
 function deny(route, act) { toast(`「${act}」 권한이 없습니다 — 권한관리에서 역할 권한을 확인하세요.`, true); audit('권한 없음 시도', `「${act}」 실행 차단`, route); }
@@ -4309,7 +5192,7 @@ function deny(route, act) { toast(`「${act}」 권한이 없습니다 — 권�
 const GUARD = { 'pc-new':'제휴사접속정보등록', 'pc-edit':'제휴사접속정보등록', 'pc-save':'제휴사접속정보등록', 'pc-del':'제휴사접속정보등록', 'pc-token':'마스터Token생성', 'pc-key':'마스터Token생성', 'pc-authdel':'마스터Token생성', 'pc-xls':'엑셀로', 'po-stop':'삭제', 'po-conn-add':'제휴사접속정보등록', 'po-conn-del':'제휴사접속정보등록', 'po-auth-new':'마스터Token생성', 'po-auth-del':'마스터Token생성', create:'등록', edit:'수정', 'edit-one':'수정', delete:'삭제', excel:'엑셀로', report:'리포트', 'rpt-print':'리포트', 'status-change':'등록상태변경', unmask:'개인정보 보기', upload:'서류 업로드', rmfile:'서류 업로드', inspect:'검수 완료', merge:'통합 PDF 발급', complete:'개통 완료 처리' };
 /* 접속정보관리 화면에서는 「제휴사접속정보등록」 대신 그 메뉴의 등록 권한 */
 const guardOf = (act, key) => { const g = GUARD[act]; return g === '제휴사접속정보등록' && PSUB[key] ? '등록' : g; };
-GUARD['tr-del'] = '삭제'; GUARD['tr-memo'] = '메모등록'; GUARD['msg-new'] = '등록'; GUARD['msg-edit'] = '수정'; GUARD['msg-save'] = '수정'; GUARD['msg-del'] = '삭제'; GUARD['msg-up'] = '메세지코드업로드'; GUARD['msg-reset'] = '메세지코드초기화'; GUARD['md-new'] = '등록'; GUARD['md-edit'] = '수정'; GUARD['md-save'] = '수정'; GUARD['md-del'] = '삭제'; GUARD['vc-gen'] = '생성'; GUARD['ic-new'] = '발급'; GUARD['ic-stop'] = '사용중지'; GUARD['ic-tx'] = '카드거래현황'; GUARD['ic-memo'] = '메모등록'; GUARD['ac-new'] = '발급'; GUARD['ac-stop'] = '사용중지'; GUARD['ac-tx'] = '계좌거래현황'; GUARD['ac-limit'] = '계좌거래한도수정'; GUARD['ac-memo'] = '메모등록'; GUARD['cs-new'] = '등록'; GUARD['cs-del'] = '삭제'; GUARD['cs-ans'] = '처리결과등록';
+GUARD['tr-del'] = '삭제'; GUARD['tr-memo'] = '메모등록'; GUARD['msg-new'] = '등록'; GUARD['msg-edit'] = '수정'; GUARD['msg-save'] = '수정'; GUARD['msg-del'] = '삭제'; GUARD['msg-up'] = '메세지코드업로드'; GUARD['msg-reset'] = '메세지코드초기화'; GUARD['md-new'] = '등록'; GUARD['md-edit'] = '수정'; GUARD['md-save'] = '수정'; GUARD['md-del'] = '삭제'; GUARD['vc-gen'] = '생성'; GUARD['ic-new'] = '발급'; GUARD['ic-stop'] = '사용중지'; GUARD['ic-tx'] = '카드거래현황'; GUARD['ic-memo'] = '메모등록'; GUARD['ac-new'] = '발급'; GUARD['ac-stop'] = '사용중지'; GUARD['ac-tx'] = '계좌거래현황'; GUARD['ac-limit'] = '계좌거래한도수정'; GUARD['ac-memo'] = '메모등록'; GUARD['cs-new'] = '등록'; GUARD['cs-del'] = '삭제'; GUARD['cs-ans'] = '처리결과등록'; GUARD['rp-del'] = '삭제'; GUARD['sms-pick'] = '회원선택 SMS메세지보내기'; GUARD['sms-manual'] = '수동입력 SMS메세지보내기'; GUARD['push-send'] = 'PUSH메세지보내기'; GUARD['gb-new'] = '등록'; GUARD['gb-edit'] = '수정'; GUARD['gb-del'] = '삭제'; GUARD['sf-new'] = '등록'; GUARD['sf-edit'] = '수정'; GUARD['sf-stop'] = '정지'; GUARD['sf-img'] = '신분증(이미지)등록'; GUARD['sf-memo'] = '수정'; GUARD['sf-pmove'] = '수정'; GUARD['sf-preset'] = '수정';
 function permFilter(el, key) { if (!el) return; el.querySelectorAll('[data-act]').forEach(b => { const gk = b.dataset.act === 'extra' ? b.dataset.l : guardOf(b.dataset.act, key); if (gk && !can(b.dataset.k || key, gk)) b.remove(); }); }
 
 /* ---------- 감사 LOG ---------- */
@@ -4465,11 +5348,11 @@ function PartnerOverview() {
       ${td(`${esc(r.nat)}=${esc(NAT[r.nat] || '')}`)}${td(badge(r.status))}</tr>`}`).join('')
     : `<tr><td colspan="${V ? 14 : 13}"><div class="empty">${ic('search')}<div>조건에 맞는 파트너가 없습니다.</div></div></td></tr>`;
   const pager = pages > 1 ? `<span class="po-pg"><button class="ibtn" data-act="po-pg" data-d="-1" ${st.poPg ? '' : 'disabled'} aria-label="이전 페이지">${ic('chevl')}</button><b class="num">${st.poPg + 1}</b><span class="muted">/ ${pages}</span><button class="ibtn" data-act="po-pg" data-d="1" ${st.poPg < pages - 1 ? '' : 'disabled'} aria-label="다음 페이지">${ic('chev')}</button></span>` : '';
-  const n = V ? 0 : st.sel.size, pc = !V && S.pcOpen && p ? poConnPanel(p) : null;
+  const n = V ? 0 : st.sel.size, pc = null; /* 제휴사 접속정보 관리는 모달(#pcm)로 — pcModal() */
   return `<div class="po">
     <div class="po-main ${pc ? 'conn-on' : ''}">
     <div class="po-h">${V ? `<h1>${V.title}</h1>` : `<h1>인증거래처 종합관리</h1>
-      <button class="btn btn-soft po-conn-tg ${S.pcOpen ? 'on' : ''}" data-act="po-conn" aria-pressed="${!!S.pcOpen}" ${p ? '' : 'disabled'} title="선택한 거래처의 접속정보 · 인증정보를 상세 오른쪽 패널에서 관리합니다 (다시 누르면 닫힘)"><span class="po-tgbox">${S.pcOpen ? ic('check') : ''}</span>제휴사 접속정보 관리</button>`}</div>
+      <button class="btn btn-soft po-conn-tg" data-act="po-conn" aria-haspopup="dialog" ${p ? '' : 'disabled'} title="선택한 거래처의 접속정보 · 인증정보를 창으로 열어 관리합니다">${ic('link')}제휴사 접속정보 관리</button>`}</div>
     ${pc ? pc.head : ''}
     <div class="po-tb">
       <label class="sfield po-q">${ic('search')}<input id="poq" value="${esc(st.q)}" placeholder="거래처명 · 로그인ID · 사업자번호 검색 후 Enter" autocomplete="off"></label>
@@ -4685,7 +5568,7 @@ function poConnPanel(p) {
   const list = `<table class="tbl compact pc-tbl"><thead><tr><th>접속종류</th><th>접속정보</th><th>데이터응답URL</th></tr></thead><tbody>${rows.map(c => `<tr data-act="pc-pick" data-id="${c.id}" class="${c.id === S.pcSel && ed !== 'new' ? 'cur' : ''} ${c.stop ? 'is-del' : ''}" title="${esc(pcCode(c.ctype))} · ${esc(c.info)}"><td>${c.stop ? '<span class="del-tag">삭제</span>' : ''}${esc(pcCode(c.ctype))}</td><td class="mono">${esc(c.info)}</td><td class="mono">${esc(c.resp)}</td></tr>`).join('')
     || `<tr><td colspan="3"><div class="empty" style="padding:20px">${ic('link')}<div>${q ? '검색 결과가 없습니다.' : '등록된 접속정보가 없습니다.'}</div></div></td></tr>`}</tbody></table>`;
   const bar = `<div class="pc-tb ${on ? 'on' : ''}" role="toolbar" aria-label="제휴사 접속정보 관리 도구">${tb}</div>`;
-  const head = `<div class="pc-h"><h1>제휴사 접속정보 관리</h1><span class="pc-hp"><b>${esc(p.name)}</b> · <span class="mono">${p.pid}</span></span><span class="grow"></span><button type="button" class="ibtn" data-act="po-conn" aria-label="접속정보 패널 닫기" title="닫기">${ic('x')}</button></div>`;
+  const head = `<div class="pc-h"><h2>제휴사 접속정보 관리</h2><span class="pc-hp"><b>${esc(p.name)}</b> · <span class="mono">${p.pid}</span></span><span class="grow"></span><button type="button" class="ibtn" data-act="po-conn" aria-label="닫기 (Esc)" title="닫기 (Esc)">${ic('x')}</button></div>`;
   return { head, bar, body:`<aside class="po-d po-cn card" aria-label="제휴사 접속정보 관리">
     ${sbar}
     <div class="pc-split">
@@ -4696,6 +5579,14 @@ function poConnPanel(p) {
       </section>
       <section class="pc-lcol"><div class="pc-lh">접속 목록 <b class="num">${rows.length}</b>건${live.length !== rows.length && !q ? ` <span class="muted">(사용 ${live.length})</span>` : ''}</div><div class="pc-tw">${list}</div></section>
     </div></aside>` };
+}
+function pcModal() {
+  const m = $('#pcm'), sc = $('#pcscrim'); if (!m) return;
+  const onPO = route() === 'partner/overview', p = onPO && S.pcOpen ? pcCur() : null;
+  if (!p) { m.classList.remove('on'); sc.classList.remove('on'); m.innerHTML = ''; if (S.pcOpen && !onPO) { S.pcOpen = false; S.pcEdit = null; } return; }
+  const pc = poConnPanel(p), was = m.classList.contains('on'), tw = m.querySelector('.pc-tw')?.scrollTop || 0;
+  m.innerHTML = pc.head + pc.bar + pc.body; const t2 = m.querySelector('.pc-tw'); if (t2) t2.scrollTop = tw;
+  if (!was) { void m.offsetWidth; m.classList.add('on'); sc.classList.add('on'); setTimeout(() => m.querySelector('.pc-h [data-act="po-conn"]')?.focus(), 60); }
 }
 function pcCur() { return PARTNERS.find(x => x.id === ls(PO_KEY).cur); }
 function pcGuard(go) { if (S.pcEdit) return openConfirm('편집 취소', { q:'입력 중인 접속정보를 버리시겠습니까?', note:'저장하지 않은 내용은 사라집니다.' }, '버리기', () => { S.pcEdit = null; go(); }, true); go(); }
@@ -5664,6 +6555,25 @@ document.addEventListener('auxclick', e => { const t = e.target.closest('[data-w
 document.addEventListener('keydown', e => { const t = e.target.closest?.('[data-wt]'); if (!t) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '#/' + t.dataset.wt; } else if (e.key === 'Delete') wtClose(t.dataset.wt); });
 document.addEventListener('wheel', e => { const b = e.target.closest?.('.wt-list'); if (b && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { b.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive:false });
 
+/* ── 나머지 목록 메뉴도 같은 화면 흐름으로: 목록 | 오른쪽 상세 · 첫 행 자동 선택 · 페이지 스크롤 없음 ── */
+function mdAutoDetail(key, r) {
+  const cfg = CFG[key], d = cfg.detail ? cfg.detail(r) : genericDetail(key, r);
+  return `<aside class="po-d card md-auto-d" data-id="${r.id}" aria-label="상세"><div class="po-dh"><div style="min-width:0"><h2>${d.title}</h2>${d.sub ? `<p>${d.sub}</p>` : ''}</div></div>
+    <div class="po-db">${d.body}</div>${d.foot ? `<div class="po-df">${d.foot}</div>` : ''}</aside>`;
+}
+function mdAuto(key) {
+  const cfg = CFG[key];
+  return { auto:true, ph:'검색어 입력 후 Enter',
+    get cols() { return visCols(key).map(c => [c.k, c.l, (NUMT.includes(c.t) ? 'n num ' : '') + (c.main ? 'main-c ' : '') + 'md-ell', r => cell(c, r)]); },
+    tools:k => { const st = ls(k), r = cfg.rows.find(x => x.id === st.cur), one = st.sel.size === 1;
+      return (cfg.noCreate || !can(k, '등록') ? '' : `<button class="btn" data-act="create">${ic('plus')}등록</button>`)
+        + (cfg.noEdit || cfg.noEditBtn || !can(k, '수정') ? '' : `<button class="btn" data-act="edit" ${one && r && !r.stop ? '' : 'disabled'}>${ic('edit')}수정</button>`)
+        + (cfg.noEdit || !can(k, '삭제') ? '' : `<button class="btn btn-d" data-act="delete" ${st.sel.size ? '' : 'disabled'}>${ic('trash')}삭제${st.sel.size > 1 ? ' ' + st.sel.size : ''}</button>`)
+        + headerActions(cfg, st, k) + (can(k, '리포트') ? `<button class="btn" data-act="report">${ic('print')}리포트</button>` : ''); },
+    detail:r => mdAutoDetail(key, r) };
+}
+const MD_AUTO_SKIP = ['work/prog', 'work/role', 'trans'];
+Object.keys(CFG).forEach(k => { if (!MDP[k] && !MD_AUTO_SKIP.includes(k) && !k.startsWith('partner/') && !PSUB[k]) MDP[k] = mdAuto(k); });
 render();
 </script>
 </body>
