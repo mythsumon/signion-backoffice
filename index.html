@@ -1613,6 +1613,20 @@ button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;wi
 
 /* 종합관리 기본정보 › 전산코드 옆 메모등록 */
 .po-seq{display:flex;align-items:center;gap:8px}.po-seq .po-val{flex:1;min-width:0}.po-seq .po-memo{flex:none;color:var(--brand)}
+
+/* 인증내역관리 — 인증 상세 내역 팝업 */
+.modal.tr-pop{width:min(940px,calc(100vw - 120px));max-height:calc(100vh - 120px)}
+.modal.tr-pop .m-b{padding-top:6px}
+.modal.tr-pop .tr-steps{height:min(500px,calc(100vh - 290px));min-height:300px;border-top:0;background:transparent}
+.modal.tr-pop .tr-sb{grid-template-columns:minmax(250px,36%) minmax(0,1fr)!important}
+.modal.tr-pop .tr-sh b{display:none}
+.tr-pop-h{font-size:12px}
+
+/* 접속 목록: 접속정보 · 데이터응답URL 전체가 보이도록 줄바꿈 */
+.pc-tbl td.pc-wrap{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.4}
+.pc-tbl td{vertical-align:top}
+.pc-tw .pc-tbl th:nth-child(1),.pcm .pc-tbl th:nth-child(1){width:26%}
+.pc-tbl th:nth-child(2){width:30%}
 </style>
 </head>
 <body>
@@ -2645,7 +2659,7 @@ function render() {
   const g = r.split('/')[0]; S.open[g] = true;
   root.innerHTML = Shell(r, Page(r));
   const sp = $('.peek[data-id], .po-d[data-id]'); if (sp) { DR = { key:r, id:sp.dataset.id, split:true }; permFilter(sp, r); }
-  if (r === 'trans') { permFilter($('.po-tb'), r); trFit(); }
+  if (r === 'trans') { permFilter($('.po-tb'), r); trFit(); if (S.trOpen) { S.trOpen = false; trPop(); } }
   if (MDP[r]) { permFilter($('.po-tb'), r); mdFit(r); }
   if (r === 'partner/overview' || PSUB[r]) { permFilter($('.po-tb'), r); permFilter($('.po-h'), r); permFilter($('.po-d-empty'), r); poFit(); }
   splitInit(); pcModal();
@@ -4223,7 +4237,7 @@ function TransPage() {
   const all = listView(TR).all;
   if ((first && !st.cur) || !all.some(r => r.id === st.cur)) st.cur = all[0]?.id || null;   /* 첫 진입 → 최근 1건 자동 선택 */
   if (st.sel.size <= 1) st.sel = new Set(st.cur ? [st.cur] : []);
-  const t = TRANS.find(x => x.id === st.cur), sOn = !!st.trAdv, open = !!(S.trOpen && t);
+  const t = TRANS.find(x => x.id === st.cur), sOn = !!st.trAdv, open = false;
   const th1 = (k, l, cls = '') => { const on = st.sort?.k === k; return `<th class="sortable ${cls} ${on ? 'sorted' : ''}" data-act="sort" data-k="${k}" aria-sort="${on ? (st.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${l}${ic(on ? (st.sort.dir > 0 ? 'up' : 'down') : 'sortv', 'so')}</th>`; };
   const td = (v, cls = '', tip = '') => `<td class="${cls}" ${tip ? `title="${esc(tip)}"` : ''}>${v}</td>`;
   const per = Math.max(3, st.trPer || 12), pages = Math.max(1, Math.ceil(all.length / per)), ci = Math.max(0, all.findIndex(r => r.id === st.cur));
@@ -4260,18 +4274,23 @@ function TransPage() {
           <thead><tr><th class="ck"><input type="checkbox" class="cbox" data-act="ck-all" ${allSel ? 'checked' : ''} aria-label="전체 선택"></th>
           ${th1('seq', '순번', 'n')}${th1('dt', '등록일자')}${th1('pid', '제휴사ID')}${th1('partner', '제휴사명')}${th1('no', '승인번호')}${th1('kyc', '인증완료')}${th1('sent', '결과전달')}${th1('stMsg', '인증상태메시지')}${th1('nat', '국가코드')}${th1('pass', '여권번호')}${th1('name', '여권성명')}${th1('fee', '수수료', 'r')}</tr></thead>
           <tbody>${body}</tbody></table></div>
-        ${open ? trSteps(t, sumK, sumU) : ''}</section>
+        </section>
       ${t ? trDetail(t) : `<aside class="po-d card po-d-empty"><div class="split-empty">${ic('table')}<div>선택한 인증내역이 없습니다.</div></div></aside>`}
     </div></div></div></div>`;
 }
 /* 인증 상세 내역 (목록 아래) — 왼쪽 단계 정보 | 오른쪽 단계 목록 */
-function trSteps(t, sumK = 0, sumU = 0) {
+function trPop() { const t = trCur(); if (!t) return;
+  openModal(MH('인증 상세 내역', `<span class="mono">${esc(t.no)}</span> · ${esc(t.partner)} · ${t.steps.length}단계 · ${esc(t.kyc)}`) + `<div class="m-b tr-pop-b">${trSteps(t, t.fee || 0, t.feeUsd || 0, true)}</div>
+    <div class="m-f"><span class="muted tr-pop-h">단계를 누르면 왼쪽에 그 단계의 상세 정보가 보입니다 · ↑↓ 키로 이동</span><span class="grow"></span><button class="btn" data-act="close-modal">닫기</button></div>`, { xwide:true });
+  $('#modal').classList.add('tr-pop'); MD.trPop = t.id; }
+function trPopDraw(t) { const b = $('#modal.on .tr-pop-b'); if (b) b.innerHTML = trSteps(t, t.fee || 0, t.feeUsd || 0, true); }
+function trSteps(t, sumK = 0, sumU = 0, pop = false) {
   const L = t.steps, i0 = L.findIndex(x => x.res === '실패'), si = S.trStepFor === t.id && L[S.trStep] ? S.trStep : (i0 > -1 ? i0 : L.length - 1); S.trStep = si; S.trStepFor = t.id;
   const x = L[si], bad = ['실패', '중단'].includes(x.res), f = (l, v, area) => `<div class="pf"><label>${l}</label><div class="pf-c">${area ? `<div class="po-val tr-area">${esc(v || '')}</div>` : `<span class="po-val ${/코드|시각/.test(l) ? 'mono' : ''}">${esc(v || '') || '&nbsp;'}</span>`}</div></div>`;
   return `<div class="tr-steps" aria-label="인증 상세 내역">
     <div class="tr-sh"><b>인증 상세 내역</b><span class="mono">${esc(t.no)}</span><span class="muted">${L.length}단계 · ${esc(t.kyc)}</span><span class="grow"></span>
-      <span class="tr-sumf"><label>수수료(KRW) 합계</label><span class="num">${fmt(sumK)}</span></span><span class="tr-sumf"><label>수수료(USD) 합계</label><span class="num">${sumU.toFixed(2)}</span></span>
-      <button type="button" class="btn btn-sm" data-act="tr-steps-xls" title="단계 내역 엑셀 내려받기">${ic('download')}엑셀</button><button type="button" class="ibtn" data-act="tr-steps" aria-label="인증 상세 내역 닫기" title="닫기">${ic('x')}</button></div>
+      <span class="tr-sumf"><label>수수료(KRW)${pop ? '' : ' 합계'}</label><span class="num">${fmt(sumK)}</span></span><span class="tr-sumf"><label>수수료(USD)${pop ? '' : ' 합계'}</label><span class="num">${(+sumU).toFixed(2)}</span></span>
+      <button type="button" class="btn btn-sm" data-act="tr-steps-xls" title="단계 내역 엑셀 내려받기">${ic('download')}엑셀</button>${pop ? '' : `<button type="button" class="ibtn" data-act="tr-steps" aria-label="인증 상세 내역 닫기" title="닫기">${ic('x')}</button>`}</div>
     <div class="tr-sb">
       <div class="tr-si dsec view ${bad ? 'is-bad' : ''}"><div class="tr-sit">${bad ? `${ic('alert')}오류 단계` : `${ic('check')}선택한 단계 정보`}<span class="muted">${x.seq} / ${L.length}</span></div>
         ${f('인증단계', x.name)}<div class="pf"><label>인증코드</label><div class="pf-c tr-codes"><span class="po-val mono">${x.code}</span>${trRes(x.res)}</div></div>${f('상태코드', x.stCode)}${f('상태메시지', x.stMsg, 1)}${f('시스템코드', x.sysCode)}${f('시스템메시지', x.sysMsg, 1)}${f('시작시각', x.at)}</div>
@@ -4299,7 +4318,7 @@ function trDetail(t) {
     d: dsec('trm', '자료메모', '', `<ul class="tl">${CFG['work/memo'].rows.filter(m => m.target === t.no).map(m => `<li><span class="dot grp">${ic('memo')}</span><div class="t">${esc(m.memo)}</div><div class="c">${esc(m.who)} · ${m.dt}</div></li>`).join('') || `<li><span class="dot grp">${ic('memo')}</span><div class="t muted">등록된 메모가 없습니다.</div><div class="c">「메모등록」으로 추가하세요</div></li>`}</ul>`, '', 'view'),
   };
   return `<aside class="po-d card" data-id="${t.id}" aria-label="인증내역 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(t.no)}</span> ${badge(t.kyc)}</h2><p>${esc(t.partner)} · ${esc(t.dt)} · 처리 ${t.sec}초${t.stop ? ` · ${badge('삭제', 'bad')}` : ''}</p></div></div>
-    <div class="po-hbtns"><button type="button" class="btn btn-sm ${S.trOpen ? 'btn-soft' : ''}" data-act="tr-steps" aria-pressed="${!!S.trOpen}">${ic('table')}인증 상세 내역 ${S.trOpen ? '닫기' : '보기'}</button>
+    <div class="po-hbtns"><button type="button" class="btn btn-sm" data-act="tr-steps" aria-haspopup="dialog" title="단계별 인증 상세 내역을 팝업으로 엽니다 (목록 행을 두 번 눌러도 됨)">${ic('table')}인증 상세 내역 보기</button>
       <button type="button" class="btn btn-sm" data-act="tr-memo">${ic('memo')}메모등록</button></div>
     <div class="tabs po-tabs">${tab('a', '기본정보')}${tab('b', '인증서비스')}${tab('c', '인증사진')}${tab('d', '자료관리')}</div>
     <div class="po-db">${panes[T] || panes.a}</div></aside>`;
@@ -4319,8 +4338,8 @@ const TR_ACT = {
   'tr-adv': () => { const st = ls(TR); st.trAdv = !st.trAdv; st.open = true; render(); },
   'tr-find': a => { const t = trCur(), st = ls(TR), k = a.dataset.k; if (!t) return; st.q = String(t[k] ?? ''); st.qf = k; st.cur = null; render(); toast(`「${CFG[TR].cols.find(c => c.k === k)?.l || k}」 같은 내역만 보여줍니다.`); },
   'tr-tab': a => { S.trTab = a.dataset.t; render(); },
-  'tr-steps': () => { S.trOpen = !S.trOpen; render(); },
-  'tr-step': a => { S.trStep = +a.dataset.i; render(); },
+  'tr-steps': () => trPop(),
+  'tr-step': a => { S.trStep = +a.dataset.i; const t = trCur(); if ($('#modal.on .tr-pop-b') && t) trPopDraw(t); else render(); },
   'tr-steps-xls': () => { const t = trCur(); if (!t) return; const lines = [['순번', '인증코드', '인증단계명', '진행결과', '처리일시', '상태코드', '상태메시지', '시스템코드', '시스템메시지'], ...t.steps.map(x => [x.seq, x.code, x.name, x.res, x.at, x.stCode, x.stMsg, x.sysCode, x.sysMsg])].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' })); a.download = `인증상세내역_${t.no}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); audit('엑셀 다운로드', `인증 상세 내역 ${t.no}`, TR, t.no); },
   'tr-memo': () => { const t = trCur(); if (!t) return;
@@ -4331,6 +4350,9 @@ const TR_ACT = {
       list.forEach(x => { x.stop = { date:TODAY, reason:'인증삭제', by:ME.id }; audit('삭제', '인증삭제', TR, x.no); }); st.sel.clear(); render(); toast(`${list.length}건을 삭제했습니다.`); }, true); },
 };
 document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if (!a || !TR_ACT[a.dataset.act] || route() !== TR) return; const g = GUARD[a.dataset.act]; if (g && !can(TR, g)) return deny(TR, g); TR_ACT[a.dataset.act](a, e); });
+document.addEventListener('keydown', e => { if (!MD?.trPop || !['ArrowUp', 'ArrowDown'].includes(e.key) || !$('#modal.on .tr-pop-b')) return; const t = trCur(); if (!t) return;
+  e.preventDefault(); e.stopImmediatePropagation(); const n = t.steps.length, j = Math.max(0, Math.min(n - 1, (S.trStep || 0) + (e.key === 'ArrowDown' ? 1 : -1))); if (j === S.trStep) return; S.trStep = j; trPopDraw(t);
+  $('#modal .tr-stbl tr.cur')?.scrollIntoView({ block:'nearest' }); }, true);
 document.addEventListener('dblclick', e => { const tr = e.target.closest?.('.tr-tw tbody tr[data-id]'); if (!tr || route() !== TR || e.target.closest('.ck')) return; const st = ls(TR); st.cur = tr.dataset.id; st.sel = new Set([st.cur]); S.trOpen = true; render(); });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'trq') { e.preventDefault(); e.stopPropagation(); TR_ACT['tr-search'](); } }, true);
 let trFitT = null; addEventListener('resize', () => { clearTimeout(trFitT); trFitT = setTimeout(() => { if (route() === TR) trFit(); }, 120); });
@@ -5524,6 +5546,8 @@ const PC_CT = ['1=AOS APP 접속 ID', '2=IOS APP 접속 ID', '3=WEB 접속 URL',
 const pcCode = t => PC_CT.find(c => c.endsWith('=' + t)) || t;
 PDATA.conn.rows.forEach(r => { r.memo ??= ''; });
 function pcRows(p) { return PDATA.conn.rows.filter(r => r.pid === p.pid && (S.pcDel || !r.stop)); }
+/* 주소는 「/ . ? & =」 뒤에서 줄바꿈 (단어 가운데에서 끊기지 않게) */
+const pcBreak = v => esc(v ?? '').replace(/([\/.?&=:])(?=.)/g, '$1<wbr>');
 function poConnPanel(p) {
   if (S.pcPid !== p.id) { S.pcPid = p.id; S.pcSel = null; S.pcEdit = null; }
   const T = S.pcTab || 'conn', q = (S.pcQ || '').toLowerCase(), live = poConns(p);
@@ -5565,7 +5589,7 @@ function poConnPanel(p) {
       + (canK ? `<div class="pc-authbtns"><button type="button" class="btn btn-sm po-regbtn" data-act="pc-key">${ic('key')}암호화 KEY 생성</button><button type="button" class="btn btn-sm btn-d" data-act="pc-authdel" ${tk || ck ? '' : 'disabled'}>${ic('trash')}삭제</button></div>` : '');
   }
   /* 오른쪽: 접속 목록 */
-  const list = `<table class="tbl compact pc-tbl"><thead><tr><th>접속종류</th><th>접속정보</th><th>데이터응답URL</th></tr></thead><tbody>${rows.map(c => `<tr data-act="pc-pick" data-id="${c.id}" class="${c.id === S.pcSel && ed !== 'new' ? 'cur' : ''} ${c.stop ? 'is-del' : ''}" title="${esc(pcCode(c.ctype))} · ${esc(c.info)}"><td>${c.stop ? '<span class="del-tag">삭제</span>' : ''}${esc(pcCode(c.ctype))}</td><td class="mono">${esc(c.info)}</td><td class="mono">${esc(c.resp)}</td></tr>`).join('')
+  const list = `<table class="tbl compact pc-tbl"><thead><tr><th>접속종류</th><th>접속정보</th><th>데이터응답URL</th></tr></thead><tbody>${rows.map(c => `<tr data-act="pc-pick" data-id="${c.id}" class="${c.id === S.pcSel && ed !== 'new' ? 'cur' : ''} ${c.stop ? 'is-del' : ''}" title="${esc(pcCode(c.ctype))} · ${esc(c.info)}"><td>${c.stop ? '<span class="del-tag">삭제</span>' : ''}${esc(pcCode(c.ctype))}</td><td class="mono pc-wrap">${pcBreak(c.info)}</td><td class="mono pc-wrap" title="${esc(c.resp)}">${pcBreak(c.resp)}</td></tr>`).join('')
     || `<tr><td colspan="3"><div class="empty" style="padding:20px">${ic('link')}<div>${q ? '검색 결과가 없습니다.' : '등록된 접속정보가 없습니다.'}</div></div></td></tr>`}</tbody></table>`;
   const bar = `<div class="pc-tb ${on ? 'on' : ''}" role="toolbar" aria-label="제휴사 접속정보 관리 도구">${tb}</div>`;
   const head = `<div class="pc-h"><h2>제휴사 접속정보 관리</h2><span class="pc-hp"><b>${esc(p.name)}</b> · <span class="mono">${p.pid}</span></span><span class="grow"></span><button type="button" class="ibtn" data-act="po-conn" aria-label="닫기 (Esc)" title="닫기 (Esc)">${ic('x')}</button></div>`;
