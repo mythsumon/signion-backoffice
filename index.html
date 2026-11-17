@@ -1610,6 +1610,9 @@ button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;wi
 .sf-pt.drop-on{outline:2px dashed var(--brand)!important;background:var(--brand-50)}
 .sf-pe td{color:var(--muted);text-align:center;padding:18px 8px!important;font-size:12.5px}
 .sf-pt tbody tr:hover td{background:var(--brand-50)}
+
+/* 종합관리 기본정보 › 전산코드 옆 메모등록 */
+.po-seq{display:flex;align-items:center;gap:8px}.po-seq .po-val{flex:1;min-width:0}.po-seq .po-memo{flex:none;color:var(--brand)}
 </style>
 </head>
 <body>
@@ -1900,7 +1903,7 @@ const MENU = [
   { sec:'운영' },
   { id:'code', label:'기초코드관리', icon:'db', children:[['nation','국가코드관리'],['bank','은행코드관리'],['cardco','카드사코드관리'],['zip','우편번호관리'],['vacct','가상계좌번호채번관리'],['vcard','가상카드번호채번관리']] },
   { id:'issue', label:'발급관리', icon:'card', children:[['card','카드번호발급관리'],['acct','계좌번호발급관리']] },
-  { id:'cs', label:'고객센터', icon:'headset', children:[['top','상단관리'],['comment','상담관리'],['reply','댓글관리'],['bot','챗봇관리'],['sms','SMS전송관리'],['push','PUSH전송관리'],['notice','공지사항관리'],['guide','이용안내관리']] },
+  { id:'cs', label:'고객센터', icon:'headset', children:[['comment','상담관리'],['reply','댓글관리'],['bot','챗봇관리'],['sms','SMS전송관리'],['push','PUSH전송관리'],['notice','공지사항관리'],['guide','이용안내관리']] },
   { id:'work', label:'작업관리', icon:'settings', children:[['staff','직원관리'],['prog','프로그램관리'],['memo','자료메모관리'],['datalog','데이터수정LOG'],['role','권한관리'],['audit','감사LOG']], newKids:['work/role','work/audit'] },
 ];
 function crumbOf(r) {
@@ -2205,9 +2208,6 @@ const icMask = n => { n = String(n || ''); return n.length > 10 ? n.slice(0, 6) 
     cols:[C('seq','전산코드','num',{ro:1}),C('dt','발급날짜','date'),C('ctype','카드종류'),C('cardM','카드번호','mono',{main:1}),C('bal','카드잔액','num'),C('mtype','회원타입'),C('mid','회원아이디','mono'),C('mname','회원명','strong'),C('rel','관련거래번호','mono'),C('itype','카드발급타입'),C('st','상태')],
     opts:{ ctype:['일반카드','민카드-선불','KB국민카드-선불실물'], mtype:['가맹점','회원','비회원'], st:['정상','사용중지'] }, filters:['ctype','mtype','st'], extra:[['card','발급'],['lock','사용중지'],['chart','카드거래현황'],['memo','메모등록']] });
 })();
-CFG['cs/top'] = { title:'상단관리', desc:'관리자/서비스 화면 상단 배너·공지 띠 노출 관리',
-  cols:[C('title','제목','strong',{main:1}),C('pos','노출 위치'),C('period','노출 기간'),C('use','상태','badge')],
-  rows: rows(['title','pos','period','use'],[['11월 정기 점검 안내 (11/15 02:00~04:00)','관리자 상단','2026-11-05 ~ 2026-11-15','게시'],['KT 통합관리자 오픈','서비스 상단','2026-11-01 ~ 2026-11-30','게시'],['추석 연휴 고객센터 운영','서비스 상단','2026-09-25 ~ 2026-10-05','숨김']]), opts:{ use:['게시','숨김'] } };
 /* 상담관리 (레거시 「상담 관리」 — 댓글정보 · 기타정보) */
 (() => {
   const D = [['2023-08-22','qussk21','BYEON YUNNA','회원','1:1문의','1:1문의 제목','test질문','test 답변'],['2023-08-22','qussk21','BYEON YUNNA','회원','1:1문의','1:1문의 제목~','인증이 중간에 멈춰요. 다시 해야 하나요?','처음부터 다시 진행해 주세요. 진행 중이던 건은 10분 뒤 자동 종료됩니다.'],
@@ -4612,7 +4612,7 @@ function rowAction(key, r, l) {
   }
   if (l === '메모등록') {
     openModal(MH('메모등록', esc(nm)) + `<div class="m-b"><div class="fld"><label>메모<span class="req">*</span></label><textarea class="input" id="memo-t" placeholder="내부 공유용 메모 (거래처에는 노출되지 않습니다)"></textarea></div></div><div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">등록</button></div>`);
-    MD.onConfirm = () => { const v = $('#memo-t').value.trim(); if (!v) return $('#memo-t').focus(); CFG['work/memo'].rows.unshift({ id:'m' + Date.now(), target:r.pid || r.uid || r.no, menu:crumbOf(key)[0], memo:v, who:ME.name, dt:fDT(new Date()).slice(0, 16) }); closeModal(); audit('메모등록', v.slice(0, 40), key, rowLabel(key, r)); toast('메모를 등록했습니다 · 작업관리 > 자료메모관리에서 통합 조회'); };
+    MD.onConfirm = () => { const v = $('#memo-t').value.trim(); if (!v) { $('#memo-t').closest('.fld').classList.add('err'); return $('#memo-t').focus(); } CFG['work/memo'].rows.unshift({ id:'m' + Date.now(), target:r.pid || r.uid || r.no, menu:crumbOf(key)[0], memo:v, who:ME.name, dt:fDT(new Date()).slice(0, 16) }); closeModal(); audit('메모등록', v.slice(0, 40), key, rowLabel(key, r)); if (route() === key) render(); toast('메모를 등록했습니다 · 자료관리 탭 · 작업관리 > 자료메모관리에서 확인'); };
     return;
   }
   if (l === '아이디수정') {
@@ -5806,7 +5806,7 @@ function poBasicForm(p) {
   const F = k => PO_F.find(f => f[0] === k);
   return `<form class="po-form" data-id="${p.id}" novalidate autocomplete="off">
     ${X.ro ? `<div class="callout ${p.stop ? 'bad' : 'info'}" style="margin-bottom:12px">${ic('lock')}<div>${p.stop ? `중지된 거래처입니다 (${esc(p.stop.reason)}).` : '수정 권한이 없어 읽기 전용입니다.'}</div></div>` : ''}
-    ${W('base', '기본정보', 'building', () => `<div class="pf"><label>전산코드</label><div class="pf-c"><span class="po-val num">${poNo(p)}</span></div><span></span></div>
+    ${W('base', '기본정보', 'building', () => `<div class="pf"><label>전산코드</label><div class="pf-c po-seq"><span class="po-val num">${poNo(p)}</span><button type="button" class="btn btn-sm po-memo" data-act="extra" data-l="메모등록" ${p.stop ? 'disabled' : ''} title="이 거래처에 내부 메모를 남깁니다 (자료관리 탭 · 작업관리 › 자료메모관리에서 확인)">${ic('memo')}메모등록</button></div><span></span></div>
       ${row(F('loc'))}${row(F('nat'))}
       <div class="pf ${chg('rg') || chg('rgTo')}" data-fk="rg"><label>등록날짜</label><div class="pf-c pf-dates">${dis ? `<span class="po-val num">${p.rg} ~ ${p.rgTo}</span>` : `${DPK.btn('po_rg', '등록 시작일')}<span class="muted">~</span>${DPK.btn('po_rgTo', '등록 종료일')}`}<span class="pf-ts num">${esc(p.rgT)}</span></div>${find('rg', 1)}<div class="err-t" role="alert"></div></div>
       ${row(F('name'))}<div class="pf ${chg('name2')}" data-fk="name2"><span></span><div class="pf-c">${ctl(F('name2'))}</div><span></span></div>`)}
