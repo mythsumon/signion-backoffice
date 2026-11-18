@@ -1665,6 +1665,26 @@ button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;wi
 .po-seq .po-mclr:disabled{opacity:.4;cursor:not-allowed}
 .po-seq .po-mclr.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
 .po-seq .po-mclr.on svg{stroke:#fff}
+
+/* 다중 검색 — 공통 상세 */
+.mq-dtb{gap:6px}
+.po-dtb .po-mclr{width:30px;height:30px;flex:none;border:1px solid var(--line);border-radius:8px;color:#7c3aed;background:var(--surface)}
+.po-dtb .po-mclr.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.po-dtb .po-mclr.on svg{stroke:#fff}
+.po-dtb .po-multi.on{color:var(--brand-600);border-color:var(--brand-100)}
+.po-dtb .po-mrun[aria-disabled="true"]{color:var(--muted)}
+.po-d .pf-c .mq{flex:1;min-width:0;height:32px;font-size:13px;border-color:var(--brand-100);background:var(--surface)}
+.po-d .pf:has(.pf-pick.on) .mq{border-color:var(--brand);background:var(--brand-50)}
+
+.pf-c.mq-xrow{display:flex;align-items:center;gap:8px}
+.pf-c.mq-xrow>.po-val{flex:1;min-width:0}
+.pf-c .po-mclr{width:30px;height:30px;flex:none;border:1px solid var(--line);border-radius:8px;color:#7c3aed;background:var(--surface)}
+.pf-c .po-mclr:hover{border-color:#7c3aed;background:color-mix(in srgb,#7c3aed 8%,var(--surface))}
+.pf-c .po-mclr.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.pf-c .po-mclr.on svg{stroke:#fff}
+.mq-tabbar .po-tabbar-l{flex:1 0 auto}
+.po-tabbar-r .po-multi.on{color:var(--brand-600);border-color:var(--brand-100)}
+.po-tabbar-r .po-mrun[aria-disabled="true"]{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -2700,6 +2720,7 @@ function render() {
   const sp = $('.peek[data-id], .po-d[data-id]'); if (sp) { DR = { key:r, id:sp.dataset.id, split:true }; permFilter(sp, r); }
   if (r === 'trans') { permFilter($('.po-tb'), r); trFit(); if (S.trOpen) { S.trOpen = false; trPop(); } }
   if (MDP[r]) { permFilter($('.po-tb'), r); mdFit(r); }
+  if (MDP[r] || r === 'trans') mqPaint(r);
   if (r === 'partner/overview' || PSUB[r]) { permFilter($('.po-tb'), r); permFilter($('.po-h'), r); permFilter($('.po-d-empty'), r); poFit(); poMultiPaint(); }
   splitInit(); pcModal();
   if (r !== lastR) S.mdTab = null; else if (S.mdTab && $(`.md-auto-d .pane[data-p="${S.mdTab}"]`)) switchTab(S.mdTab);
@@ -2994,7 +3015,7 @@ function applyQ(key) { const st = ls(key), d = draftOf(key); st.cur = null; st.p
 function sumOf(c, rows) { const v = rows.filter(r => !r.stop && typeof r[c.k] === 'number'); if (!v.length) return ''; const s = v.reduce((a, r) => a + r[c.k], 0); return c.t === 'num' ? fmt(s) : fmt(s) + '원'; }
 function ListPage(key) {
   const cfg = CFG[key], st = ls(key), t0 = performance.now(), { all, pages, data } = listView(key), ms = performance.now() - t0, cols = visCols(key);
-  const allSel = data.length && data.every(r => st.sel.has(r.id));
+  const allSel = all.length && all.every(r => st.sel.has(r.id));
   const logTabs = cfg.isLog ? `<div class="ltabs">${Object.entries(LOGDEF).map(([k, [t]]) => `<a href="#/log/${k}" class="${key === 'log/' + k ? 'on' : ''}">${t}</a>`).join('')}</div>` : '';
   const fl = [];
   if (st.q) fl.push(['q', `검색어${st.qf ? '(' + colLabel(cfg, st.qf) + ')' : ''}: ${st.q}`]);
@@ -3020,7 +3041,7 @@ function ListPage(key) {
       <div class="dd-wrap colset-wrap"><button class="btn btn-ghost" data-act="dd" aria-haspopup="true">${ic('table')}표시 항목${st.hidden.size ? ` <b>${cols.length}/${cfg.cols.length}</b>` : ''}</button><div class="dd colset"><div class="dd-h">표에 보일 항목 · 엑셀 · 리포트에도 적용</div>${cfg.cols.map(c => `<label><input type="checkbox" class="cbox" data-colk="${c.k}" ${c.main || !st.hidden.has(c.k) ? 'checked' : ''} ${c.main ? 'disabled' : ''}><span>${c.l}</span></label>`).join('')}</div></div>
       <button class="btn btn-ghost" data-act="dense" aria-pressed="${st.dense}" title="행 간격">${ic('menu')}${st.dense ? '좁게' : '기본'}</button>
 <span class="vsep"></span>
-      ${can(key, '엑셀로') ? `<button class="btn" data-act="excel">${ic('download')}엑셀로</button>` : ''}${can(key, '리포트') ? `<button class="btn" data-act="report">${ic('print')}리포트</button>` : ''}
+      ${can(key, '엑셀로') ? `<button class="btn" data-act="excel">${ic('download')}${xlsLabel(key, '엑셀로')}</button>` : ''}${can(key, '리포트') ? `<button class="btn" data-act="report">${ic('print')}리포트</button>` : ''}
       ${cfg.noEdit || !can(key, '삭제') ? '' : `<button class="btn btn-d" data-act="delete" ${st.sel.size ? '' : 'disabled'}>${ic('trash')}삭제${st.sel.size ? ' ' + st.sel.size : ''}</button>`}${cfg.noEdit || cfg.noEditBtn || !can(key, '수정') ? '' : `<button class="btn" data-act="edit" ${st.sel.size === 1 ? '' : 'disabled'}>${ic('edit')}수정</button>`}
       ${cfg.noCreate || !can(key, '등록') ? '' : `<button class="btn btn-p" data-act="create">${ic('plus')}등록</button>`}
     </div>
@@ -3095,12 +3116,15 @@ function expVal(c, r) {
   if (c.t === 'auth') return `OCR:${r.ocr}/FACE:${r.face}`; if (c.t === 'cust') return maskName(r.name); if (c.t === 'pname') return maskName(v); if (c.t === 'nat') return `${v} ${NAT[v] || ''}`;
   return v ?? '';
 }
+/* 엑셀 대상 — 체크한 항목이 2건 이상이면 그 항목만(현재 검색 조건 안에서), 아니면 검색 결과 전체 */
+function xlsRows(key) { const st = ls(key), { all } = listView(key), sel = all.filter(r => st.sel.has(r.id)); return sel.length >= 2 ? { rows:sel, picked:true } : { rows:all, picked:false }; }
+const xlsLabel = (key, full = '엑셀 내려받기') => { const x = xlsRows(key); return x.picked ? `선택 ${fmt(x.rows.length)}건 엑셀` : full; };
 function exportCSV(key) {
-  const cfg = CFG[key], { all } = listView(key), cols = visCols(key);
+  const cfg = CFG[key], { rows:all, picked } = xlsRows(key), cols = visCols(key);
   const lines = [cols.map(c => c.l), ...all.map(r => cols.map(c => expVal(c, r)))].map(a => a.map(x => `"${String(x).replace(/"/g, '""')}"`).join(','));
   const blob = new Blob(['﻿' + lines.join('\r\n')], { type:'text/csv;charset=utf-8' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${cfg.title}_${TODAY}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  audit('엑셀 다운로드', `${cfg.title} · ${all.length}건 · 개인정보 마스킹`); toast(`${all.length}건을 엑셀(CSV)로 내보냈습니다 · 다운로드 기록됨`);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${cfg.title}_${picked ? '선택' + all.length + '건_' : ''}${TODAY}.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  audit('엑셀 다운로드', `${cfg.title} · ${picked ? '선택 ' : ''}${all.length}건 · 개인정보 마스킹`); toast(`${picked ? '선택한 ' : '검색 결과 '}${all.length}건을 엑셀(CSV)로 내보냈습니다 · 다운로드 기록됨`);
 }
 function condText(key) {
   const cfg = CFG[key], st = ls(key), p = [];
@@ -3207,14 +3231,12 @@ function mdPage(key) {
     <div class="po-tb">
       <label class="sfield po-q">${ic('search')}<input id="mdq" value="${esc(st.q)}" placeholder="${D.ph || '검색어 입력 후 Enter'}" autocomplete="off"></label>
       <button class="btn" data-act="md-search">${ic('search')}검색</button>
-      <button class="btn ${sOn ? 'btn-soft' : ''}" data-act="md-adv" aria-pressed="${sOn}" title="여러 조건으로 찾기">${ic('filter')}다중검색</button>
       ${D.crud?.new && can(key, '등록') ? `<button class="btn" data-act="md-new">${ic('plus')}등록</button>` : ''}${D.tools ? D.tools(key) : ''}
       <span class="grow"></span>
       ${can(key, '삭제자료표시') ? `<label class="switch po-sw"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>삭제자료 표시</label>` : ''}
-      ${can(key, '엑셀로') ? `<button class="btn" data-act="excel" title="목록 엑셀 내려받기">${ic('download')}엑셀 내려받기</button>` : ''}
+      ${can(key, '엑셀로') ? `<button class="btn ${xlsRows(key).picked ? 'btn-soft' : ''}" data-act="excel" title="2건 이상 체크하면 선택 항목만, 아니면 검색 결과 전체를 내려받습니다">${ic('download')}${xlsLabel(key)}</button>` : ''}
     </div>
     <div class="po-body">
-    ${sOn ? `<div class="po-adv">${SearchPanel(key)}</div>` : ''}
     <div class="po-g md-g">
       <section class="po-l card"><div class="po-lh"><span>조회 <b class="num">${fmt(all.length)}</b>건</span>${st.q ? `<button class="fchip" data-act="md-qclear" aria-label="검색 조건 해제">${st.qf ? esc(cfg.cols.find(c => c.k === st.qf)?.l || st.qf) + ': ' : ''}${esc(st.q)}${ic('x')}</button>` : ''}<span class="grow"></span>
           <span class="muted">${all.length ? `${st.mdPg * per + 1}–${Math.min(all.length, st.mdPg * per + per)}` : '0'} / ${fmt(all.length)} · ↑↓ 이동</span>${pager}</div>
@@ -3224,6 +3246,94 @@ function mdPage(key) {
       ${r0 ? (D.detail ? D.detail(r0) : mdCrud(key, r0)) : `<aside class="po-d card po-d-empty"><div class="split-empty">${ic('table')}<div>선택한 자료가 없습니다.</div></div></aside>`}
     </div></div></div></div>`;
 }
+
+/* =====================================================================
+   다중 검색 · X — 모든 목록 공통 (상세에 「검색」이 있는 화면)
+   [X] [다중] [다중검색 N] | … : 다중을 켜면 상세 「검색」이 「선택」 체크로 바뀌고 그 칸이 검색 조건 입력이 됨
+   2개 이상 선택 → 다중검색 → 모두 만족하는 항목만 목록에. X = 칸 비우기 ↔ 원래 값 복원. 실제 데이터는 바뀌지 않음
+   (종합관리 계열은 poMultiPaint 로 같은 동작)
+   ===================================================================== */
+S.mq = S.mq || {};
+const mqS = key => (S.mq[key] ||= { on:false, pick:{}, blank:false });
+function mqOpts(key, k) {
+  const cfg = CFG[key], o = cfg.opts?.[k];
+  if (Array.isArray(o) && o.length) return o.map(v => Array.isArray(v) ? [String(v[0]), String(v[1] ?? v[0])] : [String(v), String(v)]);
+  const vals = [...new Set(cfg.rows.map(r => r[k]).filter(v => v != null && v !== '' && typeof v !== 'object').map(String))];
+  return vals.length && vals.length <= 15 ? vals.sort().map(v => [v, v]) : null;
+}
+const mqColL = (key, k) => CFG[key].cols.find(c => c.k === k)?.l || MDP[key]?.cols?.find(c => c[0] === k)?.[1] || k;
+function mqPaint(key) {
+  const st = ls(key), m = mqS(key);
+  if ($('.po-g')?.dataset.mq) return; $('.po-g') && ($('.po-g').dataset.mq = '1');      /* render 마무리가 두 번 불려도 한 번만 */
+  /* 목록 머리: 적용된 다중 조건 칩 */
+  const lh = $('.po-lh'), mf = Object.entries(st.mf || {});
+  if (lh && mf.length) lh.firstElementChild.insertAdjacentHTML('afterend', mf.map(([k, v]) => `<button class="fchip mf" data-act="mq-mfx" data-k="${k}" aria-label="${esc(mqColL(key, k))} 조건 빼기">${esc(mqColL(key, k))}: ${esc(v)}${ic('x')}</button>`).join('') + (mf.length > 1 ? '<button class="linkbtn" data-act="mq-mfclr">조건 모두 해제</button>' : ''));
+  const d = $('.po-d[data-id]'); if (!d) return;
+  const finds = [...d.querySelectorAll('[data-act="md-find"], [data-act="tr-find"]')]; if (!finds.length) return;
+  const row = CFG[key].rows.find(x => x.id === d.dataset.id), n = Object.keys(m.pick).length, xOn = m.on && m.blank;
+  const xBtn = `<button type="button" class="ibtn po-mclr mq-x ${xOn ? 'on' : ''}" data-act="mq-x" aria-pressed="${xOn}" title="${xOn ? '한 번 더 누르면 원래 값이 다시 나타납니다' : '입력 칸을 모두 비웁니다 (검색 조건 새로 입력 · 실제 데이터는 그대로)'}" aria-label="${xOn ? '원래 값 다시 보기' : '입력 모두 지우기'}">${ic('x')}</button>`;
+  const grp = `<span class="po-mgrp mq-grp">`
+    + `<button type="button" class="btn btn-sm po-multi ${m.on ? 'btn-soft on' : ''}" data-act="mq-on" aria-pressed="${m.on}" title="켜면 항목을 골라 여러 조건으로 검색합니다">${ic('filter')}다중</button>`
+    + `<button type="button" class="btn btn-sm po-mrun ${m.on && n >= 2 ? 'btn-p' : ''}" data-act="mq-run" aria-disabled="${!(m.on && n >= 2)}" title="「다중」을 켜고 검색 항목을 2개 이상 선택한 뒤 누르세요">${ic('search')}다중검색${m.on ? ' ' + n : ''}</button></span>`;
+  /* [다중][다중검색] | [수정][삭제]… — 상세의 제목 줄(탭 아래)에, 없으면 만들어서 */
+  let right = d.querySelector('.po-tabbar-r');
+  if (!right) {
+    const tabs = d.querySelector('.po-tabs'), after = tabs || d.querySelector('.po-hbtns') || d.querySelector('.po-dh');
+    const t = tabs?.querySelector('.on, [aria-selected="true"]')?.textContent.trim() || '상세';
+    after?.insertAdjacentHTML('afterend', `<div class="po-tabbar mq-tabbar"><div class="po-tabbar-l"><span class="po-tabbar-t">${esc(t)}</span></div><div class="po-tabbar-r"></div></div>`);
+    right = d.querySelector('.mq-tabbar .po-tabbar-r');
+    /* 하단 버튼이 2개 이하면 같은 줄로(종합관리처럼 [다중][다중검색] | [수정]), 많으면 하단에 그대로 */
+    const foot = d.querySelector('.po-df'), fb = foot ? [...foot.querySelectorAll('.btn')] : [];
+    if (right && fb.length && fb.length <= 2) { fb.forEach(b => { b.classList.add('btn-sm'); right.appendChild(b); }); if (!foot.querySelector('.btn, input, select')) foot.hidden = true; }
+  }
+  right?.insertAdjacentHTML('afterbegin', grp + (right.children.length ? '<span class="po-bsep" aria-hidden="true"></span>' : ''));
+  /* X — 첫 항목 줄(전산코드 · 일시 등) 값 옆, 종합관리 위치와 같게 */
+  const pc = d.querySelector('.pf .pf-c'); if (pc) { pc.classList.add('mq-xrow'); pc.insertAdjacentHTML('beforeend', xBtn); } else right?.insertAdjacentHTML('afterbegin', xBtn);
+  if (!m.on) return;
+  finds.forEach(b => {
+    const k = b.dataset.k, c = b.closest('.pf')?.querySelector('.pf-c'); if (!c) return;
+    let el = c.querySelector('input:not([type=checkbox]):not([type=hidden]):not([type=file]), select');
+    if (el && !el.disabled) return;                                   /* 편집 중인 칸은 그대로 */
+    if (!el) {
+      const op = mqOpts(key, k), span = c.querySelector('.po-val');
+      const html = op ? `<select class="select mq" data-mqk="${k}" aria-label="${esc(mqColL(key, k))} 검색 값"><option value="">— 선택 —</option>${op.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select>`
+        : `<input class="input mq" data-mqk="${k}" aria-label="${esc(mqColL(key, k))} 검색 값" autocomplete="off">`;
+      if (span) { span.hidden = true; span.insertAdjacentHTML('afterend', html); } else c.insertAdjacentHTML('afterbegin', html);
+      el = c.querySelector('[data-mqk]'); el.value = m.pick[k] ?? (m.blank ? '' : String(row?.[k] ?? ''));
+    } else { el.disabled = false; el.classList.add('mq'); el.dataset.mqk = k; if (m.pick[k] != null) el.value = m.pick[k]; else if (m.blank) { if (el.tagName === 'SELECT' && ![...el.options].some(o => o.value === '')) el.insertAdjacentHTML('afterbegin', '<option value="">— 선택 —</option>'); el.value = ''; } }
+    const on = m.pick[k] != null;
+    b.outerHTML = `<label class="pf-find pf-pick ${on ? 'on' : ''}" title="다중 검색에 이 항목 넣기"><input type="checkbox" class="cbox" data-act="mq-pick" data-k="${k}" ${on ? 'checked' : ''}><span>선택</span></label>`;
+  });
+  if (m.blank) { d.querySelectorAll('.pf .po-val').forEach(v => { if (!v.hidden) v.textContent = ''; }); d.querySelectorAll('.pf input:disabled:not([type=checkbox]), .pf textarea:disabled').forEach(x => { x.value = ''; }); }
+}
+const mqEl = el => !!el?.isConnected && el.matches?.('[data-mqk]') && !!el.closest('.po-d');
+function mqSet(el) {
+  const key = route(), m = mqS(key), k = el.dataset.mqk, v = el.value.trim(); if (v === '') delete m.pick[k]; else m.pick[k] = v;
+  const cb = $(`[data-act="mq-pick"][data-k="${k}"]`); if (cb) { cb.checked = v !== ''; cb.closest('.pf-pick').classList.toggle('on', v !== ''); }
+  const n = Object.keys(m.pick).length; $$('.mq-grp .po-mrun').forEach(b => { b.classList.toggle('btn-p', n >= 2); b.setAttribute('aria-disabled', n < 2); b.lastChild.textContent = `다중검색 ${n}`; });
+}
+['input', 'change'].forEach(t => window.addEventListener(t, e => { if (!mqEl(e.target)) return; e.stopPropagation(); mqSet(e.target); }, true));
+window.addEventListener('keydown', e => { if (e.key !== 'Enter' || !mqEl(e.target) || e.target.tagName !== 'INPUT') return; e.preventDefault(); e.stopPropagation(); $('.mq-grp .po-mrun')?.click(); }, true);
+const MQ_ACT = {
+  'mq-on': key => { const m = mqS(key), st = ls(key); m.on = !m.on; m.pick = {}; m.blank = false; if (!m.on && Object.keys(st.mf || {}).length) { st.mf = {}; st.mfLike = {}; toast('다중 검색을 끄고 조건을 해제했습니다.'); } else if (m.on) toast('다중 검색: 검색 항목을 2개 이상 선택한 뒤 「다중검색」을 누르세요.'); render(); },
+  'mq-run': key => { const m = mqS(key), st = ls(key);
+    if (!m.on) { m.on = true; m.pick = {}; m.blank = false; render(); return toast('다중 검색: 검색 항목을 2개 이상 선택한 뒤 「다중검색」을 다시 누르세요.'); }
+    const n = Object.keys(m.pick).length; if (n < 2) return toast(`다중 검색은 검색 항목을 2개 이상 선택해야 합니다 (현재 ${n}개).`, true);
+    const prev = { mf:st.mf, mfLike:st.mfLike }; st.mf = { ...m.pick }; st.mfLike = Object.fromEntries(Object.keys(m.pick).filter(k => $(`.po-d input[data-mqk="${k}"]`)).map(k => [k, 1])); st.q = ''; st.qf = '';
+    if (!listView(key).all.length) { st.mf = prev.mf; st.mfLike = prev.mfLike; return toast('조건에 맞는 자료가 없습니다. 조건을 바꾸거나 X로 지우세요.', true); }
+    if (!listView(key).all.some(r => r.id === st.cur)) st.cur = null; st.mdPg = 0; st.trPg = 0; render();
+    toast(`${n}개 조건으로 검색: ${Object.entries(m.pick).map(([k, v]) => `${mqColL(key, k)} = ${v}`).join(' · ')}`); },
+  'mq-x': key => { document.activeElement?.blur?.(); const m = mqS(key), st = ls(key);
+    if (m.on && m.blank) { m.blank = false; m.pick = {}; render(); return toast('원래 값을 다시 표시했습니다.'); }
+    m.on = true; m.blank = true; m.pick = {}; st.mf = {}; st.mfLike = {}; render(); toast('모든 칸을 비웠습니다. 찾을 값만 입력 · 선택하세요.'); },
+  'mq-pick': (key, a) => { const m = mqS(key), k = a.dataset.k, el = $(`.po-d [data-mqk="${k}"]`);
+    if (a.checked) { const v = el ? el.value.trim() : ''; if (v === '') { a.checked = false; return toast('빈칸입니다. 값을 먼저 입력하거나 고르세요.', true); } m.pick[k] = v; } else delete m.pick[k];
+    a.closest('.pf-pick')?.classList.toggle('on', a.checked); const n = Object.keys(m.pick).length;
+    $$('.mq-grp .po-mrun').forEach(b => { b.classList.toggle('btn-p', n >= 2); b.setAttribute('aria-disabled', n < 2); b.lastChild.textContent = `다중검색 ${n}`; }); },
+  'mq-mfx': (key, a) => { const st = ls(key); delete (st.mf ||= {})[a.dataset.k]; delete mqS(key).pick[a.dataset.k]; render(); },
+  'mq-mfclr': key => { ls(key).mf = {}; mqS(key).pick = {}; render(); },
+};
+document.addEventListener('click', e => { const a = e.target.closest?.('[data-act^="mq-"]'); if (!a || !MQ_ACT[a.dataset.act]) return; const key = route(); if (!(MDP[key] || key === 'trans')) return; if (a.dataset.act !== 'mq-pick') e.preventDefault(); MQ_ACT[a.dataset.act](key, a); });
 /* 상세 칸 한 줄 (값 · 옆에 「검색」) */
 const mdRow = (l, v, k, cls = '') => `<div class="pf"><label>${l}</label><div class="pf-c"><span class="po-val md-v ${cls}" title="${esc(String(v ?? '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&'))}">${v === '' || v == null ? '&nbsp;' : v}</span></div>${k ? `<button type="button" class="pf-find" data-act="md-find" data-k="${k}" title="이 값으로 목록 검색" aria-label="이 값으로 목록 검색">${ic('search')}<span>검색</span></button>` : '<span></span>'}</div>`;
 function mdFit(key) {
@@ -4148,7 +4258,8 @@ MDP['log/api'] = { sort:{ k:'idx', dir:-1 }, ph:'제휴사 · cmd · 승인번�
 function msgSync() { const R = CFG['msg'].rows; R.forEach(r => { r.progL = msgProgL(r.prog); r.langL = msgLangL(r.lang); }); [...R].sort((a, b) => (a.rg + a.id).localeCompare(b.rg + b.id)).forEach((r, i) => r.idx = r.idx0 ??= i + 1); }
 const msgSel = (id, list, v, dis) => `<select class="select" id="${id}" ${dis}>${list.map(([val, l]) => `<option value="${esc(val)}" ${String(v) === String(val) ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
 function msgFields(v, dis, idp) {   /* 개별 등록 창 · 상세 수정 공통 칸 */
-  const f = (k, l, ctl, req) => `<div class="pf" data-fk="${k}"><label for="${idp}${k}">${l}${req ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl}</div><span></span><div class="err-t" role="alert"></div></div>`;
+  const fb = k => idp === 'mf_' && ['prog', 'lang', 'code', 'title'].includes(k) ? `<button type="button" class="pf-find" data-act="md-find" data-k="${k}" title="이 값으로 목록 검색" aria-label="이 값으로 목록 검색">${ic('search')}<span>검색</span></button>` : '<span></span>';
+  const f = (k, l, ctl, req) => `<div class="pf" data-fk="${k}"><label for="${idp}${k}">${l}${req ? '<span class="req">*</span>' : ''}</label><div class="pf-c">${ctl}</div>${fb(k)}<div class="err-t" role="alert"></div></div>`;
   return f('prog', '프로그램서비스', msgSel(idp + 'prog', [['', '선택'], ...MSG_PROG.map(x => [x, msgProgL(x)])], v.prog, dis), 1) + f('lang', '사용언어', msgSel(idp + 'lang', Object.keys(MSG_LANG).map(x => [x, msgLangL(x)]), v.lang || 'KOR', dis), 1)
     + f('code', '메세지코드', `<input class="input mono" id="${idp}code" value="${esc(v.code || '')}" placeholder="${dis ? '' : '예: OCR_001'}" ${dis} autocomplete="off">`, 1) + f('title', '메세지 타이틀', `<input class="input" id="${idp}title" value="${esc(v.title || '')}" ${dis} autocomplete="off">`, 1)
     + f('ret', '메세지 내용', `<textarea class="input" id="${idp}ret" rows="4" ${dis}>${esc(v.ret || '')}</textarea>`, 1) + f('sys', '시스템 메시지', `<textarea class="input" id="${idp}sys" rows="3" ${dis}>${esc(v.sys || '')}</textarea>`);
@@ -4206,7 +4317,7 @@ MDP['msg'] = { prep:msgSync, sort:{ k:'idx', dir:1 }, ph:'메세지코드 · 타
     return `<aside class="po-d card" data-id="${r.id}" aria-label="메세지코드 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(r.code)}</span> ${esc(r.title)}</h2><p>${esc(r.progL)} · ${esc(r.langL)} · IDX ${r.idx}${r.stop ? ` · ${badge('삭제', 'bad')}` : ''}</p></div></div>
       <div class="po-tabbar ${on ? 'on' : ''}">${bar}</div>
       <div class="po-db msg-d">${dsec('ms1', '등록 정보', '', mdRow('전산코드', `<span class="num">${r.idx}</span>`) + mdRow('등록날짜', `<span class="num">${esc(r.rg)}</span>`, 'rg'), '', 'view')}
-        ${dsec('ms2', '메세지', '', msgFields(r, dis, 'mf_') + `<div class="pf" data-fk="st"><label for="mf_st">상태</label><div class="pf-c">${msgSel('mf_st', [['0=정상', '0=정상'], ['1=사용안함', '1=사용안함']], r.st, dis)}</div><span></span></div>`, '', on ? 'editing' : 'view')}</div></aside>`; } };
+        ${dsec('ms2', '메세지', '', msgFields(r, dis, 'mf_') + `<div class="pf" data-fk="st"><label for="mf_st">상태</label><div class="pf-c">${msgSel('mf_st', [['0=정상', '0=정상'], ['1=사용안함', '1=사용안함']], r.st, dis)}</div><button type="button" class="pf-find" data-act="md-find" data-k="st" title="이 값으로 목록 검색" aria-label="이 값으로 목록 검색">${ic('search')}<span>검색</span></button></div>`, '', on ? 'editing' : 'view')}</div></aside>`; } };
 Object.assign(MD_ACT, {
   'msg-new': () => { openModal(MH('메세지코드 정보 등록', '새 메시지 코드를 하나씩 등록합니다') + `<div class="m-b"><div class="msg-nw">${msgFields({ lang:'KOR' }, '', 'mn_')}</div></div>
       <div class="m-f"><button class="btn" data-act="close-modal">취소</button><button class="btn btn-p" data-act="confirm-generic">${ic('check')}메세지코드정보저장</button></div>`);
@@ -4298,11 +4409,10 @@ function TransPage() {
     <div class="po-tb">
       <label class="sfield po-q">${ic('search')}<input id="trq" value="${esc(st.q)}" placeholder="승인번호 · 여권번호 · 제휴사 검색 후 Enter" autocomplete="off"></label>
       <button class="btn" data-act="tr-search">${ic('search')}검색</button>
-      <button class="btn ${sOn ? 'btn-soft' : ''}" data-act="tr-adv" aria-pressed="${sOn}" title="여러 조건으로 찾기">${ic('filter')}다중검색</button>
       ${canDel ? `<button class="btn btn-d" data-act="tr-del" ${n ? '' : 'disabled'} title="선택한 인증내역을 삭제합니다 (삭제자료 표시로 다시 볼 수 있음)">${ic('trash')}인증삭제${n > 1 ? ` ${n}건` : ''}</button>` : ''}
       <span class="grow"></span>
       ${can(TR, '삭제자료표시') ? `<label class="switch po-sw"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>삭제자료 표시</label>` : ''}
-      ${can(TR, '엑셀로') ? `<button class="btn" data-act="excel" title="목록 엑셀 내려받기">${ic('download')}엑셀 내려받기</button>` : ''}
+      ${can(TR, '엑셀로') ? `<button class="btn ${xlsRows(TR).picked ? 'btn-soft' : ''}" data-act="excel" title="2건 이상 체크하면 선택 항목만, 아니면 검색 결과 전체를 내려받습니다">${ic('download')}${xlsLabel(TR)}</button>` : ''}
     </div>
     <div class="po-body">
     ${sOn ? `<div class="po-adv">${SearchPanel(TR)}</div>` : ''}
@@ -4843,7 +4953,7 @@ document.addEventListener('click', e => {
     case 'adv': st.adv = !st.adv; render(); break;
     case 'adv-apply': $$('[data-f]').forEach(s => st.f[s.dataset.f] = s.value); st.from = $('[data-from]')?.value || ''; st.to = $('[data-to]')?.value || ''; st.pg = 1; render(); break;
     case 'adv-reset': st.f = {}; st.from = st.to = ''; st.pg = 1; render(); break;
-    case 'ck-all': { e.stopPropagation(); const lv = listView(key), d = (MDP[key] || key === 'trans' || key === PO_KEY ? lv.all : lv.data).map(r => r.id); if (a.checked) d.forEach(id => st.sel.add(id)); else d.forEach(id => st.sel.delete(id)); render(); break; }
+    case 'ck-all': { e.stopPropagation(); const d = listView(key).all.map(r => r.id);   /* 현재 검색 조건의 전체 결과 (다른 페이지 포함) */ if (a.checked) d.forEach(id => st.sel.add(id)); else d.forEach(id => st.sel.delete(id)); render(); break; }
     case 'ck': e.stopPropagation(); a.checked ? st.sel.add(a.dataset.id) : st.sel.delete(a.dataset.id); render(); break;
     case 'open': { if (e.target.closest('.ck')) return; openDrawer(key, a.dataset.id); break; }
     case 'dr-step': drStep(+a.dataset.d); break;
@@ -5421,7 +5531,7 @@ function PartnerOverview() {
       <button class="btn" data-act="po-search">${ic('search')}검색</button>
       <span class="grow"></span>
       ${can(PO_KEY, '삭제자료표시') ? `<label class="switch po-sw"><input type="checkbox" data-act="del-toggle" ${st.del ? 'checked' : ''}>중지된 거래처도 보기</label>` : ''}
-      ${can(PO_KEY, '엑셀로') ? `<button class="btn" data-act="excel" title="목록 엑셀 내려받기">${ic('download')}${pc ? '엑셀' : '엑셀 내려받기'}</button>` : ''}
+      ${can(PO_KEY, '엑셀로') ? `<button class="btn ${xlsRows(PO_KEY).picked ? 'btn-soft' : ''}" data-act="excel" title="2건 이상 체크하면 선택 항목만, 아니면 검색 결과 전체를 내려받습니다">${ic('download')}${xlsLabel(PO_KEY, pc ? '엑셀' : '엑셀 내려받기')}</button>` : ''}
     </div>
     ${pc ? pc.bar : ''}
     <div class="po-body">
@@ -6660,10 +6770,17 @@ document.addEventListener('keydown', e => { const t = e.target.closest?.('[data-
 document.addEventListener('wheel', e => { const b = e.target.closest?.('.wt-list'); if (b && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { b.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive:false });
 
 /* ── 나머지 목록 메뉴도 같은 화면 흐름으로: 목록 | 오른쪽 상세 · 첫 행 자동 선택 · 페이지 스크롤 없음 ── */
+/* 자동 상세: 항목마다 「검색」(그 값으로 목록 검색 · 다중검색 대상) — 금액 · 숫자 열은 제외 */
+function mdAutoFindRows(key, r) { const cfg = CFG[key];
+  return cfg.cols.filter(c => !(NUMT.includes(c.t)) && r[c.k] != null && typeof r[c.k] !== 'object').map(c => mdRow(c.l, cell(c, r), c.k)).join(''); }
 function mdAutoDetail(key, r) {
   const cfg = CFG[key], d = cfg.detail ? cfg.detail(r) : genericDetail(key, r);
+  const fr = mdAutoFindRows(key, r);
+  const body = cfg.detail
+    ? d.body + (fr ? dsec('find', '검색 항목', 'search', `<div class="md-rows">${fr}</div>`, '', 'view') : '')
+    : d.body.replace(/<dl class="kv">[\s\S]*?<\/dl>/, () => `<div class="md-rows">${cfg.cols.map(c => mdRow(c.l, cell(c, r), !NUMT.includes(c.t) && r[c.k] != null && typeof r[c.k] !== 'object' ? c.k : '')).join('')}</div>`);
   return `<aside class="po-d card md-auto-d" data-id="${r.id}" aria-label="상세"><div class="po-dh"><div style="min-width:0"><h2>${d.title}</h2>${d.sub ? `<p>${d.sub}</p>` : ''}</div></div>
-    <div class="po-db">${d.body}</div>${d.foot ? `<div class="po-df">${d.foot}</div>` : ''}</aside>`;
+    <div class="po-db">${body}</div>${d.foot ? `<div class="po-df">${d.foot}</div>` : ''}</aside>`;
 }
 function mdAuto(key) {
   const cfg = CFG[key];
