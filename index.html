@@ -3288,7 +3288,8 @@ function mqPaint(key) {
   }
   right?.insertAdjacentHTML('afterbegin', grp + (right.children.length ? '<span class="po-bsep" aria-hidden="true"></span>' : ''));
   /* X — 첫 항목 줄(전산코드 · 일시 등) 값 옆, 종합관리 위치와 같게 */
-  const pc = d.querySelector('.pf .pf-c'); if (pc) { pc.classList.add('mq-xrow'); pc.insertAdjacentHTML('beforeend', xBtn); } else right?.insertAdjacentHTML('afterbegin', xBtn);
+  /* xBar 화면(인증요청 LOG 등)은 첫 줄에 X 대신 「검색」 — X는 위 버튼 줄로 */
+  const pc = MDP[key]?.xBar ? null : d.querySelector('.pf .pf-c'); if (pc) { pc.classList.add('mq-xrow'); pc.insertAdjacentHTML('beforeend', xBtn); } else right?.insertAdjacentHTML('afterbegin', xBtn);
   if (!m.on) return;
   finds.forEach(b => {
     const k = b.dataset.k, c = b.closest('.pf')?.querySelector('.pf-c'); if (!c) return;
@@ -4244,12 +4245,12 @@ document.addEventListener('dragover', e => { const z = e.target.closest?.('.sf-p
 document.addEventListener('dragleave', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('drop-on'); });
 document.addEventListener('drop', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (!z || !SF_DRAG || z.dataset.side === SF_DRAG.side) return; e.preventDefault(); const d = SF_DRAG; SF_DRAG = null; const r = sfCur(); if (r && can('work/staff', '수정')) sfMove(r, d.side === 'a' ? 'in' : 'out', [d.c]); });
 /* ── 인증요청 LOG ── */
-MDP['log/api'] = { sort:{ k:'idx', dir:-1 }, ph:'제휴사 · cmd · 승인번호 검색 후 Enter',
+MDP['log/api'] = { sort:{ k:'idx', dir:-1 }, xBar:true, ph:'제휴사 · cmd · 승인번호 검색 후 Enter',
   cols:[['idx', 'IDX', 'n num'], ['rg', '등록일', 'num', r => esc(r.rg.replace(/-/g, ''))], ['pid', '제휴사ID', 'mono'], ['pname', '제휴사명', 'c-name', r => r.pname ? `<span class="strong">${esc(r.pname)}</span>` : '<span class="muted">—</span>'],
     ['cmd', 'cmd', 'mono'], ['cmdL', 'API 커맨드'], ['ref', '승인번호', 'mono', r => r.ref ? esc(r.ref) : '<span class="muted">—</span>'], ['sys', '요청일시', 'num']],
   detail: r => `<aside class="po-d card" data-id="${r.id}" aria-label="인증요청 LOG 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(r.cmd)}</span> ${esc(r.cmdL.split('=')[1] || '')} ${badge(r.lv)}</h2><p><span class="mono">${esc(r.pid)}</span>${r.pname ? ' · ' + esc(r.pname) : ''} · IDX ${r.idx}</p></div></div>
     <div class="po-db">
-      ${dsec('al1', '요청 정보', '', mdRow('전산코드', `<span class="num">${r.idx}</span>`) + mdRow('등록날짜', `<span class="num">${esc(r.rg)}</span>`, 'rg') + mdRow('제휴사명', `<span class="mono">${esc(r.pid)}</span>${r.pname ? ' · ' + esc(r.pname) : ''}`, 'pid')
+      ${dsec('al1', '요청 정보', '', mdRow('전산코드', `<span class="num">${r.idx}</span>`, 'idx') + mdRow('등록날짜', `<span class="num">${esc(r.rg)}</span>`, 'rg') + mdRow('제휴사명', `<span class="mono">${esc(r.pid)}</span>${r.pname ? ' · ' + esc(r.pname) : ''}`, 'pid')
         + mdRow('API커맨드', esc(r.cmdL), 'cmdL') + (r.ref ? mdRow('승인번호', esc(r.ref), 'ref', 'mono') : '') + mdRow('요청일시', `<span class="num">${esc(r.sys)}</span>`), '', 'view')}
       ${dsec('al2', 'API LOG', '', `<div class="pf md-key md-log"><label for="mdlog">요청 원문</label><div class="pf-c"><textarea class="input mono pc-secret" id="mdlog" readonly spellcheck="false">${esc(r.body)}</textarea></div><button type="button" class="pf-find" data-act="md-copy" data-t="mdlog" data-l="API LOG" title="API LOG 복사">${ic('copy')}<span>복사</span></button></div>
         <p class="muted" style="font-size:12px;margin:4px 0 0">비밀번호 · 토큰은 저장할 때 가려집니다 (••••).</p>`, '', 'view')}
