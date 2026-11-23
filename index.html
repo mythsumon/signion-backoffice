@@ -1411,7 +1411,10 @@ button.vb{border:0;background:none;font:inherit;color:inherit;text-align:left;wi
 .msg-bad{margin:8px 0 0;padding-left:18px;font-size:12.5px;color:var(--bad);line-height:1.7}
 
 /* 인증요청 LOG */
-.md-log .pc-secret{min-height:260px;white-space:pre;overflow:auto;word-break:normal;font-size:11.5px!important}
+.dsec.view .md-log-sep{margin:10px 0 6px}
+.md-log{grid-template-columns:minmax(0,1fr) 62px!important;grid-template-areas:"l b" "c c";margin:6px 0}
+.md-log>label{grid-area:l}.md-log>.pf-c{grid-area:c}.md-log>.pf-find{grid-area:b;justify-self:end}
+.md-log .pc-secret{min-height:320px;white-space:pre-wrap;overflow:auto;word-break:break-all;font-size:11.5px!important}
 
 /* 기초코드관리 */
 .md-nw{display:grid;gap:8px}
@@ -4251,9 +4254,9 @@ MDP['log/api'] = { sort:{ k:'idx', dir:-1 }, xBar:true, ph:'제휴사 · cmd · 
   detail: r => `<aside class="po-d card" data-id="${r.id}" aria-label="인증요청 LOG 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(r.cmd)}</span> ${esc(r.cmdL.split('=')[1] || '')} ${badge(r.lv)}</h2><p><span class="mono">${esc(r.pid)}</span>${r.pname ? ' · ' + esc(r.pname) : ''} · IDX ${r.idx}</p></div></div>
     <div class="po-db">
       ${dsec('al1', '요청 정보', '', mdRow('전산코드', `<span class="num">${r.idx}</span>`, 'idx') + mdRow('등록날짜', `<span class="num">${esc(r.rg)}</span>`, 'rg') + mdRow('제휴사명', `<span class="mono">${esc(r.pid)}</span>${r.pname ? ' · ' + esc(r.pname) : ''}`, 'pid')
-        + mdRow('API커맨드', esc(r.cmdL), 'cmdL') + (r.ref ? mdRow('승인번호', esc(r.ref), 'ref', 'mono') : '') + mdRow('요청일시', `<span class="num">${esc(r.sys)}</span>`), '', 'view')}
-      ${dsec('al2', 'API LOG', '', `<div class="pf md-key md-log"><label for="mdlog">요청 원문</label><div class="pf-c"><textarea class="input mono pc-secret" id="mdlog" readonly spellcheck="false">${esc(r.body)}</textarea></div><button type="button" class="pf-find" data-act="md-copy" data-t="mdlog" data-l="API LOG" title="API LOG 복사">${ic('copy')}<span>복사</span></button></div>
-        <p class="muted" style="font-size:12px;margin:4px 0 0">비밀번호 · 토큰은 저장할 때 가려집니다 (••••).</p>`, '', 'view')}
+        + '<div class="pf-sep md-log-sep"></div>' + mdRow('API커맨드', esc(r.cmdL), 'cmdL') + (r.ref ? mdRow('승인번호', esc(r.ref), 'ref', 'mono') : '')
+        + `<div class="pf md-key md-log"><label for="mdlog">API LOG</label><div class="pf-c"><textarea class="input mono pc-secret" id="mdlog" readonly spellcheck="false" title="비밀번호 · 토큰은 저장할 때 가려집니다 (••••)">${esc(r.body)}</textarea></div><button type="button" class="pf-find" data-act="md-copy" data-t="mdlog" data-l="API LOG" title="API LOG 복사">${ic('copy')}<span>복사</span></button></div>`
+        + mdRow('요청일시', `<span class="num">${esc(r.sys)}</span>`), '', 'view')}
     </div></aside>` };
 /* ── 메시지코드관리 ── */
 function msgSync() { const R = CFG['msg'].rows; R.forEach(r => { r.progL = msgProgL(r.prog); r.langL = msgLangL(r.lang); }); [...R].sort((a, b) => (a.rg + a.id).localeCompare(b.rg + b.id)).forEach((r, i) => r.idx = r.idx0 ??= i + 1); }
