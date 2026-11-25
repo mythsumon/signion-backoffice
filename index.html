@@ -1801,7 +1801,7 @@ const TONE = {
   '사용':'ok','미사용':'','정상':'ok','중지':'bad','발송완료':'ok','발송실패':'bad','예약':'info','게시':'ok','숨김':'',
   '검수완료':'ok','검수대기':'warn','서류미비':'bad','KT제출':'info','개통완료':'','발급완료':'ok','회수':'',
   '입금완료':'ok','부분입금':'warn','미입금':'bad','청구전':'','SUCCESS':'ok','FAIL':'bad','WARN':'warn','INFO':'info',
-  '로그인 성공':'ok','로그인 실패':'bad','2FA 인증':'info','로그아웃':'','엑셀 다운로드':'info','리포트 출력':'info','개인정보 열람':'warn','세션 만료':'warn','답변완료':'ok','미답변':'warn','차단':'bad','활성':'ok','만료됨':'',
+  '로그인 성공':'ok','로그인 실패':'bad','2FA 인증':'info','로그아웃':'','엑셀 다운로드':'info','리포트 출력':'info','개인정보 열람':'warn','세션 만료':'warn','답변완료':'ok','미답변':'warn','차단':'bad','탐지':'warn','활성':'ok','만료됨':'',
 };
 const TONE_IC = { ok:'check', warn:'alert', bad:'x', info:'clock' };
 function badge(v, tone) {
@@ -1974,7 +1974,7 @@ const MENU = [
   { id:'token', label:'발행토큰관리', icon:'key' },
   { id:'crypto', label:'암호화KEY관리', icon:'lock' },
   { id:'msg', label:'메시지코드관리', icon:'message' },
-  { id:'log', label:'LOG관리', icon:'log', children:[['server','서버접속 LOG'],['api','인증요청 LOG'],['db','DB 요청/응답 LOG'],['aiocr','AIOCR LOG'],['ainfc','AINFC LOG'],['aiface','AIFACE LOG'],['pk','PK인증 LOG'],['korpass','대한민국여권인증 LOG'],['korvisa','대한민국체류자격 LOG']] },
+  { id:'log', label:'LOG관리', icon:'log', children:[['server','서버접속 LOG'],['api','인증요청 LOG'],['db','DB 요청/응답 LOG'],['aiocr','AIOCR LOG'],['ainfc','AINFC LOG'],['aiface','AIFACE LOG'],['pk','PK인증 LOG'],['korpass','대한민국여권인증 LOG'],['korvisa','대한민국체류자격 LOG'],['abuse','어뷰징 LOG']] },
   { sec:'운영' },
   { id:'code', label:'기초코드관리', icon:'db', children:[['nation','국가코드관리'],['bank','은행코드관리'],['cardco','카드사코드관리'],['zip','우편번호관리'],['vacct','가상계좌번호채번관리'],['vcard','가상카드번호채번관리']] },
   { id:'issue', label:'발급관리', icon:'card', children:[['card','카드번호발급관리'],['acct','계좌번호발급관리']] },
@@ -2141,6 +2141,7 @@ const LOGDEF = {
   aiocr:['AIOCR LOG','AI-OCR 여권 인식 · BIZ-MRZ 투팩터 검증 로그'], ainfc:['AINFC LOG','전자여권 NFC 칩 판독 · HASH 인증 로그'],
   aiface:['AIFACE LOG','안면인식 · 라이브니스 · 여권사진 대조 로그'], pk:['PK인증 LOG','PKD · CSCA 전자서명 검증 로그'],
   korpass:['대한민국여권인증 LOG','대한민국 정부 여권 인증 요청/응답 로그'], korvisa:['대한민국체류자격 LOG','대한민국 정부 체류자격 인증 요청/응답 로그'],
+  abuse:['어뷰징 LOG','여권 · 안면 인증 어뷰징 시도 탐지 · 차단 기록 (읽기 전용)'],
 };
 function makeLogRows(kind) {
   const out = []; let t = NOW.getTime();
@@ -2179,6 +2180,52 @@ Object.entries(LOGDEF).forEach(([k, [t, d]]) => {
     cols:[C('idx','IDX','num',{ro:1}),C('rg','등록일','date'),C('pid','제휴사ID','mono',{main:1}),C('pname','제휴사명','strong'),C('cmd','cmd','mono'),C('cmdL','API 커맨드'),C('ref','승인번호','mono'),C('sys','요청일시','date')],
     opts:{ cmdL:API_CMD.map(([k, n]) => `${k}=${n}`), pid:who.map(x => x[0]) }, filters:['cmdL', 'pid'] });
   [...out].reverse().forEach((r, i) => r.idx = 23000 + i);
+})();
+
+/* 어뷰징 LOG — 여권 · 안면 인증 어뷰징 시도 기록 (읽기 전용). 내부 백오피스 · KT 통합 어드민 공통 (AI 서버 1개)
+   에러코드 091 얼굴 불일치 · 092 여권 위·변조 · 093 반복 시도 · 094 타인 여권 / 결과 = 차단 · 탐지 */
+const ABUSE_ERR = {
+  '091':['얼굴 불일치', 'FACE', '셀카 얼굴과 여권 사진의 유사도가 기준(80점) 미만입니다.'],
+  '092':['여권 위·변조', 'OCR', 'MRZ 체크디지트 불일치 · 여권 사진 영역에 합성 흔적이 있습니다.'],
+  '093':['반복 시도', 'OCR', '같은 여권으로 10분 안에 5회 이상 인증을 시도했습니다.'],
+  '094':['타인 여권', 'FACE', '여권 명의자와 다른 사람이 인증을 시도했습니다 (라이브니스 통과 · 얼굴 불일치 반복).'],
+};
+(() => {
+  const ps = PARTNERS.filter(p => p.status === '등록완료').slice(0, 4), P = i => ps[i % ps.length] || { pid:'P000', name:'제휴사' };
+  /* [분 전, 제휴사, 에러, 결과, IP, 여권(마스킹), 이름(마스킹), 서비스, 기기] — 가상 데이터 */
+  const D = [
+    [14, 0, '093', '차단', '103.28.14.77', 'M123*****', 'NGUY** V** A*', 'OCR', 'Android 14 · Galaxy A15 · SIGNION SDK 3.7.6'],
+    [22, 0, '091', '탐지', '103.28.14.77', 'M123*****', 'NGUY** V** A*', 'FACE', 'Android 14 · Galaxy A15 · SIGNION SDK 3.7.6'],
+    [31, 0, '091', '탐지', '103.28.14.77', 'M123*****', 'NGUY** V** A*', 'FACE', 'Android 14 · Galaxy A15 · SIGNION SDK 3.7.6'],
+    [48, 1, '092', '차단', '27.71.90.12', 'C47*****', 'TRAN T** M**', 'OCR', 'iOS 17.6 · iPhone 12 · Safari WebView'],
+    [95, 1, '092', '차단', '27.71.90.12', 'C47*****', 'TRAN T** M**', 'NFC', 'iOS 17.6 · iPhone 12 · Safari WebView'],
+    [180, 2, '094', '차단', '113.160.4.201', 'N88*****', 'SHRE*** K****', 'FACE', 'Android 13 · Redmi Note 12 · Chrome 130'],
+    [260, 2, '094', '차단', '113.160.4.201', 'N88*****', 'SHRE*** K****', 'FACE', 'Android 13 · Redmi Note 12 · Chrome 130'],
+    [410, 3, '091', '탐지', '202.131.8.45', 'E29*****', 'BAT-ERD*** O**', 'FACE', 'Android 14 · Galaxy S23 · SIGNION SDK 3.7.6'],
+    [890, 1, '093', '차단', '42.112.33.9', 'B61*****', 'LE V** H**', 'OCR', 'Android 12 · OPPO A57 · Chrome 129'],
+    [1500, 3, '092', '차단', '202.131.8.90', 'K05*****', 'GANB*** T***', 'NFC', 'iOS 18.1 · iPhone 15 · SIGNION SDK 3.7.6'],
+    [2900, 0, '094', '탐지', '171.244.6.18', 'P72*****', 'PHAM T** L**', 'FACE', 'Android 14 · Galaxy A35 · Chrome 130'],
+    [5200, 2, '093', '차단', '110.44.115.3', 'R14*****', 'GURU** R***', 'OCR', 'Android 13 · Vivo Y36 · Chrome 128'],
+  ];
+  /* 요청 ID — 다른 로그와 겹치지 않는 가상 번호 (연관 로그에는 아래에서 같은 번호로 연결) */
+  const out = D.map(([min, pi, err, res, ip, pass, nm, svc, dev], i) => {
+    const p = P(pi), d0 = new Date(NOW.getTime() - min * 60000), dt = fDT(d0), [type, , why] = ABUSE_ERR[err], ref = `AB${fD(d0).replace(/-/g, '').slice(2)}${String(7310 + i * 37).padStart(5, '0')}`;
+    return { id:'ab' + i, dt, pid:p.pid, pname:p.name, ref, err, errL:`${err} · ${type}`, why, type, res, ip, pass, nm, svc, dev };
+  });
+  /* 같은 여권 시도 횟수 · 이전 시도 */
+  out.forEach(r => { const same = out.filter(x => x.pass === r.pass); r.cnt = same.length; r.prior = same.filter(x => x.dt < r.dt).sort((a, b) => b.dt.localeCompare(a.dt)); });
+  /* 연관 로그 — 같은 요청 ID로 API 요청 LOG · AI LOG에서 찾을 수 있게 연결 */
+  const api = CFG['log/api'].rows.filter(x => x.cmd === '5010');
+  out.forEach((r, i) => {
+    const a = api[i % api.length]; if (a) { a.body = a.body.replace(`"transNo": "${a.ref}"`, `"transNo": "${r.ref}"`); a.ref = r.ref; a.pid = r.pid; a.pname = r.pname; a.lv = 'FAIL'; }
+    r.aiKey = r.svc === 'FACE' ? 'aiface' : r.svc === 'NFC' ? 'ainfc' : 'aiocr';
+    const ai = CFG['log/' + r.aiKey].rows[i % CFG['log/' + r.aiKey].rows.length]; if (ai) Object.assign(ai, { ref:r.ref, who:r.pid, lv:'FAIL', code:r.err, dt:r.dt });
+  });
+  const c = CFG['log/abuse'];
+  Object.assign(c, { rows:out, dateKey:'dt', noSum:true, noChart:true,
+    cols:[C('dt','일시','date',{main:1}),C('pname','제휴사','strong'),C('ref','요청 ID','mono'),C('err','에러코드','mono'),C('type','어뷰징 유형'),C('res','결과','badge'),C('ip','IP','mono'),C('cnt','시도 횟수','num')],
+    opts:{ pid:ps.map(p => [p.pid, p.name]), err:Object.keys(ABUSE_ERR), type:[...new Set(Object.values(ABUSE_ERR).map(x => x[0]))], res:['차단','탐지'] },
+    filters:['pid','err','type','res'] });
 })();
 
 /* 기초코드 · 발급 · 고객센터 · 작업관리 */
@@ -3211,6 +3258,35 @@ cell = function (c, r) { if (c.t === 'res') return resChips(r.res); return _cell
 const Trans = () => TransPage();
 /* ── 공통 목록 | 상세 화면 (MDP[route] 에 열 · 상세를 정의) ── */
 const MDP = {};
+document.head.insertAdjacentHTML('beforeend', `<style>
+.md-logabuse .po-sw{display:none}
+.po-main:has(> .ab-top):has(> .po-body > .md-g){--dw:minmax(384px,31%)}
+.ab-pn-t{display:inline-block;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;font-weight:600;color:var(--ink)}
+.md-logabuse .po-flat td,.md-logabuse .po-flat th{padding-left:6px;padding-right:6px}
+.md-logabuse .po-flat td.mono{font-size:12px}
+.ab-sub{margin:-4px 0 10px;font-size:12.5px;color:var(--ink-2)}
+.ab-top .kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0}
+.ab-top .kpi{padding:12px 14px;min-height:0}
+.ab-top .kpi .v{font-size:22px}
+.ab-top .kpi .d{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:1101px){
+  .po-main:not(.conn-on):has(> .ab-top){grid-template-rows:auto auto auto minmax(0,1fr)}
+  .po-main:not(.conn-on) > .ab-top{grid-column:1;grid-row:2}
+  .po-main:not(.conn-on):has(> .ab-top) > .po-tb{grid-row:3}
+  .po-main:not(.conn-on):has(> .ab-top) > .po-body > .po-g > .po-l{grid-row:4}
+  .po-main:not(.conn-on):has(> .ab-top):has(> .po-body > .po-adv){grid-template-rows:auto auto auto auto minmax(0,1fr)}
+  .po-main:not(.conn-on):has(> .ab-top) > .po-body > .po-adv{grid-row:4}
+  .po-main:not(.conn-on):has(> .ab-top):has(> .po-body > .po-adv) > .po-body > .po-g > .po-l{grid-row:5}
+}
+.ab-per{flex:none}
+.ab-f{width:auto;min-width:118px}
+.ab-code{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:5px;font-weight:700;font-size:12px;background:var(--surface-2);color:var(--ink-2)}
+.ab-091,.ab-094{background:var(--warn-bg);color:var(--warn)}
+.ab-092,.ab-093{background:var(--bad-bg);color:var(--bad)}
+.ab-rep{color:var(--bad)}
+.ab-links{display:flex;gap:8px;flex-wrap:wrap}
+.ab-tl{margin:10px 0 0}
+</style>`);
 function mdPage(key) {
   const D = MDP[key], cfg = CFG[key]; D.prep?.();
   const st = ls(key), first = !st.mdOpen; st.mdOpen = true;
@@ -3230,7 +3306,7 @@ function mdPage(key) {
   const pager = pages > 1 ? `<span class="po-pg"><button class="ibtn" data-act="md-pg" data-d="-1" ${st.mdPg ? '' : 'disabled'} aria-label="이전 페이지">${ic('chevl')}</button><b class="num">${st.mdPg + 1}</b><span class="muted">/ ${pages}</span><button class="ibtn" data-act="md-pg" data-d="1" ${st.mdPg < pages - 1 ? '' : 'disabled'} aria-label="다음 페이지">${ic('chev')}</button></span>` : '';
   return `<div class="po md md-${key.replace(/\W/g, '')}">
     <div class="po-main">
-    <div class="po-h"><h1>${cfg.title}</h1></div>
+    <div class="po-h"><h1>${cfg.title}</h1></div>${D.top ? D.top(key, all) : ''}
     <div class="po-tb">
       <label class="sfield po-q">${ic('search')}<input id="mdq" value="${esc(st.q)}" placeholder="${D.ph || '검색어 입력 후 Enter'}" autocomplete="off"></label>
       <button class="btn" data-act="md-search">${ic('search')}검색</button>
@@ -3349,6 +3425,8 @@ const MD_ACT = {
   'md-pick': (a, e, key) => { if (e.target.closest('.ck')) return; const st = ls(key), id = a.dataset.id; if (st.cur === id && st.sel.size === 1) return; const go = () => { st.cur = id; st.sel = new Set([id]); render(); };
     if (S.mdEdit && S.mdEdit !== id) return openConfirm('편집 취소', { q:'수정 중인 내용을 버리시겠습니까?', note:'저장하지 않은 내용은 사라집니다.' }, '버리기', () => { S.mdEdit = null; go(); }, true); go(); },
   'md-pg': (a, e, key) => { const st = ls(key), all = listView(key).all, per = st.mdPer || 12, pg = Math.max(0, Math.min(Math.ceil(all.length / per) - 1, (st.mdPg || 0) + +a.dataset.d)); if (all[pg * per]) { st.cur = all[pg * per].id; st.sel = new Set([st.cur]); render(); } },
+  'ab-per': (a, e, key) => { abPer(key, a.dataset.d); render(); },
+  'ab-go': (a) => { const k = 'log/' + a.dataset.k, st = ls(k); st.q = a.dataset.q; st.qf = ''; st.f = {}; st.from = ''; st.to = ''; st.cur = null; st.autoPeek = true; location.hash = '#/' + k; toast(`${LOGDEF[a.dataset.k][0]}에서 요청 ID ${a.dataset.q}를 찾았습니다.`); },
   'md-search': (a, e, key) => { const st = ls(key); st.q = $('#mdq').value.trim(); st.qf = ''; st.cur = null; render(); },
   'md-qclear': (a, e, key) => { const st = ls(key); st.q = ''; st.qf = ''; render(); },
   'md-adv': (a, e, key) => { const st = ls(key); st.mdAdv = !st.mdAdv; st.open = true; render(); },
@@ -3356,6 +3434,7 @@ const MD_ACT = {
   'md-copy': (a, e, key) => { const t = $('#' + a.dataset.t); if (!t) return; const done = () => { toast(`${a.dataset.l}를 복사했습니다.`); audit('인증정보 복사', a.dataset.l, key, rowLabel(key, CFG[key].rows.find(x => x.id === ls(key).cur))); };
     if (navigator.clipboard?.writeText) navigator.clipboard.writeText(t.value).then(done, () => { t.select(); document.execCommand('copy'); done(); }); else { t.select(); document.execCommand('copy'); done(); } },
 };
+document.addEventListener('change', e => { const s = e.target.closest?.('[data-abf]'), key = route(); if (!s || !MDP[key]) return; const st = ls(key); st.f[s.dataset.abf] = s.value; st.cur = null; render(); });
 document.addEventListener('click', e => { const a = e.target.closest('[data-act]'), key = route(); if (!a || !MD_ACT[a.dataset.act] || !MDP[key]) return; const g = GUARD[a.dataset.act]; if (g && !can(key, g)) return deny(key, g); MD_ACT[a.dataset.act](a, e, key); });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'mdq' && MDP[route()]) { e.preventDefault(); e.stopPropagation(); MD_ACT['md-search'](null, e, route()); } }, true);
 let mdFitT = null; addEventListener('resize', () => { clearTimeout(mdFitT); mdFitT = setTimeout(() => { if (MDP[route()]) mdFit(route()); }, 120); });
@@ -4248,6 +4327,40 @@ document.addEventListener('dragover', e => { const z = e.target.closest?.('.sf-p
 document.addEventListener('dragleave', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('drop-on'); });
 document.addEventListener('drop', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (!z || !SF_DRAG || z.dataset.side === SF_DRAG.side) return; e.preventDefault(); const d = SF_DRAG; SF_DRAG = null; const r = sfCur(); if (r && can('work/staff', '수정')) sfMove(r, d.side === 'a' ? 'in' : 'out', [d.c]); });
 /* ── 인증요청 LOG ── */
+/* ── 어뷰징 LOG — 목록 | 상세, 위에 요약 카드 4개 · 필터 ── */
+const AB_PER = [['1', '오늘'], ['7', '7일'], ['30', '30일'], ['', '전체']];
+function abPer(key, d) { const st = ls(key); st.abPer = d; if (d) { const t = new Date(NOW); t.setDate(t.getDate() - (+d - 1)); st.from = fD(t); st.to = fD(NOW); } else { st.from = ''; st.to = ''; } st.cur = null; }
+MDP['log/abuse'] = { sort:{ k:'dt', dir:-1 }, ph:'요청 ID · 여권번호(마스킹) · IP 검색 후 Enter',
+  prep() { const st = ls('log/abuse'); if (st.abPer === undefined) abPer('log/abuse', '30'); },
+  top(key, all) {
+    const st = ls(key), cnt = {}; all.forEach(r => cnt[r.err] = (cnt[r.err] || 0) + 1);
+    const topE = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0], bl = all.filter(r => r.res === '차단').length;
+    const per = AB_PER.find(x => x[0] === (st.abPer ?? ''))?.[1] || '전체';
+    return `<div class="ab-top"><p class="ab-sub">여권 · 안면 인증에서 탐지 · 차단한 어뷰징 시도 기록입니다. <b>읽기 전용</b>이며 내부 백오피스와 KT 통합 어드민이 같은 AI 서버 기록을 봅니다.</p>`
+      + KPIS([['어뷰징 시도', fmt(all.length), '건', `${per}${st.from ? ` · ${st.from} ~ ${st.to}` : ''}`, 'shield'],
+        ['차단 / 탐지', `${fmt(bl)}<small> / </small>${fmt(all.length - bl)}`, '건', `차단율 ${all.length ? Math.round(bl * 100 / all.length) : 0}%`, 'lock'],
+        ['영향 제휴사', fmt(new Set(all.map(r => r.pid)).size), '곳', `동일 여권 반복 ${new Set(all.filter(r => r.cnt > 1).map(r => r.pass)).size}건`, 'building'],
+        ['최다 에러코드', topE ? topE[0] : '—', topE ? ` · ${fmt(topE[1])}건` : '', topE ? ABUSE_ERR[topE[0]][0] : '기록 없음', 'alert']]) + '</div>';
+  },
+  tools(key) {
+    const st = ls(key), cfg = CFG[key], sel = (k, l) => `<select class="select ab-f" data-abf="${k}" aria-label="${l}"><option value="">${l} 전체</option>${cfg.opts[k].map(o => { const [v, t0] = Array.isArray(o) ? o : [o, o], t = k === 'err' ? `${v} · ${ABUSE_ERR[v][0]}` : t0; return `<option value="${esc(v)}" ${String(st.f[k] ?? '') === String(v) ? 'selected' : ''}>${esc(t)}</option>`; }).join('')}</select>`;
+    return `<span class="seg ab-per" role="group" aria-label="기간">${AB_PER.map(([d, l]) => `<button type="button" class="${(st.abPer ?? '') === d ? 'on' : ''}" data-act="ab-per" data-d="${d}">${l}</button>`).join('')}</span>`
+      + sel('pid', '제휴사') + sel('err', '에러코드') + sel('type', '어뷰징 유형') + sel('res', '결과');
+  },
+  cols:[['dt', '일시', 'num', r => `<span title="${esc(r.dt)}">${esc(r.dt.slice(5, 16))}</span>`], ['pname', '제휴사', 'ab-pn', r => `<span class="ab-pn-t" title="${esc(r.pname)} (${esc(r.pid)})">${esc(r.pname)}</span>`], ['ref', '요청 ID', 'mono'],
+    ['err', '에러코드', 'mono', r => `<span class="ab-code ab-${r.err}">${r.err}</span>`], ['type', '유형'], ['res', '결과', '', r => badge(r.res)], ['ip', 'IP', 'mono'],
+    ['cnt', '시도', 'n num', r => r.cnt > 1 ? `<b class="ab-rep">${r.cnt}</b>` : String(r.cnt)]],
+  detail: r => `<aside class="po-d card" data-id="${r.id}" aria-label="어뷰징 LOG 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(r.ref)}</span> ${badge(r.res)}</h2><p>${esc(r.dt)} · ${esc(r.pname)} · <span class="mono">${esc(r.ip)}</span></p></div></div>
+    <div class="po-db">
+      <div class="callout ${r.res === '차단' ? 'bad' : 'warn'}" style="margin-bottom:14px">${ic('alert')}<div><b class="mono">${r.err}</b> · ${esc(r.type)} — ${esc(r.why)}<br><span style="font-size:12px">${r.res === '차단' ? '인증을 중단하고 결과를 실패로 반환했습니다.' : '인증은 계속 진행되었고 탐지 기록만 남겼습니다.'}</span></div></div>
+      ${dsec('ab1', '요청 정보', '', mdRow('요청 ID', esc(r.ref), 'ref', 'mono') + mdRow('일시', `<span class="num">${esc(r.dt)}</span>`) + mdRow('제휴사', `<span class="mono">${esc(r.pid)}</span> · ${esc(r.pname)}`, 'pid')
+        + mdRow('서비스', `${esc(r.svc)} <span class="muted">(${esc(MOD[r.svc] || r.svc)})</span>`) + mdRow('IP 주소', esc(r.ip), 'ip', 'mono') + mdRow('기기 · 앱', esc(r.dev)), '', 'view')}
+      ${dsec('ab2', '탐지 결과', '', mdRow('에러코드', `<span class="mono">${r.err}</span>`, 'err') + mdRow('사유', esc(r.why)) + mdRow('어뷰징 유형', esc(r.type), 'type') + mdRow('처리 결과', badge(r.res), 'res'), '', 'view')}
+      ${dsec('ab3', '시도자 (마스킹)', '', mdRow('여권번호', esc(r.pass), 'pass', 'mono') + mdRow('이름', esc(r.nm)) + mdRow('같은 여권 시도', `<b class="num">${r.cnt}</b>회 <span class="muted">(이전 ${r.prior.length}회)</span>`)
+        + (r.prior.length ? `<ul class="tl ab-tl">${r.prior.map(x => `<li><span class="dot">${ic(x.res === '차단' ? 'x' : 'alert')}</span><div class="t"><span class="mono">${x.err}</span> ${esc(x.type)} ${badge(x.res)}</div><div class="c"><span class="num">${esc(x.dt)}</span> · <span class="mono">${esc(x.ref)}</span></div></li>`).join('')}</ul>` : ''), '', 'view')}
+      ${dsec('ab4', '연관 로그', '', `<div class="ab-links"><button class="btn" data-act="ab-go" data-k="api" data-q="${esc(r.ref)}">${ic('log')}API 요청 LOG에서 보기</button><button class="btn" data-act="ab-go" data-k="${r.aiKey}" data-q="${esc(r.ref)}">${ic('log')}${esc(LOGDEF[r.aiKey][0])}에서 보기</button></div>
+        <p class="muted" style="font-size:12px;margin:8px 0 0">여권번호 · 이름 · 얼굴 이미지는 원문으로 저장하지 않습니다. 기록은 수정 · 삭제할 수 없습니다.</p>`, '', 'view')}
+    </div></aside>` };
 MDP['log/api'] = { sort:{ k:'idx', dir:-1 }, xBar:true, ph:'제휴사 · cmd · 승인번호 검색 후 Enter',
   cols:[['idx', 'IDX', 'n num'], ['rg', '등록일', 'num', r => esc(r.rg.replace(/-/g, ''))], ['pid', '제휴사ID', 'mono'], ['pname', '제휴사명', 'c-name', r => r.pname ? `<span class="strong">${esc(r.pname)}</span>` : '<span class="muted">—</span>'],
     ['cmd', 'cmd', 'mono'], ['cmdL', 'API 커맨드'], ['ref', '승인번호', 'mono', r => r.ref ? esc(r.ref) : '<span class="muted">—</span>'], ['sys', '요청일시', 'num']],

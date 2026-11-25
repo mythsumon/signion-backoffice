@@ -1195,7 +1195,36 @@ PKD · CSCA 전자서명 검증 로그
 
 `log/korvisa|조회` · `log/korvisa|엑셀로` · `log/korvisa|리포트` · `log/korvisa|삭제자료표시`
 
-## 기초코드관리 › 국가코드관리  `#/code/nation` · 프로그램ID 038
+## LOG관리 › 어뷰징 LOG  `#/log/abuse` · 프로그램ID 038
+
+여권 · 안면 인증 어뷰징 시도 탐지 · 차단 기록 (읽기 전용)
+
+### 필드
+
+| key | 이름 | 타입 | 검색조건 | 비고 |
+|---|---|---|---|---|
+| `dt` | 일시 | date / datetime | ✓ | 대표키 |
+| `pname` | 제휴사 | string |  |  |
+| `ref` | 요청 ID | string (코드) |  |  |
+| `err` | 에러코드 | string (코드) (091, 092, 093, 094) | ✓ |  |
+| `type` | 어뷰징 유형 | string (얼굴 불일치, 여권 위·변조, 반복 시도, 타인 여권) | ✓ |  |
+| `res` | 결과 | enum (차단, 탐지) | ✓ |  |
+| `ip` | IP | string (코드) |  |  |
+| `cnt` | 시도 횟수 | number |  |  |
+
+### API 초안
+
+| 메서드 | 경로 | 설명 |
+|---|---|---|
+| GET | `/api/v1/log-abuse?from&to&q&qf&pid&err&type&res&del&page&size&sort` | 조회 (목록 · 건수 · 정렬 · 페이지) |
+| GET | `/api/v1/log-abuse/{id}` | 상세 |
+| GET | `/api/v1/log-abuse/export?(조회와 같은 조건)` | 엑셀로 (서버에서 마스킹 · 감사LOG) |
+
+### 권한 코드 (역할별로 부여)
+
+`log/abuse|조회` · `log/abuse|엑셀로` · `log/abuse|리포트` · `log/abuse|삭제자료표시`
+
+## 기초코드관리 › 국가코드관리  `#/code/nation` · 프로그램ID 039
 
 국가코드(한글 · 영문 · 숫자 · 2자리 · 3자리)와 대사관번호 · 공관전화번호를 관리합니다. KT 해외 현지 여권 후불사업 15개국 포함.
 
@@ -1230,7 +1259,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `code/nation|조회` · `code/nation|등록` · `code/nation|수정` · `code/nation|삭제` · `code/nation|엑셀로` · `code/nation|리포트` · `code/nation|삭제자료표시`
 
-## 기초코드관리 › 은행코드관리  `#/code/bank` · 프로그램ID 039
+## 기초코드관리 › 은행코드관리  `#/code/bank` · 프로그램ID 040
 
 은행코드 · 금융결제원 연합회코드를 관리합니다.
 
@@ -1261,7 +1290,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `code/bank|조회` · `code/bank|등록` · `code/bank|수정` · `code/bank|삭제` · `code/bank|엑셀로` · `code/bank|리포트` · `code/bank|삭제자료표시`
 
-## 기초코드관리 › 카드사코드관리  `#/code/cardco` · 프로그램ID 040
+## 기초코드관리 › 카드사코드관리  `#/code/cardco` · 프로그램ID 041
 
 카드사 코드 · VAN 코드를 관리합니다.
 
@@ -1292,7 +1321,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `code/cardco|조회` · `code/cardco|등록` · `code/cardco|수정` · `code/cardco|삭제` · `code/cardco|엑셀로` · `code/cardco|리포트` · `code/cardco|삭제자료표시`
 
-## 기초코드관리 › 우편번호관리  `#/code/zip` · 프로그램ID 041
+## 기초코드관리 › 우편번호관리  `#/code/zip` · 프로그램ID 042
 
 주소타입(지번 · 도로명)별 우편번호와 지역번호를 관리합니다.
 
@@ -1322,7 +1351,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `code/zip|조회` · `code/zip|등록` · `code/zip|수정` · `code/zip|삭제` · `code/zip|엑셀로` · `code/zip|리포트` · `code/zip|삭제자료표시`
 
-## 기초코드관리 › 가상계좌번호채번관리  `#/code/vacct` · 프로그램ID 042
+## 기초코드관리 › 가상계좌번호채번관리  `#/code/vacct` · 프로그램ID 043
 
 은행별로 미리 채번한 가상계좌번호 목록입니다. 계좌가 발급되면 상태가 바뀝니다.
 
@@ -1349,7 +1378,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `code/vacct|조회` · `code/vacct|엑셀로` · `code/vacct|리포트` · `code/vacct|삭제자료표시`
 
-## 기초코드관리 › 가상카드번호채번관리  `#/code/vcard` · 프로그램ID 043
+## 기초코드관리 › 가상카드번호채번관리  `#/code/vcard` · 프로그램ID 044
 
 카드종류별로 미리 채번한 가상카드번호 목록입니다. 「생성」으로 새 번호를 만듭니다.
 
@@ -1378,7 +1407,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `code/vcard|조회` · `code/vcard|엑셀로` · `code/vcard|리포트` · `code/vcard|삭제자료표시` · `code/vcard|생성`
 
-## 발급관리 › 카드번호발급관리  `#/issue/card` · 프로그램ID 044
+## 발급관리 › 카드번호발급관리  `#/issue/card` · 프로그램ID 045
 
 발급한 카드(회원 · 가맹점)의 번호 · 잔액 · 상태를 관리합니다. 「발급」으로 새 카드를 발급하고 「사용중지」로 막습니다.
 
@@ -1414,7 +1443,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `issue/card|조회` · `issue/card|엑셀로` · `issue/card|리포트` · `issue/card|삭제자료표시` · `issue/card|발급` · `issue/card|사용중지` · `issue/card|카드거래현황` · `issue/card|메모등록`
 
-## 발급관리 › 계좌번호발급관리  `#/issue/acct` · 프로그램ID 045
+## 발급관리 › 계좌번호발급관리  `#/issue/acct` · 프로그램ID 046
 
 발급한 가상계좌의 잔액 · 이체 한도 · 수수료 · 상태를 관리합니다. 「발급」은 가상계좌번호채번관리의 대기 번호를 씁니다.
 
@@ -1453,7 +1482,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `issue/acct|조회` · `issue/acct|엑셀로` · `issue/acct|리포트` · `issue/acct|삭제자료표시` · `issue/acct|발급` · `issue/acct|사용중지` · `issue/acct|계좌거래현황` · `issue/acct|계좌거래한도수정` · `issue/acct|메모등록`
 
-## 고객센터 › 상담관리  `#/cs/comment` · 프로그램ID 046
+## 고객센터 › 상담관리  `#/cs/comment` · 프로그램ID 047
 
 회원 · 가맹점 상담(1:1 문의) 내용과 처리 결과를 관리합니다.
 
@@ -1487,7 +1516,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/comment|조회` · `cs/comment|등록` · `cs/comment|삭제` · `cs/comment|엑셀로` · `cs/comment|리포트` · `cs/comment|삭제자료표시` · `cs/comment|처리결과등록`
 
-## 고객센터 › 댓글관리  `#/cs/reply` · 프로그램ID 047
+## 고객센터 › 댓글관리  `#/cs/reply` · 프로그램ID 048
 
 가맹점 상품에 회원이 남긴 댓글(후기 · 문의 · 신고)을 확인하고, 문제 있는 댓글을 삭제합니다. 댓글은 회원이 작성하므로 여기서 등록 · 수정하지 않습니다.
 
@@ -1519,7 +1548,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/reply|조회` · `cs/reply|삭제` · `cs/reply|엑셀로` · `cs/reply|리포트` · `cs/reply|삭제자료표시`
 
-## 고객센터 › 챗봇관리  `#/cs/bot` · 프로그램ID 048
+## 고객센터 › 챗봇관리  `#/cs/bot` · 프로그램ID 049
 
 인증 화면 챗봇 FAQ 시나리오
 
@@ -1548,7 +1577,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/bot|조회` · `cs/bot|등록` · `cs/bot|수정` · `cs/bot|삭제` · `cs/bot|엑셀로` · `cs/bot|리포트` · `cs/bot|삭제자료표시`
 
-## 고객센터 › SMS전송관리  `#/cs/sms` · 프로그램ID 049
+## 고객센터 › SMS전송관리  `#/cs/sms` · 프로그램ID 050
 
 회원 · 가맹점에 보낸 SMS · LMS · MMS 전송 내역. 회원을 골라 보내거나 번호를 직접 입력해 보냅니다.
 
@@ -1579,7 +1608,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/sms|조회` · `cs/sms|엑셀로` · `cs/sms|리포트` · `cs/sms|삭제자료표시` · `cs/sms|회원선택 SMS메세지보내기` · `cs/sms|수동입력 SMS메세지보내기`
 
-## 고객센터 › PUSH전송관리  `#/cs/push` · 프로그램ID 050
+## 고객센터 › PUSH전송관리  `#/cs/push` · 프로그램ID 051
 
 앱을 설치한 기기에 보낸 PUSH 메시지 내역. 「PUSH메세지보내기」로 기기를 골라 보냅니다.
 
@@ -1610,7 +1639,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/push|조회` · `cs/push|엑셀로` · `cs/push|리포트` · `cs/push|삭제자료표시` · `cs/push|PUSH메세지보내기`
 
-## 고객센터 › 공지사항관리  `#/cs/notice` · 프로그램ID 051
+## 고객센터 › 공지사항관리  `#/cs/notice` · 프로그램ID 052
 
 앱 서비스별 공지사항 게시물. 필수공지는 앱을 열 때 팝업으로 보입니다.
 
@@ -1642,7 +1671,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/notice|조회` · `cs/notice|등록` · `cs/notice|수정` · `cs/notice|삭제` · `cs/notice|엑셀로` · `cs/notice|리포트` · `cs/notice|삭제자료표시`
 
-## 고객센터 › 이용안내관리  `#/cs/guide` · 프로그램ID 052
+## 고객센터 › 이용안내관리  `#/cs/guide` · 프로그램ID 053
 
 앱 서비스별 이용안내(사용 방법 · 절차) 게시물. 앱의 「이용안내」 화면에 그대로 보입니다.
 
@@ -1673,7 +1702,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `cs/guide|조회` · `cs/guide|등록` · `cs/guide|수정` · `cs/guide|삭제` · `cs/guide|엑셀로` · `cs/guide|리포트` · `cs/guide|삭제자료표시`
 
-## 작업관리 › 직원관리  `#/work/staff` · 프로그램ID 053
+## 작업관리 › 직원관리  `#/work/staff` · 프로그램ID 054
 
 SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 · 기타정보와 직원별 서비스 권한을 관리합니다.
 
@@ -1709,7 +1738,7 @@ SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 
 
 `work/staff|조회` · `work/staff|등록` · `work/staff|수정` · `work/staff|삭제` · `work/staff|엑셀로` · `work/staff|리포트` · `work/staff|삭제자료표시` · `work/staff|정지` · `work/staff|신분증(이미지)등록`
 
-## 작업관리 › 프로그램관리  `#/work/prog` · 프로그램ID 054
+## 작업관리 › 프로그램관리  `#/work/prog` · 프로그램ID 055
 
 메뉴(대메뉴·소메뉴)와 기능버튼 권한 정의 — ProgList_ 테이블 (mainMenu · subMenu · funcBtn)
 
@@ -1735,7 +1764,7 @@ SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 
 
 `work/prog|조회` · `work/prog|수정`
 
-## 작업관리 › 자료메모관리  `#/work/memo` · 프로그램ID 055
+## 작업관리 › 자료메모관리  `#/work/memo` · 프로그램ID 056
 
 각 화면에서 등록한 메모 통합 조회
 
@@ -1764,7 +1793,7 @@ SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 
 
 `work/memo|조회` · `work/memo|등록` · `work/memo|수정` · `work/memo|삭제` · `work/memo|엑셀로` · `work/memo|리포트` · `work/memo|삭제자료표시`
 
-## 작업관리 › 데이터수정LOG  `#/work/datalog` · 프로그램ID 056
+## 작업관리 › 데이터수정LOG  `#/work/datalog` · 프로그램ID 057
 
 관리자에 의한 데이터 변경 이력 (변경 전/후)
 
@@ -1792,7 +1821,7 @@ SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 
 
 `work/datalog|조회` · `work/datalog|엑셀로` · `work/datalog|리포트` · `work/datalog|삭제자료표시`
 
-## 작업관리 › 권한관리  `#/work/role` · 프로그램ID 057
+## 작업관리 › 권한관리  `#/work/role` · 프로그램ID 058
 
 전용 화면
 
@@ -1801,7 +1830,7 @@ SIGNION · 관리 회사 백오피스 직원 계정. 기본 · 세부 · 거래 
 
 `work/role|조회` · `work/role|수정`
 
-## 작업관리 › 감사LOG  `#/work/audit` · 프로그램ID 058
+## 작업관리 › 감사LOG  `#/work/audit` · 프로그램ID 059
 
 누가 · 언제 · 어느 메뉴에서 · 무엇을 했는지 기록합니다 (등록 · 수정 · 삭제 · 기능버튼 · 출력 · 개인정보 열람 · 권한 변경 · 권한 없는 시도). 기록은 고치거나 지울 수 없습니다.
 
