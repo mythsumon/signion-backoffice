@@ -1974,7 +1974,8 @@ const MENU = [
   { id:'token', label:'발행토큰관리', icon:'key' },
   { id:'crypto', label:'암호화KEY관리', icon:'lock' },
   { id:'msg', label:'메시지코드관리', icon:'message' },
-  { id:'log', label:'LOG관리', icon:'log', children:[['server','서버접속 LOG'],['api','인증요청 LOG'],['db','DB 요청/응답 LOG'],['aiocr','AIOCR LOG'],['ainfc','AINFC LOG'],['aiface','AIFACE LOG'],['pk','PK인증 LOG'],['korpass','대한민국여권인증 LOG'],['korvisa','대한민국체류자격 LOG'],['abuse','어뷰징 LOG']] },
+  { id:'log', label:'LOG관리', icon:'log', children:[['server','서버접속 LOG'],['api','인증요청 LOG'],['db','DB 요청/응답 LOG'],['aiocr','AIOCR LOG'],['ainfc','AINFC LOG'],['aiface','AIFACE LOG'],['pk','PK인증 LOG'],['korpass','대한민국여권인증 LOG'],['korvisa','대한민국체류자격 LOG']] },
+  { id:'abuse', label:'Abuse Monitor', icon:'alert' },
   { sec:'운영' },
   { id:'code', label:'기초코드관리', icon:'db', children:[['nation','국가코드관리'],['bank','은행코드관리'],['cardco','카드사코드관리'],['zip','우편번호관리'],['vacct','가상계좌번호채번관리'],['vcard','가상카드번호채번관리']] },
   { id:'issue', label:'발급관리', icon:'card', children:[['card','카드번호발급관리'],['acct','계좌번호발급관리']] },
@@ -2141,7 +2142,6 @@ const LOGDEF = {
   aiocr:['AIOCR LOG','AI-OCR 여권 인식 · BIZ-MRZ 투팩터 검증 로그'], ainfc:['AINFC LOG','전자여권 NFC 칩 판독 · HASH 인증 로그'],
   aiface:['AIFACE LOG','안면인식 · 라이브니스 · 여권사진 대조 로그'], pk:['PK인증 LOG','PKD · CSCA 전자서명 검증 로그'],
   korpass:['대한민국여권인증 LOG','대한민국 정부 여권 인증 요청/응답 로그'], korvisa:['대한민국체류자격 LOG','대한민국 정부 체류자격 인증 요청/응답 로그'],
-  abuse:['어뷰징 LOG','여권 · 안면 인증 어뷰징 시도 탐지 · 차단 기록 (읽기 전용)'],
 };
 function makeLogRows(kind) {
   const out = []; let t = NOW.getTime();
@@ -2182,7 +2182,7 @@ Object.entries(LOGDEF).forEach(([k, [t, d]]) => {
   [...out].reverse().forEach((r, i) => r.idx = 23000 + i);
 })();
 
-/* 어뷰징 LOG — 여권 · 안면 인증 어뷰징 시도 기록 (읽기 전용). 내부 백오피스 · KT 통합 어드민 공통 (AI 서버 1개)
+/* Abuse Monitor (구 어뷰징 LOG, LOG관리에서 분리) — 여권 · 안면 인증 어뷰징 시도 기록 (읽기 전용). 내부 백오피스 · KT 통합 어드민 공통 (AI 서버 1개)
    에러코드 091 얼굴 불일치 · 092 여권 위·변조 · 093 반복 시도 · 094 타인 여권 / 결과 = 차단 · 탐지 */
 const ABUSE_ERR = {
   '091':['얼굴 불일치', 'FACE', '셀카 얼굴과 여권 사진의 유사도가 기준(80점) 미만입니다.'],
@@ -2221,7 +2221,7 @@ const ABUSE_ERR = {
     r.aiKey = r.svc === 'FACE' ? 'aiface' : r.svc === 'NFC' ? 'ainfc' : 'aiocr';
     const ai = CFG['log/' + r.aiKey].rows[i % CFG['log/' + r.aiKey].rows.length]; if (ai) Object.assign(ai, { ref:r.ref, who:r.pid, lv:'FAIL', code:r.err, dt:r.dt });
   });
-  const c = CFG['log/abuse'];
+  const c = CFG['abuse'] = { title:'Abuse Monitor', desc:'여권 · 안면 인증 어뷰징 시도 탐지 · 차단 기록 (읽기 전용)', noCreate:true, noEdit:true };
   Object.assign(c, { rows:out, dateKey:'dt', noSum:true, noChart:true,
     cols:[C('dt','일시','date',{main:1}),C('pname','제휴사','strong'),C('ref','요청 ID','mono'),C('err','에러코드','mono'),C('type','어뷰징 유형'),C('res','결과','badge'),C('ip','IP','mono'),C('cnt','시도 횟수','num')],
     opts:{ pid:ps.map(p => [p.pid, p.name]), err:Object.keys(ABUSE_ERR), type:[...new Set(Object.values(ABUSE_ERR).map(x => x[0]))], res:['차단','탐지'] },
@@ -3259,11 +3259,11 @@ const Trans = () => TransPage();
 /* ── 공통 목록 | 상세 화면 (MDP[route] 에 열 · 상세를 정의) ── */
 const MDP = {};
 document.head.insertAdjacentHTML('beforeend', `<style>
-.md-logabuse .po-sw{display:none}
+.md-abuse .po-sw{display:none}
 .po-main:has(> .ab-top):has(> .po-body > .md-g){--dw:minmax(384px,31%)}
 .ab-pn-t{display:inline-block;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;font-weight:600;color:var(--ink)}
-.md-logabuse .po-flat td,.md-logabuse .po-flat th{padding-left:6px;padding-right:6px}
-.md-logabuse .po-flat td.mono{font-size:12px}
+.md-abuse .po-flat td,.md-abuse .po-flat th{padding-left:6px;padding-right:6px}
+.md-abuse .po-flat td.mono{font-size:12px}
 .ab-sub{margin:-4px 0 10px;font-size:12.5px;color:var(--ink-2)}
 .ab-top .kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0}
 .ab-top .kpi{padding:12px 14px;min-height:0}
@@ -4327,11 +4327,11 @@ document.addEventListener('dragover', e => { const z = e.target.closest?.('.sf-p
 document.addEventListener('dragleave', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('drop-on'); });
 document.addEventListener('drop', e => { const z = e.target.closest?.('.sf-pt[data-drop]'); if (!z || !SF_DRAG || z.dataset.side === SF_DRAG.side) return; e.preventDefault(); const d = SF_DRAG; SF_DRAG = null; const r = sfCur(); if (r && can('work/staff', '수정')) sfMove(r, d.side === 'a' ? 'in' : 'out', [d.c]); });
 /* ── 인증요청 LOG ── */
-/* ── 어뷰징 LOG — 목록 | 상세, 위에 요약 카드 4개 · 필터 ── */
+/* ── Abuse Monitor — 목록 | 상세, 위에 요약 카드 4개 · 필터 ── */
 const AB_PER = [['1', '오늘'], ['7', '7일'], ['30', '30일'], ['', '전체']];
 function abPer(key, d) { const st = ls(key); st.abPer = d; if (d) { const t = new Date(NOW); t.setDate(t.getDate() - (+d - 1)); st.from = fD(t); st.to = fD(NOW); } else { st.from = ''; st.to = ''; } st.cur = null; }
-MDP['log/abuse'] = { sort:{ k:'dt', dir:-1 }, ph:'요청 ID · 여권번호(마스킹) · IP 검색 후 Enter',
-  prep() { const st = ls('log/abuse'); if (st.abPer === undefined) abPer('log/abuse', '30'); },
+MDP['abuse'] = { sort:{ k:'dt', dir:-1 }, ph:'요청 ID · 여권번호(마스킹) · IP 검색 후 Enter',
+  prep() { const st = ls('abuse'); if (st.abPer === undefined) abPer('abuse', '30'); },
   top(key, all) {
     const st = ls(key), cnt = {}; all.forEach(r => cnt[r.err] = (cnt[r.err] || 0) + 1);
     const topE = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0], bl = all.filter(r => r.res === '차단').length;
@@ -4350,7 +4350,7 @@ MDP['log/abuse'] = { sort:{ k:'dt', dir:-1 }, ph:'요청 ID · 여권번호(마�
   cols:[['dt', '일시', 'num', r => `<span title="${esc(r.dt)}">${esc(r.dt.slice(5, 16))}</span>`], ['pname', '제휴사', 'ab-pn', r => `<span class="ab-pn-t" title="${esc(r.pname)} (${esc(r.pid)})">${esc(r.pname)}</span>`], ['ref', '요청 ID', 'mono'],
     ['err', '에러코드', 'mono', r => `<span class="ab-code ab-${r.err}">${r.err}</span>`], ['type', '유형'], ['res', '결과', '', r => badge(r.res)], ['ip', 'IP', 'mono'],
     ['cnt', '시도', 'n num', r => r.cnt > 1 ? `<b class="ab-rep">${r.cnt}</b>` : String(r.cnt)]],
-  detail: r => `<aside class="po-d card" data-id="${r.id}" aria-label="어뷰징 LOG 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(r.ref)}</span> ${badge(r.res)}</h2><p>${esc(r.dt)} · ${esc(r.pname)} · <span class="mono">${esc(r.ip)}</span></p></div></div>
+  detail: r => `<aside class="po-d card" data-id="${r.id}" aria-label="Abuse Monitor 상세"><div class="po-dh"><div style="min-width:0"><h2><span class="mono">${esc(r.ref)}</span> ${badge(r.res)}</h2><p>${esc(r.dt)} · ${esc(r.pname)} · <span class="mono">${esc(r.ip)}</span></p></div></div>
     <div class="po-db">
       <div class="callout ${r.res === '차단' ? 'bad' : 'warn'}" style="margin-bottom:14px">${ic('alert')}<div><b class="mono">${r.err}</b> · ${esc(r.type)} — ${esc(r.why)}<br><span style="font-size:12px">${r.res === '차단' ? '인증을 중단하고 결과를 실패로 반환했습니다.' : '인증은 계속 진행되었고 탐지 기록만 남겼습니다.'}</span></div></div>
       ${dsec('ab1', '요청 정보', '', mdRow('요청 ID', esc(r.ref), 'ref', 'mono') + mdRow('일시', `<span class="num">${esc(r.dt)}</span>`) + mdRow('제휴사', `<span class="mono">${esc(r.pid)}</span> · ${esc(r.pname)}`, 'pid')

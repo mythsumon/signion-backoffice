@@ -1195,7 +1195,7 @@ PKD · CSCA 전자서명 검증 로그
 
 `log/korvisa|조회` · `log/korvisa|엑셀로` · `log/korvisa|리포트` · `log/korvisa|삭제자료표시`
 
-## LOG관리 › 어뷰징 LOG  `#/log/abuse` · 프로그램ID 038
+## Abuse Monitor  `#/abuse` · 프로그램ID 038
 
 여권 · 안면 인증 어뷰징 시도 탐지 · 차단 기록 (읽기 전용)
 
@@ -1216,13 +1216,13 @@ PKD · CSCA 전자서명 검증 로그
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
-| GET | `/api/v1/log-abuse?from&to&q&qf&pid&err&type&res&del&page&size&sort` | 조회 (목록 · 건수 · 정렬 · 페이지) |
-| GET | `/api/v1/log-abuse/{id}` | 상세 |
-| GET | `/api/v1/log-abuse/export?(조회와 같은 조건)` | 엑셀로 (서버에서 마스킹 · 감사LOG) |
+| GET | `/api/v1/abuse?from&to&q&qf&pid&err&type&res&del&page&size&sort` | 조회 (목록 · 건수 · 정렬 · 페이지) |
+| GET | `/api/v1/abuse/{id}` | 상세 |
+| GET | `/api/v1/abuse/export?(조회와 같은 조건)` | 엑셀로 (서버에서 마스킹 · 감사LOG) |
 
 ### 권한 코드 (역할별로 부여)
 
-`log/abuse|조회` · `log/abuse|엑셀로` · `log/abuse|리포트` · `log/abuse|삭제자료표시`
+`abuse|조회` · `abuse|엑셀로` · `abuse|리포트` · `abuse|삭제자료표시`
 
 ## 기초코드관리 › 국가코드관리  `#/code/nation` · 프로그램ID 039
 
